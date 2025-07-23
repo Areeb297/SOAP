@@ -1,0 +1,21 @@
+# requirements.txt - Python dependencies for SOAP Note Voice Recorder
+
+# Flask web framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# OpenAI Whisper for speech-to-text
+openai-whisper
+ffmpeg-python==0.2.0
+
+# OpenAI API for GPT-4 mini
+openai==0.28.1
+
+# Audio processing
+numpy==1.26.2
+scipy==1.11.4
+
+# Additional utilities
+python-dotenv==1.0.0 
+transformers
+torch 
