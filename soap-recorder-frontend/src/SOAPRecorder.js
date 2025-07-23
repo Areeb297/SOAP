@@ -195,32 +195,77 @@ export default function SOAPRecorder() {
       URL.revokeObjectURL(url);
     } else if (format === 'pdf') {
       import('jspdf').then(jsPDFModule => {
-        const { jsPDF } = jsPDFModule;
-        const doc = new jsPDF();
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 10;
-        const cellWidth = (pageWidth - margin * 2) / 2;
-        const cellHeight = (pageHeight - margin * 2) / 2;
+        try {
+          const { jsPDF } = jsPDFModule;
+          const doc = new jsPDF();
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const margin = 10;
+          const cellWidth = (pageWidth - margin * 2) / 2;
+          const cellHeight = (pageHeight - margin * 2) / 2;
 
-        // Detect if the SOAP note is in Arabic (simple check: are most fields Arabic?)
-        const isArabic = Object.values(soapNote.subjective || {}).some(val => /[\u0600-\u06FF]/.test(val));
-        if (isArabic) {
-          if (window.NotoNaskhArabicRegularTTF) {
-            doc.addFileToVFS('NotoNaskhArabic-Regular.ttf', window.NotoNaskhArabicRegularTTF);
-            doc.addFont('NotoNaskhArabic-Regular.ttf', 'NotoNaskhArabic', 'normal');
-            doc.setFont('NotoNaskhArabic');
-          } else {
-            alert('Arabic font not loaded. Please refresh the page or check your font setup.');
-            doc.setFont('helvetica', 'normal');
+          // Detect if the SOAP note is in Arabic (simple check: are most fields Arabic?)
+          const isArabic = Object.values(soapNote.subjective || {}).some(val => /[\u0600-\u06FF]/.test(val));
+          let useArabicFont = false;
+          
+          // Always start with a safe font
+          doc.setFont('helvetica', 'normal');
+          
+          if (isArabic) {
+            try {
+              if (window.NotoNaskhArabicRegularTTF) {
+                doc.addFileToVFS('NotoNaskhArabic-Regular.ttf', window.NotoNaskhArabicRegularTTF);
+                doc.addFont('NotoNaskhArabic-Regular.ttf', 'NotoNaskhArabic', 'normal');
+                
+                // Test the font by checking if it can render text properly
+                const testText = 'Test';
+                try {
+                  doc.setFont('NotoNaskhArabic', 'normal');
+                  // Try to get text width - this will fail if font has issues
+                  doc.getTextWidth(testText);
+                  useArabicFont = true;
+                  console.log('Arabic font loaded successfully');
+                } catch (fontTestError) {
+                  console.warn('Arabic font test failed, using helvetica:', fontTestError);
+                  doc.setFont('helvetica', 'normal');
+                  useArabicFont = false;
+                }
+              } else {
+                console.warn('Arabic font file not available. Using helvetica fallback.');
+              }
+            } catch (error) {
+              console.error('Error loading Arabic font:', error);
+              doc.setFont('helvetica', 'normal');
+              useArabicFont = false;
+            }
           }
-        } else {
-          doc.setFont('helvetica', 'bold');
-        }
 
-        doc.setFontSize(18);
-        doc.text(isArabic ? 'نموذج ملاحظة SOAP' : 'SOAP Note Template', pageWidth / 2, margin + 8, { align: 'center' });
-        doc.setFontSize(12);
+          // Safe text rendering function
+          const safeText = (text, x, y, options = {}) => {
+            try {
+              doc.text(text, x, y, options);
+            } catch (error) {
+              console.error('Text rendering error:', error);
+              // Fallback: try with helvetica
+              const currentFont = doc.getFont();
+              try {
+                doc.setFont('helvetica', 'normal');
+                doc.text(text, x, y, options);
+              } catch (fallbackError) {
+                console.error('Fallback text rendering also failed:', fallbackError);
+                // Last resort: render without options
+                try {
+                  doc.text(text, x, y);
+                } catch (finalError) {
+                  console.error('All text rendering attempts failed for:', text);
+                }
+              }
+            }
+          };
+
+          doc.setFontSize(18);
+          safeText(isArabic ? 'نموذج ملاحظة SOAP' : 'SOAP Note Template', pageWidth / 2, margin + 8, { align: 'center' });
+          doc.setFontSize(12);
         // Draw grid
         doc.setLineWidth(0.5);
         // Vertical line
@@ -237,41 +282,84 @@ export default function SOAPRecorder() {
           { title: isArabic ? 'قسم الخطة' : 'Plan Section', x: pageWidth / 2 + 2, y: margin + 18 + cellHeight, data: soapNote.plan },
         ];
         doc.setFontSize(13);
-        sections.forEach(section => {
-          if (isArabic) {
-            doc.setFont('NotoNaskhArabic', 'normal');
-            doc.text(section.title, section.x + cellWidth - 4, section.y, { align: 'right' });
-          } else {
-            doc.setFont('helvetica', 'bold');
-            doc.text(section.title, section.x, section.y);
-          }
-          doc.setFont(isArabic ? 'NotoNaskhArabic' : 'helvetica', 'normal');
-          let y = section.y + 7;
-          Object.entries(section.data).forEach(([key, value]) => {
-            let label;
-            if (isArabic) {
-              label = `- ${value}`;
-            } else {
-              label =
-                '- ' +
-                key
-                  .replace(/_/g, ' ')
-                  .replace(/\b\w/g, l => l.toUpperCase()) +
-                ': ' +
-                value;
-            }
-            const wrappedLines = doc.splitTextToSize(label, cellWidth - 6);
-            wrappedLines.forEach(line => {
-              if (isArabic) {
-                doc.text(line, section.x + cellWidth - 4, y, { align: 'right', maxWidth: cellWidth - 6 });
+          sections.forEach(section => {
+            try {
+              // Set title font
+              if (isArabic && useArabicFont) {
+                try {
+                  doc.setFont('NotoNaskhArabic', 'normal');
+                } catch (fontError) {
+                  doc.setFont('helvetica', 'bold');
+                  useArabicFont = false;
+                }
+                safeText(section.title, section.x + cellWidth - 4, section.y, { align: 'right' });
               } else {
-                doc.text(line, section.x, y, { maxWidth: cellWidth - 6 });
+                doc.setFont('helvetica', 'bold');
+                safeText(section.title, section.x, section.y);
               }
-              y += 6;
-            });
+              
+              // Set content font
+              if (isArabic && useArabicFont) {
+                try {
+                  doc.setFont('NotoNaskhArabic', 'normal');
+                } catch (fontError) {
+                  doc.setFont('helvetica', 'normal');
+                  useArabicFont = false;
+                }
+              } else {
+                doc.setFont('helvetica', 'normal');
+              }
+              
+              let y = section.y + 7;
+              Object.entries(section.data || {}).forEach(([key, value]) => {
+                let label;
+                if (isArabic) {
+                  label = `- ${value}`;
+                } else {
+                  label =
+                    '- ' +
+                    key
+                      .replace(/_/g, ' ')
+                      .replace(/\b\w/g, l => l.toUpperCase()) +
+                    ': ' +
+                    value;
+                }
+                
+                // Safe text wrapping and rendering
+                try {
+                  const wrappedLines = doc.splitTextToSize(label, cellWidth - 6);
+                  wrappedLines.forEach(line => {
+                    if (isArabic && useArabicFont) {
+                      safeText(line, section.x + cellWidth - 4, y, { align: 'right', maxWidth: cellWidth - 6 });
+                    } else {
+                      safeText(line, section.x, y, { maxWidth: cellWidth - 6 });
+                    }
+                    y += 6;
+                  });
+                } catch (textError) {
+                  console.error('Error with text wrapping, using simple rendering:', textError);
+                  // Fallback: render without text wrapping
+                  if (isArabic && useArabicFont) {
+                    safeText(label, section.x + cellWidth - 4, y, { align: 'right' });
+                  } else {
+                    safeText(label, section.x, y);
+                  }
+                  y += 6;
+                }
+              });
+            } catch (sectionError) {
+              console.error('Error rendering section:', sectionError);
+              // Continue with next section
+            }
           });
-        });
-        doc.save('SOAP_Note.pdf');
+          doc.save('SOAP_Note.pdf');
+        } catch (pdfError) {
+          console.error('PDF generation error:', pdfError);
+          alert('Error generating PDF. Please try again or use the TXT download option.');
+        }
+      }).catch(moduleError => {
+        console.error('Error loading jsPDF module:', moduleError);
+        alert('Error loading PDF library. Please refresh the page and try again.');
       });
     }
   }
