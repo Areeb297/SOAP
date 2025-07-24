@@ -1,34 +1,63 @@
-Transcript generated on 2025-07-24 12:51:42
+Transcript generated on 2025-07-24 15:35:29
 --------------------------------------------------
-السلام عليكم
-
+ Hello, I'm Dr. Kreme from the IA. Before we begin, can I have your name, age and what you are from? I'm Adam Salah, 34 years old and I live in Jeddah. Nice to meet you, Adam. Can you tell me what brought you here today? Dr. I had just tightness and shortness of breath since this morning. Started suddenly when I was working to work. All of us have been going about three hours now. Still I'm going with a bit less intense. Have you had this before? No. Have I experienced this before? Very bad. Radiating 3 hours more job. No. But I do feel pressure and much overshift. Any splitting or business? I had light-sweetening and some nocy initially. Do you have any medical history? Yes, I have high blood pressure and I'm on medication for it. What medication are you taking? I'm a little thin. And as I was before, ten years ago, family history of heart disease. Yes, my father had a heart attack at 50. Okay, Adam, we will check your vital signs doing ECG and some blood tests including cardiac resumes. We will see you in the next six weeks.
 
 ==================================================
 SOAP NOTE
 ==================================================
 {
   "subjective": {
-    "allergies": "لم يذكر وجود حساسية",
-    "chief_complaint": "تعب شديد منذ يومين",
-    "family_history": "لم يتم التطرق لهذه النقاط أثناء اللقاء",
-    "history_of_present_illness": "التعب بدأ منذ يومين، حتى مع النوم الجيد. لا صداع، لا حرارة، لا فقدان شهية. أحيانًا دوخة بسيطة. لا توجد عوامل محفزة أو مخففة واضحة. يؤثر على النشاط اليومي.",
-    "medications": "لا يتناول أدوية حالياً",
-    "past_medical_history": "لم يتم التطرق لهذه النقاط أثناء اللقاء",
-    "social_history": "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+    "chief_complaint": "Tightness and shortness of breath for 3 hours",
+    "history_of_present_illness": "Patient reports sudden onset of tightness and shortness of breath while working this morning. Symptoms have persisted for approximately 3 hours but have decreased in intensity. He denies previous episodes of similar symptoms. He describes the sensation as pressure with some light sweating and initial nausea.",
+    "past_medical_history": "Hypertension, currently on medication.",
+    "family_history": "Father had a heart attack at age 50.",
+    "social_history": "Not discussed during encounter",
+    "medications": "Patient is on medication for hypertension.",
+    "allergies": "No known allergies"
   },
   "objective": {
-    "physical_examination_findings": "بانتظار الفحص السريري",
-    "vital_signs": "العلامات الحيوية غير متوفرة حالياً"
+    "vital_signs": "Vital signs not available currently",
+    "physical_examination_findings": "Pending clinical examination"
   },
   "assessment": {
-    "diagnosis": "التشخيص المبدئي: اشتباه في نقص الحديد أو جفاف",
-    "differential_diagnosis": "نقص الحديد، الجفاف، الإرهاق العام",
-    "risk_factors": "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+    "diagnosis": "Working diagnosis: Suspected acute coronary syndrome",
+    "risk_factors": "Family history of heart disease, hypertension",
+    "differential_diagnosis": "Acute coronary syndrome, pulmonary embolism, anxiety-related symptoms, gastroesophageal reflux disease"
   },
   "plan": {
-    "follow_up_instructions": "الاتصال بالمريض فور توفر نتائج الفحوصات",
-    "investigations": "CBC، Ferritin، Iron profile",
-    "medications_prescribed": "لم يتم وصف أدوية حالياً",
-    "patient_education_counseling": "الراحة وشرب الماء بكثرة. مراجعة الطبيب فور ظهور أعراض جديدة أو تفاقم الحالة."
+    "medications_prescribed": "No medications prescribed currently",
+    "procedures_interventions": "ECG, cardiac biomarkers blood tests",
+    "patient_education_counseling": "Patient advised to monitor symptoms closely and seek immediate medical attention if symptoms worsen or new symptoms develop. Discussed lifestyle modifications for hypertension management.",
+    "follow_up_instructions": "Follow up in 6 weeks for further evaluation and test results."
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "subjective": {
+    "chief_complaint": "Strong pain in the right side of abdomen since last night",
+    "history_of_present_illness": "Pain started around 1 a.m. and has been constant since then. It worsens with walking or pressing on the area. Patient reports slight nausea but no vomiting. Experienced feverish feelings and sweating during the night.",
+    "past_medical_history": "Not discussed during encounter",
+    "family_history": "Older brother had appendix removed a few years ago",
+    "social_history": "Not discussed during encounter",
+    "medications": "No current medications",
+    "allergies": "No known allergies"
+  },
+  "objective": {
+    "vital_signs": "Vital signs not available currently",
+    "physical_examination_findings": "Pending clinical examination"
+  },
+  "assessment": {
+    "diagnosis": "Working diagnosis: Suspected appendicitis",
+    "risk_factors": "Not discussed during encounter",
+    "differential_diagnosis": "Acute appendicitis, mesenteric adenitis, renal colic, diverticulitis"
+  },
+  "plan": {
+    "medications_prescribed": "No medications prescribed currently",
+    "procedures_interventions": "Blood tests, CT scan of abdomen",
+    "patient_education_counseling": "Educate patient on warning signs that require immediate medical attention, such as increased pain, fever, or vomiting. Advise on the importance of avoiding food and drink until evaluated further.",
+    "follow_up_instructions": "Contact patient immediately when test results are available"
   }
 }
