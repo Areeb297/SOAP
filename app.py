@@ -13,6 +13,12 @@ import requests
 from pydub import AudioSegment
 from openai import OpenAI
 
+# Set temporary directory to a folder on D: drive
+temp_dir = "D:/soap_temp_files"
+os.makedirs(temp_dir, exist_ok=True)
+tempfile.tempdir = temp_dir
+print(f"Temporary files will be stored in: {tempfile.tempdir}")
+
 app = Flask(__name__)
 CORS(app)
 

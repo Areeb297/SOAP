@@ -66,3 +66,53 @@
 - [ ] Use Hugging Face transformers pipeline for Arabic transcription in backend
 - [ ] Use Whisper for English transcription in backend
 - [ ] Update backend requirements for transformers and torch 
+
+# Task: Integrate Arabic Font for PDF Export (jsPDF)
+
+## Goal
+Ensure that Arabic text in generated PDFs is displayed correctly for all users, with no extra downloads or setup required by end users.
+
+## Steps
+
+### 1. Convert the TTF Font to jsPDF Format
+- Go to the [jsPDF font converter tool](https://simonbengtsson.github.io/jsPDF-AutoTable/tools/font-converter.html).
+- Upload your `NotoNaskhArabic-Regular.ttf` file (found in `soap-recorder-frontend/public/fonts/`).
+- Set the font name to `NotoNaskhArabic` (or keep the default if you prefer).
+- Click "Download js-file" to get the converted font file (e.g., `NotoNaskhArabic-Regular.js`).
+
+### 2. Add the Converted Font File to Your Project
+- Place the downloaded `NotoNaskhArabic-Regular.js` file in your project, e.g., in `soap-recorder-frontend/public/fonts/` or `soap-recorder-frontend/src/fonts/`.
+
+### 3. Import the Font in Your Code
+- In your `SOAPRecorder.js` (or wherever you generate the PDF), add:
+  ```js
+  import '../public/fonts/NotoNaskhArabic-Regular.js';
+  // or
+  // import '../src/fonts/NotoNaskhArabic-Regular.js';
+  ```
+  (Adjust the path as needed based on where you placed the file.)
+
+### 4. Update PDF Generation Logic
+- Remove any dynamic font loading logic (e.g., `addFileToVFS`, `addFont`, and base64 font loading for NotoNaskhArabic).
+- Before rendering Arabic text, set the font:
+  ```js
+  doc.setFont('NotoNaskhArabic', 'normal');
+  ```
+- Keep your logic for detecting Arabic and switching fonts as needed.
+
+### 5. Test PDF Export
+- Generate a SOAP note in Arabic and download as PDF.
+- Open the PDF and verify that Arabic text displays correctly.
+- Test on a different device/browser to confirm it works for all users.
+
+---
+
+## Completion Checklist
+- [ ] Font converted and added to project
+- [ ] Font imported in code
+- [ ] PDF generation logic updated
+- [ ] PDF export tested and verified
+
+---
+
+**Once these steps are complete, all users will see correct Arabic text in PDFs, with no extra setup required!** 

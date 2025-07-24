@@ -1,6 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Loader2, Edit3, Send, Check } from 'lucide-react';
 
+// AmiriFont.js - Simplified approach without external dependencies
+export const loadAmiriFont = async () => {
+  // Since external fonts are causing issues, we'll return false
+  // and handle Arabic text differently
+  console.log('Font loading skipped - will use alternative approach');
+  return false;
+};
+
 export default function SOAPRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -10,6 +18,7 @@ export default function SOAPRecorder() {
   const [editedTranscript, setEditedTranscript] = useState('');
   const [audioBlob, setAudioBlob] = useState(null);
   const [language, setLanguage] = useState('en'); // 'en' or 'ar'
+  const [arabicFontLoaded, setArabicFontLoaded] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -160,31 +169,27 @@ export default function SOAPRecorder() {
     return text.trim();
   }
 
-  // Helper function to load the Arabic font as base64 (if not already loaded)
-  function ensureArabicFontLoaded() {
-    if (!window.NotoNaskhArabicRegularTTF) {
-      // Fetch the font as base64 from the public directory
-      fetch('/fonts/NotoNaskhArabic-Regular.ttf')
-        .then(response => response.arrayBuffer())
-        .then(buffer => {
-          // Convert to base64
-          let binary = '';
-          const bytes = new Uint8Array(buffer);
-          for (let i = 0; i < bytes.byteLength; i++) {
-            binary += String.fromCharCode(bytes[i]);
-          }
-          window.NotoNaskhArabicRegularTTF = btoa(binary);
-        });
-    }
-  }
+  // Check if content is Arabic
+  const checkArabic = (obj) => {
+    if (!obj) return false;
+    return Object.values(obj).some(val => 
+      val && /[\u0600-\u06FF]/.test(String(val))
+    );
+  };
 
-  // Download handler
+  // Download handler with HTML print solution for Arabic
   function downloadSOAPNote(format) {
     const soapNote = window.soapNoteForDownload || null;
     if (!soapNote) return;
+    
+    const isArabic = checkArabic(soapNote.subjective) || 
+                     checkArabic(soapNote.objective) || 
+                     checkArabic(soapNote.assessment) || 
+                     checkArabic(soapNote.plan);
+    
     if (format === 'txt') {
       const text = formatSOAPNoteAsText(soapNote);
-      const blob = new Blob([text], { type: 'text/plain' });
+      const blob = new Blob([text], { type: 'text/plain; charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -194,174 +199,178 @@ export default function SOAPRecorder() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else if (format === 'pdf') {
-      import('jspdf').then(jsPDFModule => {
-        try {
-          const { jsPDF } = jsPDFModule;
-          const doc = new jsPDF();
-          const pageWidth = doc.internal.pageSize.getWidth();
-          const pageHeight = doc.internal.pageSize.getHeight();
-          const margin = 10;
-          const cellWidth = (pageWidth - margin * 2) / 2;
-          const cellHeight = (pageHeight - margin * 2) / 2;
-
-          // Detect if the SOAP note is in Arabic (simple check: are most fields Arabic?)
-          const isArabic = Object.values(soapNote.subjective || {}).some(val => /[\u0600-\u06FF]/.test(val));
-          let useArabicFont = false;
-          
-          // Always start with a safe font
-          doc.setFont('helvetica', 'normal');
-          
-          if (isArabic) {
-            try {
-              if (window.NotoNaskhArabicRegularTTF) {
-                doc.addFileToVFS('NotoNaskhArabic-Regular.ttf', window.NotoNaskhArabicRegularTTF);
-                doc.addFont('NotoNaskhArabic-Regular.ttf', 'NotoNaskhArabic', 'normal');
-                
-                // Test the font by checking if it can render text properly
-                const testText = 'Test';
-                try {
-                  doc.setFont('NotoNaskhArabic', 'normal');
-                  // Try to get text width - this will fail if font has issues
-                  doc.getTextWidth(testText);
-                  useArabicFont = true;
-                  console.log('Arabic font loaded successfully');
-                } catch (fontTestError) {
-                  console.warn('Arabic font test failed, using helvetica:', fontTestError);
-                  doc.setFont('helvetica', 'normal');
-                  useArabicFont = false;
-                }
-              } else {
-                console.warn('Arabic font file not available. Using helvetica fallback.');
-              }
-            } catch (error) {
-              console.error('Error loading Arabic font:', error);
-              doc.setFont('helvetica', 'normal');
-              useArabicFont = false;
-            }
-          }
-
-          // Safe text rendering function
-          const safeText = (text, x, y, options = {}) => {
-            try {
-              doc.text(text, x, y, options);
-            } catch (error) {
-              console.error('Text rendering error:', error);
-              // Fallback: try with helvetica
-              const currentFont = doc.getFont();
-              try {
-                doc.setFont('helvetica', 'normal');
-                doc.text(text, x, y, options);
-              } catch (fallbackError) {
-                console.error('Fallback text rendering also failed:', fallbackError);
-                // Last resort: render without options
-                try {
-                  doc.text(text, x, y);
-                } catch (finalError) {
-                  console.error('All text rendering attempts failed for:', text);
-                }
-              }
-            }
-          };
-
-          doc.setFontSize(18);
-          safeText(isArabic ? 'نموذج ملاحظة SOAP' : 'SOAP Note Template', pageWidth / 2, margin + 8, { align: 'center' });
-          doc.setFontSize(12);
-        // Draw grid
-        doc.setLineWidth(0.5);
-        // Vertical line
-        doc.line(pageWidth / 2, margin + 12, pageWidth / 2, pageHeight - margin);
-        // Horizontal line
-        doc.line(margin, margin + 12 + cellHeight, pageWidth - margin, margin + 12 + cellHeight);
-        // Outer border
-        doc.rect(margin, margin + 12, pageWidth - margin * 2, pageHeight - margin * 2 - 12);
-        // Section positions
-        const sections = [
-          { title: isArabic ? 'القسم الذاتي' : 'Subjective Section', x: margin + 2, y: margin + 18, data: soapNote.subjective },
-          { title: isArabic ? 'القسم الموضوعي' : 'Objective Section', x: pageWidth / 2 + 2, y: margin + 18, data: soapNote.objective },
-          { title: isArabic ? 'قسم التقييم' : 'Assessment Section', x: margin + 2, y: margin + 18 + cellHeight, data: soapNote.assessment },
-          { title: isArabic ? 'قسم الخطة' : 'Plan Section', x: pageWidth / 2 + 2, y: margin + 18 + cellHeight, data: soapNote.plan },
-        ];
-        doc.setFontSize(13);
-          sections.forEach(section => {
-            try {
-              // Set title font
-              if (isArabic && useArabicFont) {
-                try {
-                  doc.setFont('NotoNaskhArabic', 'normal');
-                } catch (fontError) {
-                  doc.setFont('helvetica', 'bold');
-                  useArabicFont = false;
-                }
-                safeText(section.title, section.x + cellWidth - 4, section.y, { align: 'right' });
-              } else {
-                doc.setFont('helvetica', 'bold');
-                safeText(section.title, section.x, section.y);
-              }
-              
-              // Set content font
-              if (isArabic && useArabicFont) {
-                try {
-                  doc.setFont('NotoNaskhArabic', 'normal');
-                } catch (fontError) {
-                  doc.setFont('helvetica', 'normal');
-                  useArabicFont = false;
-                }
-              } else {
-                doc.setFont('helvetica', 'normal');
-              }
-              
-              let y = section.y + 7;
-              Object.entries(section.data || {}).forEach(([key, value]) => {
-                let label;
-                if (isArabic) {
-                  label = `- ${value}`;
-                } else {
-                  label =
-                    '- ' +
-                    key
-                      .replace(/_/g, ' ')
-                      .replace(/\b\w/g, l => l.toUpperCase()) +
-                    ': ' +
-                    value;
-                }
-                
-                // Safe text wrapping and rendering
-                try {
-                  const wrappedLines = doc.splitTextToSize(label, cellWidth - 6);
-                  wrappedLines.forEach(line => {
-                    if (isArabic && useArabicFont) {
-                      safeText(line, section.x + cellWidth - 4, y, { align: 'right', maxWidth: cellWidth - 6 });
-                    } else {
-                      safeText(line, section.x, y, { maxWidth: cellWidth - 6 });
-                    }
-                    y += 6;
-                  });
-                } catch (textError) {
-                  console.error('Error with text wrapping, using simple rendering:', textError);
-                  // Fallback: render without text wrapping
-                  if (isArabic && useArabicFont) {
-                    safeText(label, section.x + cellWidth - 4, y, { align: 'right' });
-                  } else {
-                    safeText(label, section.x, y);
-                  }
-                  y += 6;
-                }
-              });
-            } catch (sectionError) {
-              console.error('Error rendering section:', sectionError);
-              // Continue with next section
-            }
-          });
-          doc.save('SOAP_Note.pdf');
-        } catch (pdfError) {
-          console.error('PDF generation error:', pdfError);
-          alert('Error generating PDF. Please try again or use the TXT download option.');
-        }
-      }).catch(moduleError => {
-        console.error('Error loading jsPDF module:', moduleError);
-        alert('Error loading PDF library. Please refresh the page and try again.');
-      });
+      // Use HTML print solution for better Arabic support
+      if (isArabic) {
+        import('./ArabicPDFGenerator').then(module => {
+          module.generateArabicPDF(soapNote);
+        }).catch(error => {
+          console.error('Error loading Arabic PDF generator:', error);
+          alert('Error loading Arabic PDF generator. Please try the TXT download option.');
+        });
+      } else {
+        import('./ArabicPDFGenerator').then(module => {
+          module.generateEnglishPDF(soapNote);
+        }).catch(error => {
+          console.error('Error loading PDF generator:', error);
+          // Fallback to jsPDF for English content
+          downloadWithJsPDF(soapNote);
+        });
+      }
     }
+  }
+
+  // Fallback jsPDF function for English content
+  function downloadWithJsPDF(soapNote) {
+    import('jspdf').then((jsPDFModule) => {
+      try {
+        const { jsPDF } = jsPDFModule;
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'pt',
+          format: 'a4'
+        });
+        
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 40;
+        let yPosition = 40;
+        
+        // Title
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        const title = 'SOAP Note Template';
+        const titleWidth = doc.getTextWidth(title);
+        doc.text(title, (pageWidth - titleWidth) / 2, yPosition);
+        yPosition += 40;
+        
+        // Calculate dimensions for 2x2 grid
+        const gridWidth = pageWidth - (margin * 2);
+        const gridHeight = pageHeight - yPosition - margin;
+        const cellWidth = gridWidth / 2;
+        const cellHeight = gridHeight / 2;
+        const cellPadding = 15;
+        
+        // Draw grid lines
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1);
+        
+        // Vertical line
+        doc.line(pageWidth / 2, yPosition, pageWidth / 2, yPosition + gridHeight);
+        // Horizontal line
+        doc.line(margin, yPosition + gridHeight / 2, pageWidth - margin, yPosition + gridHeight / 2);
+        // Border
+        doc.rect(margin, yPosition, gridWidth, gridHeight);
+        
+        // Define sections with their positions
+        const sections = [
+          { 
+            title: 'Subjective Section', 
+            data: soapNote.subjective,
+            x: margin + cellPadding,
+            y: yPosition + cellPadding,
+            width: cellWidth - (cellPadding * 2),
+            height: cellHeight - (cellPadding * 2)
+          },
+          { 
+            title: 'Objective Section', 
+            data: soapNote.objective,
+            x: margin + cellWidth + cellPadding,
+            y: yPosition + cellPadding,
+            width: cellWidth - (cellPadding * 2),
+            height: cellHeight - (cellPadding * 2)
+          },
+          { 
+            title: 'Assessment Section', 
+            data: soapNote.assessment,
+            x: margin + cellPadding,
+            y: yPosition + cellHeight + cellPadding,
+            width: cellWidth - (cellPadding * 2),
+            height: cellHeight - (cellPadding * 2)
+          },
+          { 
+            title: 'Plan Section', 
+            data: soapNote.plan,
+            x: margin + cellWidth + cellPadding,
+            y: yPosition + cellHeight + cellPadding,
+            width: cellWidth - (cellPadding * 2),
+            height: cellHeight - (cellPadding * 2)
+          }
+        ];
+        
+        // Render each section
+        sections.forEach(section => {
+          if (section.data && Object.keys(section.data).length > 0) {
+            let currentY = section.y;
+            
+            // Section title
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text(section.title, section.x, currentY);
+            currentY += 20;
+            
+            // Section content
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            
+            Object.entries(section.data).forEach(([key, value]) => {
+              if (value && currentY < section.y + section.height - 15) {
+                // Format the key
+                const formattedKey = key
+                  .replace(/_/g, ' ')
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ');
+                
+                // Key in bold
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${formattedKey}:`, section.x, currentY);
+                currentY += 12;
+                
+                // Value in normal font
+                doc.setFont('helvetica', 'normal');
+                const processedValue = String(value);
+                
+                // Wrap text to fit in cell
+                const lines = doc.splitTextToSize(processedValue, section.width - 10);
+                const maxLines = Math.floor((section.y + section.height - currentY) / 12);
+                const linesToShow = lines.slice(0, maxLines);
+                
+                linesToShow.forEach(line => {
+                  if (currentY < section.y + section.height - 10) {
+                    doc.text(line, section.x + 5, currentY);
+                    currentY += 12;
+                  }
+                });
+                
+                if (lines.length > linesToShow.length) {
+                  doc.text('...', section.x + 5, currentY);
+                }
+                
+                currentY += 8; // Space between items
+              }
+            });
+          } else {
+            // Show "No data" for empty sections
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text(section.title, section.x, section.y);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.text('No data available', section.x, section.y + 25);
+          }
+        });
+        
+        // Save the PDF
+        doc.save('SOAP_Note.pdf');
+        
+      } catch (error) {
+        console.error('PDF generation error:', error);
+        alert('Error generating PDF.');
+      }
+    }).catch(error => {
+      console.error('Error loading jsPDF:', error);
+      alert('Error loading PDF library. Please try again.');
+    });
   }
 
   // Store soapNote globally for download
@@ -371,9 +380,12 @@ export default function SOAPRecorder() {
     }
   }, [soapNote]);
 
-  // Call this once on component mount
+  // Load Arabic font on component mount
   useEffect(() => {
-    ensureArabicFontLoaded();
+    loadAmiriFont().then(loaded => {
+      setArabicFontLoaded(loaded);
+      console.log('Arabic font loaded:', loaded);
+    });
   }, []);
 
   return (
@@ -511,7 +523,14 @@ export default function SOAPRecorder() {
                     onClick={() => downloadSOAPNote('pdf')}
                     className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition"
                   >
-                    Download as PDF
+                    {/* Check if content is Arabic to show appropriate label */}
+                    {(checkArabic(soapNote.subjective) || 
+                      checkArabic(soapNote.objective) || 
+                      checkArabic(soapNote.assessment) || 
+                      checkArabic(soapNote.plan)) 
+                      ? 'Print Arabic PDF' 
+                      : 'Download as PDF'
+                    }
                   </button>
                 </div>
               </>
@@ -531,4 +550,4 @@ export default function SOAPRecorder() {
       </div>
     </div>
   );
-} 
+}
