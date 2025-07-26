@@ -19,6 +19,9 @@ export default function SOAPRecorder() {
   const [audioBlob, setAudioBlob] = useState(null);
   const [language, setLanguage] = useState('en'); // 'en' or 'ar'
   const [arabicFontLoaded, setArabicFontLoaded] = useState(false);
+  const [isEditingSOAP, setIsEditingSOAP] = useState(false);
+  const [editedSOAPNote, setEditedSOAPNote] = useState(null);
+  const [userAgreement, setUserAgreement] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -99,6 +102,8 @@ export default function SOAPRecorder() {
       
       const data = await response.json();
       setSoapNote(data.soapNote);
+      setEditedSOAPNote(data.soapNote);
+      setUserAgreement(false);
     } catch (error) {
       console.error('Error generating SOAP note:', error);
       alert('Failed to generate SOAP note. Please check if the backend server is running.');
@@ -107,10 +112,21 @@ export default function SOAPRecorder() {
     }
   };
 
-  const SOAPSection = ({ title, data }) => {
+  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit }) => {
     if (!data || Object.keys(data).length === 0) return null;
     
-    const renderValue = (value) => {
+    const renderValue = (key, value) => {
+      if (isEditing) {
+        return (
+          <textarea
+            value={value || ''}
+            onChange={(e) => onEdit(sectionKey, key, e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            rows="2"
+          />
+        );
+      }
+      
       if (typeof value === 'object' && value !== null) {
         // Handle nested objects
         return (
@@ -135,18 +151,36 @@ export default function SOAPRecorder() {
         <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
         <div className="space-y-2">
           {Object.entries(data).map(([key, value]) => (
-            value && (
+            value !== null && value !== undefined && (
               <div key={key} className="flex flex-col">
                 <span className="text-sm font-medium text-gray-600">
                   {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                 </span>
-                {renderValue(value)}
+                {renderValue(key, value)}
               </div>
             )
           ))}
         </div>
       </div>
     );
+  };
+
+  // Handle SOAP note editing
+  const handleSOAPEdit = (sectionKey, fieldKey, value) => {
+    setEditedSOAPNote(prev => ({
+      ...prev,
+      [sectionKey]: {
+        ...prev[sectionKey],
+        [fieldKey]: value
+      }
+    }));
+  };
+
+  // Save SOAP note edits
+  const saveSOAPEdits = () => {
+    setSoapNote(editedSOAPNote);
+    setIsEditingSOAP(false);
+    window.soapNoteForDownload = editedSOAPNote;
   };
 
   // Helper function to format SOAP note as plain text
@@ -179,16 +213,16 @@ export default function SOAPRecorder() {
 
   // Download handler with HTML print solution for Arabic
   function downloadSOAPNote(format) {
-    const soapNote = window.soapNoteForDownload || null;
-    if (!soapNote) return;
+    const currentSOAPNote = editedSOAPNote || soapNote;
+    if (!currentSOAPNote) return;
     
-    const isArabic = checkArabic(soapNote.subjective) || 
-                     checkArabic(soapNote.objective) || 
-                     checkArabic(soapNote.assessment) || 
-                     checkArabic(soapNote.plan);
+    const isArabic = checkArabic(currentSOAPNote.subjective) || 
+                     checkArabic(currentSOAPNote.objective) || 
+                     checkArabic(currentSOAPNote.assessment) || 
+                     checkArabic(currentSOAPNote.plan);
     
     if (format === 'txt') {
-      const text = formatSOAPNoteAsText(soapNote);
+      const text = formatSOAPNoteAsText(currentSOAPNote);
       const blob = new Blob([text], { type: 'text/plain; charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -202,18 +236,18 @@ export default function SOAPRecorder() {
       // Use HTML print solution for better Arabic support
       if (isArabic) {
         import('./ArabicPDFGenerator').then(module => {
-          module.generateArabicPDF(soapNote);
+          module.generateArabicPDF(currentSOAPNote);
         }).catch(error => {
           console.error('Error loading Arabic PDF generator:', error);
           alert('Error loading Arabic PDF generator. Please try the TXT download option.');
         });
       } else {
         import('./ArabicPDFGenerator').then(module => {
-          module.generateEnglishPDF(soapNote);
+          module.generateEnglishPDF(currentSOAPNote);
         }).catch(error => {
           console.error('Error loading PDF generator:', error);
           // Fallback to jsPDF for English content
-          downloadWithJsPDF(soapNote);
+          downloadWithJsPDF(currentSOAPNote);
         });
       }
     }
@@ -375,10 +409,10 @@ export default function SOAPRecorder() {
 
   // Store soapNote globally for download
   useEffect(() => {
-    if (soapNote) {
-      window.soapNoteForDownload = soapNote;
+    if (editedSOAPNote) {
+      window.soapNoteForDownload = editedSOAPNote;
     }
-  }, [soapNote]);
+  }, [editedSOAPNote]);
 
   // Load Arabic font on component mount
   useEffect(() => {
@@ -434,11 +468,11 @@ export default function SOAPRecorder() {
         {/* Transcript Section */}
         {transcript && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">Transcript</h2>
+            <div className="relative mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 text-center">Transcript</h2>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
               >
                 {isEditing ? (
                   <>
@@ -487,7 +521,33 @@ export default function SOAPRecorder() {
         {/* SOAP Note Display */}
         {soapNote && (
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">SOAP Note</h2>
+            <div className="relative mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 text-center">SOAP Note</h2>
+              {!soapNote.raw_response && (
+                <button
+                  onClick={() => {
+                    if (isEditingSOAP) {
+                      saveSOAPEdits();
+                    } else {
+                      setIsEditingSOAP(true);
+                    }
+                  }}
+                  className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                >
+                  {isEditingSOAP ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Save
+                    </>
+                  ) : (
+                    <>
+                      <Edit3 className="w-4 h-4" />
+                      Edit
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             
             {/* Check if this is a raw response */}
             {soapNote.raw_response ? (
@@ -506,33 +566,88 @@ export default function SOAPRecorder() {
               </div>
             ) : (
               <>
-                <SOAPSection title="SUBJECTIVE" data={soapNote.subjective} />
-                <SOAPSection title="OBJECTIVE" data={soapNote.objective} />
-                <SOAPSection title="ASSESSMENT" data={soapNote.assessment} />
-                <SOAPSection title="PLAN" data={soapNote.plan} />
+                <SOAPSection 
+                  title="SUBJECTIVE" 
+                  data={isEditingSOAP ? editedSOAPNote?.subjective : soapNote.subjective} 
+                  sectionKey="subjective"
+                  isEditing={isEditingSOAP}
+                  onEdit={handleSOAPEdit}
+                />
+                <SOAPSection 
+                  title="OBJECTIVE" 
+                  data={isEditingSOAP ? editedSOAPNote?.objective : soapNote.objective} 
+                  sectionKey="objective"
+                  isEditing={isEditingSOAP}
+                  onEdit={handleSOAPEdit}
+                />
+                <SOAPSection 
+                  title="ASSESSMENT" 
+                  data={isEditingSOAP ? editedSOAPNote?.assessment : soapNote.assessment} 
+                  sectionKey="assessment"
+                  isEditing={isEditingSOAP}
+                  onEdit={handleSOAPEdit}
+                />
+                <SOAPSection 
+                  title="PLAN" 
+                  data={isEditingSOAP ? editedSOAPNote?.plan : soapNote.plan} 
+                  sectionKey="plan"
+                  isEditing={isEditingSOAP}
+                  onEdit={handleSOAPEdit}
+                />
+
+                {/* User Agreement Checkbox */}
+                {!isEditingSOAP && (
+                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={userAgreement}
+                        onChange={(e) => setUserAgreement(e.target.checked)}
+                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">
+                        I have reviewed and agree with the contents of this SOAP note. I understand that this document contains medical information and I am responsible for its accuracy and appropriate use.
+                      </span>
+                    </label>
+                  </div>
+                )}
 
                 {/* Download Buttons */}
-                <div className="flex gap-4 justify-center mt-6">
-                  <button
-                    onClick={() => downloadSOAPNote('txt')}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition"
-                  >
-                    Download as TXT
-                  </button>
-                  <button
-                    onClick={() => downloadSOAPNote('pdf')}
-                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition"
-                  >
-                    {/* Check if content is Arabic to show appropriate label */}
-                    {(checkArabic(soapNote.subjective) || 
-                      checkArabic(soapNote.objective) || 
-                      checkArabic(soapNote.assessment) || 
-                      checkArabic(soapNote.plan)) 
-                      ? 'Print Arabic PDF' 
-                      : 'Download as PDF'
-                    }
-                  </button>
-                </div>
+                {!isEditingSOAP && (
+                  <div className="flex gap-4 justify-center mt-6">
+                    <button
+                      onClick={() => downloadSOAPNote('txt')}
+                      disabled={!userAgreement}
+                      className={`px-4 py-2 rounded-lg transition ${
+                        userAgreement 
+                          ? 'bg-blue-500 hover:bg-blue-600 text-white cursor-pointer' 
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : ''}
+                    >
+                      Download as TXT
+                    </button>
+                    <button
+                      onClick={() => downloadSOAPNote('pdf')}
+                      disabled={!userAgreement}
+                      className={`px-4 py-2 rounded-lg transition ${
+                        userAgreement 
+                          ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer' 
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : ''}
+                    >
+                      {/* Check if content is Arabic to show appropriate label */}
+                      {(checkArabic(soapNote.subjective) || 
+                        checkArabic(soapNote.objective) || 
+                        checkArabic(soapNote.assessment) || 
+                        checkArabic(soapNote.plan)) 
+                        ? 'Print Arabic PDF' 
+                        : 'Download as PDF'
+                      }
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

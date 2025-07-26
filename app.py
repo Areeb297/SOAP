@@ -25,9 +25,11 @@ CORS(app)
 # Initialize models
 print("Loading models...")
 
-# Initialize Whisper model for English
+# Note: We now use OpenAI gpt-4o-transcribe for both English and Arabic
+# as it provides better medical transcription quality
+# Keeping whisper as fallback for offline/development scenarios
 model_size = os.getenv("WHISPER_MODEL", "base")
-print(f"Loading Whisper model ({model_size}) for English...")
+print(f"Loading Whisper model ({model_size}) as fallback for English...")
 whisper_model = whisper.load_model(model_size)
 
 # Munsit API configuration
@@ -235,15 +237,19 @@ def extract_json_from_response(response_text):
         
         return None
 
-def transcribe_arabic_audio(audio_path):
-    """Transcribe Arabic audio using OpenAI gpt-4o-transcribe model"""
+def transcribe_with_openai(audio_path, language="auto"):
+    """
+    Transcribe audio using OpenAI gpt-4o-transcribe model
+    This is the best model for medical transcription in both English and Arabic
+    """
     try:
-        print(f"Starting Arabic transcription with OpenAI gpt-4o-transcribe for file: {audio_path}")
+        print(f"Starting transcription with OpenAI gpt-4o-transcribe for file: {audio_path}, language: {language}")
         with open(audio_path, "rb") as audio_file:
             transcription = client.audio.transcriptions.create(
                 model="gpt-4o-transcribe",
                 file=audio_file,
-                response_format="text"
+                response_format="text",
+                language=language if language != "auto" else None
             )
         print(f"Transcription result: {transcription}")
         return transcription
@@ -252,6 +258,14 @@ def transcribe_arabic_audio(audio_path):
         import traceback
         print(f"Full error traceback: {traceback.format_exc()}")
         return None
+
+def transcribe_arabic_audio(audio_path):
+    """Transcribe Arabic audio using OpenAI gpt-4o-transcribe model (legacy function name)"""
+    return transcribe_with_openai(audio_path, "ar")
+
+def transcribe_english_audio(audio_path):
+    """Transcribe English audio using OpenAI gpt-4o-transcribe model for better medical accuracy"""
+    return transcribe_with_openai(audio_path, "en")
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe_audio():
@@ -283,9 +297,13 @@ def transcribe_audio():
                 if transcript is None:
                     return jsonify({'error': 'Arabic transcription failed'}), 500
             else:
-                # Use Whisper for English
-                result = whisper_model.transcribe(tmp_filename, language="en")
-                transcript = result["text"]
+                # Use OpenAI gpt-4o-transcribe for English (best for medical transcription)
+                transcript = transcribe_english_audio(tmp_filename)
+                if transcript is None:
+                    # Fallback to Whisper if OpenAI fails
+                    print("OpenAI transcription failed, falling back to Whisper for English")
+                    result = whisper_model.transcribe(tmp_filename, language="en")
+                    transcript = result["text"]
             
             print(f"Transcription successful: {len(transcript)} characters")
             print(f"Transcript content: {transcript}")
