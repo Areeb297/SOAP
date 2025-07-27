@@ -1,6 +1,6 @@
-Transcript generated on 2025-07-26 18:36:47
+Transcript generated on 2025-07-27 09:55:10
 --------------------------------------------------
-هلو هلو السلام عليكم.
+السلام عليكم كيف حالك؟
 
 
 ==================================================
@@ -8,27 +8,27 @@ SOAP NOTE
 ==================================================
 {
   "subjective": {
-    "chief_complaint": "Chest tightness and shortness of breath for 3 hours",
-    "history_of_present_illness": "Patient reports sudden onset of chest tightness and shortness of breath while walking to work this morning. Symptoms have been ongoing for 3 hours but are described as less tense now. Patient also reports pressure in the upper chest. Initially experienced light sweating and some nausea. No previous episodes.",
-    "past_medical_history": "High blood pressure, on Amlodipine 5 mg once daily; Appendectomy 10 years ago.",
-    "family_history": "Father had a heart attack at age 50.",
-    "social_history": "Not discussed during encounter",
-    "medications": "Amlodipine 5 mg once daily.",
-    "allergies": "No known allergies"
+    "allergies": "لم يذكر وجود حساسية",
+    "chief_complaint": "ألم قوي في الجهة اليمنى من البطن منذ الليلة الماضية",
+    "family_history": "أخ شقيق أجرى عملية استئصال الزائدة",
+    "history_of_present_illness": "بدأ الألم الساعة 1 بعد منتصف الليل، مستمر ويزداد مع الحركة أو الضغط. مصحوب بغثيان بسيط وحرارة وتعرق ليلي. استيقظ من النوم بسبب الألم.",
+    "medications": "لا يتناول أدوية حالياً",
+    "past_medical_history": "لا يوجد تاريخ مرضي مزمن حسب إفادة المريض",
+    "social_history": "لم يتم التطرق لهذه النقاط أثناء اللقاء"
   },
   "objective": {
-    "vital_signs": "Vital signs not available currently",
-    "physical_examination_findings": "Pending clinical examination"
+    "physical_examination_findings": "بانتظار الفحص السريري",
+    "vital_signs": "العلامات الحيوية غير متوفرة حالياً"
   },
   "assessment": {
-    "diagnosis": "Working diagnosis: Suspected acute coronary syndrome",
-    "risk_factors": "Family history of heart disease, hypertension",
-    "differential_diagnosis": "Angina, pulmonary embolism, aortic dissection, myocardial infarction"
+    "diagnosis": "التشخيص المبدئي: اشتباه في التهاب الزائدة الدودية",
+    "differential_diagnosis": "التهاب الزائدة الدودية، التهاب المسالك البولية، حصى الكلى",
+    "risk_factors": "تاريخ عائلي لاستئصال الزائدة"
   },
   "plan": {
-    "medications_prescribed": "No medications prescribed currently",
-    "procedures_interventions": "ECG, blood tests including cardiac enzymes, chest X-ray",
-    "patient_education_counseling": "Educated patient on recognizing warning signs of heart attack, advised to seek immediate medical care if symptoms worsen, and discussed the importance of managing hypertension.",
-    "follow_up_instructions": "Contact patient immediately when test results are available"
+    "follow_up_instructions": "إبقاء المريض تحت المراقبة في قسم الطوارئ",
+    "investigations": "تحاليل دم، أشعة مقطعية على البطن",
+    "medications_prescribed": "لم يتم وصف أدوية حالياً",
+    "patient_education_counseling": "تثقيف حول علامات التحذير مثل زيادة الألم أو الحمى، ومتى يجب مراجعة الطبيب فوراً"
   }
 }

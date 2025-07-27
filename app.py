@@ -84,10 +84,10 @@ SUBJECTIVE:
   • Severity and description of symptoms
   • Associated and denied symptoms clearly (example: "No headache, no fever, no loss of appetite")
   • Triggering or alleviating factors if present
-  • Impact on daily activities, sleep, and work
-- Past Medical History: If not mentioned, use "Not discussed during encounter"
-- Family History: If not mentioned, use "Not discussed during encounter"
-- Social History: If not mentioned, use "Not discussed during encounter"
+  • Impact on daily activities, sleep, and work - CRITICAL: If symptoms affect sleep, work, or physical function, include that specifically (e.g., "woke up due to pain", "unable to walk normally", "missed work due to symptoms")
+- Past Medical History: If patient says "I'm healthy" or denies illness, write "No known chronic illnesses per patient report". If surgeries mentioned, include them clearly labeled (e.g., "Appendectomy 10 years ago"). If not discussed, use "Not discussed during encounter"
+- Family History: If patient mentions family illness, document it. If not mentioned, use "Not discussed during encounter"
+- Social History: If patient mentions exercise, diet, smoking, alcohol, or occupation, include that information. If not addressed, use "Not addressed during encounter"
 - Medications: If not mentioned, use "No current medications"
 - Allergies: If not mentioned, use "No known allergies"
 
@@ -101,17 +101,22 @@ ASSESSMENT:
   • Different causes for the mentioned symptoms
   • Similar medical conditions
   • Related nutritional or psychological issues
-- Risk Factors: If not mentioned, use "Not discussed during encounter"
+- Risk Factors: CRITICAL - If patient has family history, smoking, poor diet, hypertension, obesity, diabetes, or other comorbidities mentioned, always list them here. If patient mentions lifestyle factors, include them. Example: "Hypertension; family history of coronary artery disease; sedentary lifestyle". If truly not discussed, use "Not discussed during encounter"
 
 PLAN:
 - Medications Prescribed: If no medications mentioned, use "No medications prescribed currently"
-- Procedures/Interventions: List required tests with correct medical names (example: "CBC, Ferritin, Iron profile, Vitamin B12, Folate")
+- Procedures/Interventions: CRITICAL FOR PATIENT SAFETY - List required tests with correct medical names. For emergency/high-risk presentations:
+  • Chest pain: Include "Serial ECG every 3-6 hours, serial troponins every 3 hours, continuous cardiac monitoring"
+  • Abdominal pain: Include appropriate imaging like "Ultrasound abdomen" or "CT abdomen/pelvis if indicated"
+  • Suspected infections: Include "Blood cultures, urinalysis with microscopy"
+  • Dynamic conditions (DKA, electrolyte imbalance): Include "Serial glucose monitoring every hour" or "Repeat electrolytes in 2-4 hours"
+  • For stable conditions: Standard testing like "CBC, comprehensive metabolic panel, inflammatory markers"
 - Patient Education/Counseling: Should include comprehensive education such as:
   • Appropriate dietary advice for the condition
   • Warning signs that require immediate medical attention
   • Lifestyle instructions
   • When to seek immediate medical care
-- Follow-up Instructions: Define follow-up plan clearly (example: "Contact patient immediately when test results are available")
+- Follow-up Instructions: CRITICAL - For emergency or high-risk presentations (chest pain, acute abdominal pain, neurological deficits), include urgent monitoring such as "Keep patient under observation in emergency department", "Serial monitoring in hospital setting", or "Immediate admission for further evaluation". For stable conditions: "Contact patient when test results are available" or routine follow-up.
 
 Use precise and professional medical terminology. Make documentation comprehensive and detailed as expected in professional medical environments.
 
@@ -155,16 +160,16 @@ ARABIC_SOAP_PROMPT = """
 SUBJECTIVE (القسم الذاتي):
 - Allergies: إذا لم تُذكر استخدم "لم يذكر وجود حساسية"
 - Chief Complaint: اكتب الشكوى الرئيسية بوضوح مع المدة (مثال: "تعب شديد منذ يومين")
-- Family History: إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+- Family History: إذا ذكر المريض تاريخ عائلي، وثقه. إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
 - History of Present Illness: يجب أن يكون مفصلاً ويشمل:
   • مدة الأعراض وتطورها بدقة
   • شدة الأعراض ووصفها
   • الأعراض المصاحبة والمنفية بوضوح (مثال: "لا صداع، لا حرارة، لا فقدان شهية")
   • العوامل المحفزة أو المخففة إن وُجدت
-  • التأثير على الأنشطة اليومية والنوم والعمل
+  • التأثير على الأنشطة اليومية والنوم والعمل - مهم جداً: إذا أثرت الأعراض على النوم أو العمل أو الحركة، اذكر ذلك بوضوح (مثال: "استيقظ من النوم بسبب الألم"، "لا يستطيع المشي بشكل طبيعي"، "تغيب عن العمل بسبب الأعراض")
 - Medications: إذا لم تُذكر استخدم "لا يتناول أدوية حالياً"
-- Past Medical History: إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
-- Social History: إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+- Past Medical History: إذا قال المريض "أنا بصحة جيدة" أو نفى وجود أمراض، اكتب "لا يوجد تاريخ مرضي مزمن حسب إفادة المريض". إذا ذُكرت عمليات جراحية، ضعها مع التوضيح (مثال: "استئصال الزائدة منذ 10 سنوات"). إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+- Social History: إذا ذكر المريض الرياضة أو النظام الغذائي أو التدخين أو الكحول أو المهنة، ضع هذه المعلومات. إذا لم تُناقش استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
 
 OBJECTIVE (القسم الموضوعي):
 - Physical Examination Findings: استخدم "بانتظار الفحص السريري" إذا لم يُذكر فحص محدد، أو وثق أي فحص تم ذكره
@@ -176,11 +181,16 @@ ASSESSMENT (قسم التقييم):
   • أسباب مختلفة للأعراض المذكورة
   • حالات طبية مشابهة
   • مشاكل غذائية أو نفسية ذات علاقة
-- Risk Factors: إذا لم تُذكر استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
+- Risk Factors: مهم جداً - إذا ذكر المريض تاريخ عائلي أو تدخين أو نظام غذائي سيء أو ارتفاع ضغط الدم أو سمنة أو سكري أو أمراض مصاحبة، اذكرها هنا دائماً. إذا ذكر عوامل نمط الحياة، ضعها. مثال: "ارتفاع ضغط الدم؛ تاريخ عائلي لأمراض القلب؛ نمط حياة خامل". إذا لم تُناقش حقاً استخدم "لم يتم التطرق لهذه النقاط أثناء اللقاء"
 
 PLAN (قسم الخطة):
-- Follow Up Instructions: حدد خطة المتابعة بوضوح (مثال: "الاتصال بالمريض فور توفر نتائج الفحوصات")
-- Investigations: اذكر الفحوصات المطلوبة بأسمائها الطبية الصحيحة (مثال: "CBC، Ferritin، Iron profile، Vitamin B12، Folate")
+- Follow Up Instructions: مهم جداً لسلامة المريض - للحالات الطارئة أو عالية الخطورة (ألم صدر، ألم بطن حاد، أعراض عصبية)، اذكر المراقبة العاجلة مثل "إبقاء المريض تحت المراقبة في قسم الطوارئ"، "مراقبة متسلسلة في المستشفى"، أو "دخول فوري للتقييم الإضافي". للحالات المستقرة: "الاتصال بالمريض عند توفر النتائج" أو متابعة روتينية
+- Investigations: مهم جداً لسلامة المريض - اذكر الفحوصات المطلوبة بأسمائها الطبية الصحيحة. للحالات الطارئة/عالية الخطورة:
+  • ألم الصدر: "تخطيط قلب متسلسل كل 3-6 ساعات، إنزيمات قلبية متسلسلة كل 3 ساعات، مراقبة قلبية مستمرة"
+  • ألم البطن: تصوير مناسب مثل "سونار البطن" أو "CT البطن والحوض عند الحاجة"
+  • التهابات مشتبهة: "مزارع الدم، تحليل البول مع الفحص المجهري"
+  • حالات متغيرة (DKA، خلل أملاح): "مراقبة السكر كل ساعة" أو "إعادة فحص الأملاح في 2-4 ساعات"
+  • للحالات المستقرة: فحوصات معيارية مثل "CBC، لوحة أيضية شاملة، مؤشرات التهاب"
 - Medications Prescribed: إذا لم تُذكر أدوية استخدم "لم يتم وصف أدوية حالياً"
 - Patient Education Counseling: يجب أن يشمل تثقيف شامل مثل:
   • النصائح الغذائية المناسبة للحالة
