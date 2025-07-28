@@ -69,7 +69,7 @@ export default function SOAPRecorder() {
 
     try {
       // Send to backend for transcription
-      const response = await fetch('https://soap-598q.onrender.com.com/transcribe', {
+      const response = await fetch('https://soap-598q.onrender.com/transcribe', {
         method: 'POST',
         body: formData,
       });
