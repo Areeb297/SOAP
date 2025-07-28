@@ -69,7 +69,7 @@ export default function SOAPRecorder() {
 
     try {
       // Send to backend for transcription
-      const response = await fetch('https://soap-note-generator.onrender.com/transcribe', {
+      const response = await fetch('https://soap-598q.onrender.com.com/transcribe', {
         method: 'POST',
         body: formData,
       });
@@ -90,7 +90,7 @@ export default function SOAPRecorder() {
   const generateSOAPNote = async () => {
     setIsProcessing(true);
     try {
-      const response = await fetch('https://soap-note-generator.onrender.com/generate-soap', {
+      const response = await fetch('https://soap-598q.onrender.com/generate-soap', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,15 +2,12 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import whisper
 import openai
 import os
 import tempfile
 import json
 from datetime import datetime
 from dotenv import load_dotenv
-import requests
-from pydub import AudioSegment
 from openai import OpenAI
 
 # Set temporary directory to a folder on D: drive
@@ -28,9 +25,7 @@ print("Loading models...")
 # Note: We now use OpenAI gpt-4o-transcribe for both English and Arabic
 # as it provides better medical transcription quality
 # Keeping whisper as fallback for offline/development scenarios
-model_size = os.getenv("WHISPER_MODEL", "base")
-print(f"Loading Whisper model ({model_size}) as fallback for English...")
-whisper_model = whisper.load_model(model_size)
+# Remove Whisper model initialization and fallback logic
 
 # Munsit API configuration
 MUNSIT_API_KEY = "sk-ctxt-01f0b2224dbc4645b4ff24fd1d5f16fb"
@@ -285,21 +280,21 @@ def transcribe_audio():
         if 'audio' not in request.files:
             print("No audio file in request")
             return jsonify({'error': 'No audio file provided'}), 400
-        
+
         audio_file = request.files['audio']
         language = request.form.get('language', 'en')
         print(f"Received audio file: {audio_file.filename}, language: {language}")
-        
+
         # Save audio file temporarily
         file_extension = '.wav'
         if audio_file.filename and '.' in audio_file.filename:
             file_extension = '.' + audio_file.filename.rsplit('.', 1)[1].lower()
-        
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp_file:
             audio_file.save(tmp_file.name)
             tmp_filename = tmp_file.name
             print(f"Saved audio file temporarily as: {tmp_filename}")
-        
+
         try:
             if language == 'ar':
                 # Use OpenAI gpt-4o-transcribe for Arabic
@@ -310,25 +305,22 @@ def transcribe_audio():
                 # Use OpenAI gpt-4o-transcribe for English (best for medical transcription)
                 transcript = transcribe_english_audio(tmp_filename)
                 if transcript is None:
-                    # Fallback to Whisper if OpenAI fails
-                    print("OpenAI transcription failed, falling back to Whisper for English")
-                    result = whisper_model.transcribe(tmp_filename, language="en")
-                    transcript = result["text"]
-            
+                    return jsonify({'error': 'English transcription failed'}), 500
+
             print(f"Transcription successful: {len(transcript)} characters")
             print(f"Transcript content: {transcript}")
-            
+
             # Save transcript
             with open('SOAP.txt', 'w', encoding='utf-8') as f:
                 f.write(f"Transcript generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                 f.write("-" * 50 + "\n")
                 f.write(transcript)
-            
+
             return jsonify({
                 'transcript': transcript,
                 'message': 'Transcript saved to SOAP.txt'
             })
-            
+
         except Exception as e:
             print(f"Transcription error: {str(e)}")
             return jsonify({'error': f'Transcription failed: {str(e)}'}), 500
@@ -337,7 +329,7 @@ def transcribe_audio():
             if os.path.exists(tmp_filename):
                 os.unlink(tmp_filename)
                 print(f"Cleaned up temporary audio file: {tmp_filename}")
-        
+
     except Exception as e:
         print(f"Error in transcription: {str(e)}")
         return jsonify({'error': str(e)}), 500
