@@ -16,5 +16,4 @@ python-dotenv==1.0.1      # Latest stable
 transformers>=4.41.0      # Recent version, update if you need latest
 torch>=2.2.0              # Works with 3.11 and transformers
 pydub
-python==3.11
 # Optional: (You can specify 'torch' as 'torch>=2.2.0' if you know you need CUDA/CPU specifics; leave generic to allow pip to fetch the right wheel)
