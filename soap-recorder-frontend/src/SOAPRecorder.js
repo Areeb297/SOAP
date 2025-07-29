@@ -9,6 +9,13 @@ export const loadAmiriFont = async () => {
   return false;
 };
 
+// Dynamic backend URL selection
+const BACKEND_URL =
+  process.env.REACT_APP_BACKEND_URL ||
+  (window.location.hostname === 'localhost'
+    ? 'http://localhost:5001'
+    : 'https://soap-598q.onrender.com');
+
 export default function SOAPRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -70,7 +77,7 @@ export default function SOAPRecorder() {
 
     try {
       // Send to backend for transcription
-      const response = await fetch('http://localhost:5001/transcribe', {
+      const response = await fetch(`${BACKEND_URL}/transcribe`, {
         method: 'POST',
         body: formData,
       });
@@ -91,7 +98,7 @@ export default function SOAPRecorder() {
   const generateSOAPNote = async () => {
     setIsProcessing(true);
     try {
-      const response = await fetch('http://localhost:5001/generate-soap', {
+      const response = await fetch(`${BACKEND_URL}/generate-soap`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
