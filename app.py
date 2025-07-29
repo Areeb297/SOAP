@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
+import subprocess
 
 # Set temporary directory to system default
 temp_dir = tempfile.gettempdir()
@@ -548,6 +549,18 @@ def generate_soap_note_metadata(transcript, language):
         "patient_age": patient_age
     }
 
+def convert_to_wav(input_path):
+    import tempfile
+    output_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+    output_path = output_file.name
+    output_file.close()
+    try:
+        subprocess.run(['ffmpeg', '-y', '-i', input_path, output_path], check=True)
+        return output_path
+    except Exception as e:
+        print(f"ffmpeg conversion failed: {e}")
+        return input_path
+
 @app.route('/transcribe', methods=['POST'])
 def transcribe_audio():
     """Transcribe audio file using appropriate model based on language"""
@@ -571,15 +584,19 @@ def transcribe_audio():
             tmp_filename = tmp_file.name
             print(f"Saved audio file temporarily as: {tmp_filename}")
 
+        # Convert to WAV
+        wav_filename = convert_to_wav(tmp_filename)
+        print(f"Converted audio file to WAV: {wav_filename}")
+
         try:
             if language == 'ar':
                 # Use OpenAI gpt-4o-transcribe for Arabic
-                transcript = transcribe_arabic_audio(tmp_filename)
+                transcript = transcribe_arabic_audio(wav_filename)
                 if transcript is None:
                     return jsonify({'error': 'Arabic transcription failed'}), 500
             else:
                 # Use OpenAI gpt-4o-transcribe for English (best for medical transcription)
-                transcript = transcribe_english_audio(tmp_filename)
+                transcript = transcribe_english_audio(wav_filename)
                 if transcript is None:
                     return jsonify({'error': 'English transcription failed'}), 500
 
@@ -601,10 +618,13 @@ def transcribe_audio():
             print(f"Transcription error: {str(e)}")
             return jsonify({'error': f'Transcription failed: {str(e)}'}), 500
         finally:
-            # Clean up temporary file
+            # Clean up temporary files
             if os.path.exists(tmp_filename):
                 os.unlink(tmp_filename)
                 print(f"Cleaned up temporary audio file: {tmp_filename}")
+            if os.path.exists(wav_filename):
+                os.unlink(wav_filename)
+                print(f"Cleaned up temporary WAV file: {wav_filename}")
 
     except Exception as e:
         print(f"Error in transcription: {str(e)}")
