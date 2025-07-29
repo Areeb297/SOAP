@@ -40,6 +40,8 @@ Output ONLY a valid JSON object without any explanation or external text. If you
     "patient_id": "auto-generated",
     "visit_date": "current-date-time",
     "provider_name": "Dr. [Name from conversation or 'Unknown']",
+    "patient_name": "[Patient's full name from conversation]",
+    "patient_age": "[Patient's age from conversation]",
     "subjective": {
       "chief_complaint": "...",
       "history_of_present_illness": "...",
@@ -87,7 +89,127 @@ Output ONLY a valid JSON object without any explanation or external text. If you
     }
   }
 }
-"""
+
+CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
+
+1. PATIENT IDENTIFICATION: Extract and include:
+   - Patient's full name (first and last name) - MUST be included in patient_name field
+   - Age (exact number mentioned) - MUST be included in patient_age field
+   - Location/address/city mentioned
+   - Any other demographic information
+
+2. PROVIDER IDENTIFICATION: Extract and include:
+   - Doctor's name (Dr. [Name] or د. [Name])
+   - Department/specialty mentioned
+   - Any other provider information
+
+3. CHIEF COMPLAINT: Include:
+   - Primary symptom(s) with exact description
+   - Duration mentioned (hours, days, weeks)
+   - Location of symptoms (if specified)
+
+4. HISTORY OF PRESENT ILLNESS: MUST include ALL mentioned:
+   - Exact timing (when symptoms started)
+   - Detailed description of symptoms
+   - Associated symptoms (fever, sweating, nausea, vomiting, etc.)
+   - Aggravating factors (movement, pressure, etc.)
+   - Relieving factors (if mentioned)
+   - Progression of symptoms
+   - Impact on daily activities
+   - Any other symptoms mentioned in conversation
+
+5. PAST MEDICAL HISTORY: Include ALL mentioned:
+   - Chronic diseases
+   - Previous surgeries (with dates if mentioned)
+   - Current medications (even if "none" or "no medications" - MUST document this)
+   - Previous hospitalizations
+   - Any other medical history
+
+6. FAMILY HISTORY: Include ALL mentioned:
+   - Family members with medical conditions
+   - Specific conditions mentioned
+   - Ages of family members (if mentioned)
+   - Any genetic conditions
+
+7. SOCIAL HISTORY: Include ALL mentioned:
+   - Occupation/job
+   - Smoking/alcohol use
+   - Living situation
+   - Lifestyle factors
+   - Any other social information
+
+8. MEDICATIONS: Include ALL mentioned:
+   - Current medications (name, dosage, frequency, route)
+   - If "no medications" mentioned, document that explicitly
+   - Duration of medication use
+   - Any medication changes
+
+9. ALLERGIES: Include ALL mentioned:
+   - Drug allergies
+   - Food allergies
+   - Environmental allergies
+   - If "no allergies" mentioned, document that explicitly
+
+10. VITAL SIGNS: Include ALL mentioned:
+    - Temperature (if mentioned)
+    - Blood pressure (if mentioned)
+    - Heart rate (if mentioned)
+    - Respiratory rate (if mentioned)
+    - Oxygen saturation (if mentioned)
+    - Any other vital signs mentioned
+
+11. PHYSICAL EXAMINATION: Include ALL mentioned:
+    - Any examination performed
+    - Findings mentioned
+    - Areas examined
+    - Any abnormal findings
+
+12. DIAGNOSIS: Use the most likely diagnosis based on:
+    - Symptoms described
+    - Clinical findings
+    - Medical reasoning
+
+13. RISK FACTORS: Include ALL mentioned:
+    - Medical conditions
+    - Family history factors
+    - Lifestyle factors
+    - Age-related factors
+    - Any other risk factors
+
+14. MEDICATIONS PRESCRIBED: Include ALL mentioned:
+    - New medications ordered
+    - Dosage, frequency, route
+    - Duration of treatment
+    - Any medication changes
+
+15. PROCEDURES/TESTS: Include ALL mentioned:
+    - Laboratory tests
+    - Imaging studies
+    - Procedures ordered
+    - Any investigations mentioned
+
+16. PATIENT EDUCATION: Include ALL mentioned:
+    - Instructions given
+    - Warnings provided
+    - Lifestyle advice
+    - Any education provided
+    - Diagnosis-specific education (e.g., for heart attack: signs to watch for, lifestyle changes)
+    - Medication instructions and side effects
+    - When to seek immediate medical attention
+    - Prevention strategies
+
+17. FOLLOW-UP: Include ALL mentioned:
+    - Follow-up timing
+    - Return instructions
+    - Monitoring requirements
+    - Any follow-up plans
+    - Diagnosis-specific follow-up (e.g., "Cardiology follow-up" for cardiac issues, "Neurology follow-up" for neurological issues)
+    - Emergency return criteria
+    - Specialist referrals if needed
+
+IMPORTANT: Do not omit any information mentioned in the conversation. If something is mentioned, it must be included in the appropriate section. Use exact quotes and details from the conversation rather than generic phrases.
+
+Do not write anything outside the JSON object."""
 
 # Updated Arabic SOAP prompt
 ARABIC_SOAP_PROMPT = """
@@ -98,8 +220,10 @@ ARABIC_SOAP_PROMPT = """
 {
   "soap_note": {
     "patient_id": "يتم إنشاؤه تلقائياً",
-    "visit_date": "تاريخ ووقت الزيارة",
+    "visit_date": "تاريخ الزيارة",
     "provider_name": "د. [الاسم من المحادثة أو 'غير محدد']",
+    "patient_name": "[الاسم الكامل للمريض من المحادثة]",
+    "patient_age": "[عمر المريض من المحادثة]",
     "subjective": {
       "chief_complaint": "...",
       "history_of_present_illness": "...",
@@ -147,7 +271,127 @@ ARABIC_SOAP_PROMPT = """
     }
   }
 }
-"""
+
+تعليمات مهمة جداً - استخرج كل شيء مذكور:
+
+1. تحديد هوية المريض: استخرج وضمّن:
+   - الاسم الكامل للمريض (الاسم الأول والأخير) - يجب تضمينه في حقل patient_name
+   - العمر (الرقم المحدد المذكور) - يجب تضمينه في حقل patient_age
+   - الموقع/العنوان/المدينة المذكورة
+   - أي معلومات ديموغرافية أخرى
+
+2. تحديد هوية الطبيب: استخرج وضمّن:
+   - اسم الطبيب (د. [الاسم])
+   - القسم/التخصص المذكور
+   - أي معلومات أخرى عن الطبيب
+
+3. الشكوى الرئيسية: ضمّن:
+   - الأعراض الأساسية مع الوصف الدقيق
+   - المدة المذكورة (ساعات، أيام، أسابيع)
+   - موقع الأعراض (إذا تم تحديده)
+
+4. تاريخ المرض الحالي: يجب أن يشمل كل شيء مذكور:
+   - التوقيت الدقيق (متى بدأت الأعراض)
+   - وصف مفصل للأعراض
+   - الأعراض المصاحبة (الحرارة، التعرق، الغثيان، القيء، إلخ)
+   - العوامل المحفزة (الحركة، الضغط، إلخ)
+   - العوامل المخففة (إذا ذُكرت)
+   - تطور الأعراض
+   - التأثير على الأنشطة اليومية
+   - أي أعراض أخرى مذكورة في المحادثة
+
+5. التاريخ الطبي السابق: ضمّن كل شيء مذكور:
+   - الأمراض المزمنة
+   - العمليات السابقة (مع التواريخ إذا ذُكرت)
+   - الأدوية الحالية (حتى لو "لا أدوية" أو "لا يتناول أدوية")
+   - الاستشفاءات السابقة
+   - أي تاريخ طبي آخر
+
+6. التاريخ العائلي: ضمّن كل شيء مذكور:
+   - أفراد العائلة المصابين بأمراض
+   - الأمراض المحددة المذكورة
+   - أعمار أفراد العائلة (إذا ذُكرت)
+   - أي أمراض وراثية
+
+7. التاريخ الاجتماعي: ضمّن كل شيء مذكور:
+   - المهنة/الوظيفة
+   - التدخين/استهلاك الكحول
+   - الوضع المعيشي
+   - عوامل نمط الحياة
+   - أي معلومات اجتماعية أخرى
+
+8. الأدوية: ضمّن كل شيء مذكور:
+   - الأدوية الحالية (الاسم، الجرعة، التكرار، الطريقة)
+   - إذا ذُكر "لا أدوية"، وثق ذلك صراحةً
+   - مدة استخدام الدواء
+   - أي تغييرات في الأدوية
+
+9. الحساسية: ضمّن كل شيء مذكور:
+   - حساسية الأدوية
+   - حساسية الطعام
+   - حساسية البيئة
+   - إذا ذُكر "لا حساسية"، وثق ذلك صراحةً
+
+10. العلامات الحيوية: ضمّن كل شيء مذكور:
+    - درجة الحرارة (إذا ذُكرت)
+    - ضغط الدم (إذا ذُكر)
+    - معدل النبض (إذا ذُكر)
+    - معدل التنفس (إذا ذُكر)
+    - نسبة الأكسجين (إذا ذُكرت)
+    - أي علامات حيوية أخرى مذكورة
+
+11. الفحص البدني: ضمّن كل شيء مذكور:
+    - أي فحص تم إجراؤه
+    - النتائج المذكورة
+    - المناطق المفحوصة
+    - أي نتائج غير طبيعية
+
+12. التشخيص: استخدم التشخيص الأكثر احتمالاً بناءً على:
+    - الأعراض الموصوفة
+    - النتائج السريرية
+    - المنطق الطبي
+
+13. عوامل الخطر: ضمّن كل شيء مذكور:
+    - الحالات الطبية
+    - عوامل التاريخ العائلي
+    - عوامل نمط الحياة
+    - العوامل المرتبطة بالعمر
+    - أي عوامل خطر أخرى
+
+14. الأدوية الموصوفة: ضمّن كل شيء مذكور:
+    - الأدوية الجديدة المطلوبة
+    - الجرعة، التكرار، الطريقة
+    - مدة العلاج
+    - أي تغييرات في الأدوية
+
+15. الإجراءات/الفحوصات: ضمّن كل شيء مذكور:
+    - فحوصات المختبر
+    - دراسات التصوير
+    - الإجراءات المطلوبة
+    - أي تحقيقات مذكورة
+
+16. تعليمات المريض: ضمّن كل شيء مذكور:
+    - التعليمات المقدمة
+    - التحذيرات المقدمة
+    - النصائح المتعلقة بنمط الحياة
+    - أي تعليمات مقدمة
+    - التعليمات الخاصة بالتشخيص (مثل: علامات النوبة القلبية، تغييرات نمط الحياة)
+    - تعليمات الأدوية والآثار الجانبية
+    - متى يجب طلب الرعاية الطبية العاجلة
+    - استراتيجيات الوقاية
+
+17. المتابعة: ضمّن كل شيء مذكور:
+    - توقيت المتابعة
+    - تعليمات العودة
+    - متطلبات المراقبة
+    - أي خطط متابعة
+    - المتابعة الخاصة بالتشخيص (مثل: "متابعة مع طبيب القلب" للمشاكل القلبية، "متابعة مع طبيب الأعصاب" للمشاكل العصبية)
+    - معايير العودة الطارئة
+    - الإحالات للمتخصصين إذا لزم الأمر
+
+مهم جداً: لا تحذف أي معلومات مذكورة في المحادثة. إذا ذُكر شيء ما، يجب تضمينه في القسم المناسب. استخدم الاقتباسات الدقيقة والتفاصيل من المحادثة بدلاً من العبارات العامة.
+
+لا تكتب أي شيء خارج كائن JSON."""
 
 def extract_json_from_response(response_text):
     """Extract JSON from response text that may contain extra text"""
@@ -215,29 +459,93 @@ def transcribe_english_audio(audio_path):
     return transcribe_with_openai(audio_path, "en")
 
 def generate_soap_note_metadata(transcript, language):
-    """Generate metadata for SOAP note: patient_id, visit_date, provider_name"""
+    """Generate metadata for SOAP note: patient_id, visit_date, provider_name, patient_name, patient_age"""
     from datetime import datetime
     import uuid
-    # Generate current date in ISO format
-    current_date = datetime.now().isoformat() + "Z"
+    import re
+    
+    # Generate current date in ISO format (date only, no time)
+    current_date = datetime.now().strftime("%Y-%m-%d")
     # Generate a simple patient ID
     patient_id = str(uuid.uuid4())[:8]
-    # Extract provider name from transcript (basic extraction)
+    
+    # Extract provider name from transcript (improved extraction)
     provider_name = "Dr. Unknown" if language == "en" else "د. غير محدد"
     if language == "en":
-        import re
-        dr_match = re.search(r'Dr\.\s+([A-Z][a-z]+)', transcript)
+        # Improved English provider name extraction
+        dr_match = re.search(r'Dr\.\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)', transcript)
         if dr_match:
             provider_name = f"Dr. {dr_match.group(1)}"
+        else:
+            provider_name = "Dr. Not mentioned"
     elif language == "ar":
-        import re
-        dr_match = re.search(r'د\.\s*([^\s،]+)', transcript)
-        if dr_match:
-            provider_name = f"د. {dr_match.group(1)}"
+        # Improved Arabic provider name extraction - look for "دكتور" or "د." followed by name
+        # More specific pattern to avoid false matches
+        dr_patterns = [
+            r'دكتور\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)',
+            r'د\.\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)',
+            r'الطبيب\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)'
+        ]
+        provider_found = False
+        for pattern in dr_patterns:
+            dr_match = re.search(pattern, transcript)
+            if dr_match:
+                extracted_name = dr_match.group(1)
+                # Validate that it's actually a name (not random text)
+                if len(extracted_name) > 2 and not any(word in extracted_name.lower() for word in ['في', 'من', 'إلى', 'على', 'مع', 'بدا', 'كان', 'هذا', 'ذلك', 'التي', 'الذي']):
+                    provider_name = f"د. {extracted_name}"
+                    provider_found = True
+                    break
+        if not provider_found:
+            provider_name = "د. غير محدد"
+    
+    # Extract patient name and age
+    patient_name = "Unknown" if language == "en" else "غير محدد"
+    patient_age = "Unknown" if language == "en" else "غير محدد"
+    
+    if language == "en":
+        # Extract English patient name (look for "I'm [Name]" or "My name is [Name]")
+        name_patterns = [
+            r"I'm\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
+            r"My name is\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
+            r"I am\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
+            r"name is\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)"
+        ]
+        for pattern in name_patterns:
+            match = re.search(pattern, transcript, re.IGNORECASE)
+            if match:
+                patient_name = match.group(1)
+                break
+        
+        # Extract English patient age (look for "I'm [age] years old" or similar)
+        age_match = re.search(r"(\d+)\s+years?\s+old", transcript, re.IGNORECASE)
+        if age_match:
+            patient_age = age_match.group(1)
+    
+    elif language == "ar":
+        # Extract Arabic patient name (look for "اسمي [Name]" or "أنا [Name]")
+        name_patterns = [
+            r"اسمي\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
+            r"أنا\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
+            r"اسمي\s+([^\s،؟!\.]+)"
+        ]
+        for pattern in name_patterns:
+            match = re.search(pattern, transcript)
+            if match:
+                patient_name = match.group(1)
+                break
+        
+        # Extract Arabic patient age (look for "عمري [age] سنة" or similar)
+        age_match = re.search(r"عمري\s+(\d+)\s+سنة", transcript)
+        if age_match:
+            patient_age = age_match.group(1)
+    
     return {
         "patient_id": patient_id,
         "visit_date": current_date,
-        "provider_name": provider_name
+        "provider_name": provider_name,
+        "patient_name": patient_name,
+        "patient_age": patient_age
     }
 
 @app.route('/transcribe', methods=['POST'])
@@ -376,6 +684,58 @@ def generate_soap():
                     }
                 }
             print("Successfully parsed JSON from OpenAI response")
+
+            # === POST-PROCESSING: Remove unmentioned fields/sections ===
+            def is_unmentioned(val):
+                if not isinstance(val, str):
+                    return False
+                val_lower = val.strip().lower()
+                # English phrases
+                unmentioned_phrases = [
+                    'not mentioned', 'not discussed', 'not addressed',
+                    'no known', 'no current', 'pending clinical examination',
+                    'vital signs not available', 'no medications prescribed currently',
+                    'no known allergies', 'no current medications', 'not available currently',
+                    'not specified', 'not available', 'none', 'n/a', 'na'
+                ]
+                # Arabic phrases
+                unmentioned_phrases += [
+                    'لم يذكر', 'لم يتم التطرق', 'لا يتناول أدوية حالياً',
+                    'لا يوجد تاريخ مرضي مزمن', 'بانتظار الفحص السريري',
+                    'العلامات الحيوية غير متوفرة حالياً', 'لم يتم وصف أدوية حالياً',
+                    'لم يتم التطرق لهذه النقاط أثناء اللقاء', 'غير متوفرة حالياً',
+                    'غير محدد', 'غير متوفر', 'لا يوجد', 'غير متاح', 'غير معروف',
+                    'غير مذكور', 'غير محدد في المحادثة', 'لم يتم ذكره',
+                    'غير متوفر حالياً', 'غير محدد في المحادثة', 'غير متوفر في المحادثة'
+                ]
+                return any(phrase in val_lower for phrase in unmentioned_phrases)
+
+            def clean_section(section):
+                if not isinstance(section, dict):
+                    return section
+                cleaned = {k: v for k, v in section.items() if v and not is_unmentioned(v)}
+                return cleaned if cleaned else None
+
+            # Clean each main section
+            soap_note = soap_note.get('soap_note', soap_note)
+            for main_section in ["subjective", "objective", "assessment", "plan"]:
+                if main_section in soap_note:
+                    cleaned = clean_section(soap_note[main_section])
+                    if cleaned:
+                        soap_note[main_section] = cleaned
+                    else:
+                        del soap_note[main_section]
+            # === END POST-PROCESSING ===
+
+            # Wrap the response in the expected structure if needed
+            if 'soap_note' not in soap_note:
+                metadata = generate_soap_note_metadata(transcript, language)
+                soap_note = {
+                    'soap_note': {
+                        **metadata,
+                        **soap_note
+                    }
+                }
         except Exception as json_error:
             print(f"JSON processing error: {json_error}")
             print(f"Raw OpenAI response: {soap_content}")

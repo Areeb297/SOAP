@@ -22,6 +22,7 @@ export default function SOAPRecorder() {
   const [isEditingSOAP, setIsEditingSOAP] = useState(false);
   const [editedSOAPNote, setEditedSOAPNote] = useState(null);
   const [userAgreement, setUserAgreement] = useState(false);
+  const [writeMode, setWriteMode] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -69,7 +70,7 @@ export default function SOAPRecorder() {
 
     try {
       // Send to backend for transcription
-      const response = await fetch('https://soap-598q.onrender.com/transcribe', {
+      const response = await fetch('http://localhost:5001/transcribe', {
         method: 'POST',
         body: formData,
       });
@@ -90,7 +91,7 @@ export default function SOAPRecorder() {
   const generateSOAPNote = async () => {
     setIsProcessing(true);
     try {
-      const response = await fetch('https://soap-598q.onrender.com/generate-soap', {
+      const response = await fetch('http://localhost:5001/generate-soap', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,11 +99,15 @@ export default function SOAPRecorder() {
         body: JSON.stringify({ transcript: editedTranscript, language }),
       });
 
-      if (!response.ok) throw new Error('SOAP generation failed');
+      if (!response.ok) throw new Error('SOAP note generation failed');
       
       const data = await response.json();
-      setSoapNote(data.soapNote);
-      setEditedSOAPNote(data.soapNote);
+      // Support new structure: { soapNote: { soap_note: { ... } } } or { soapNote: { ... } }
+      let note = data.soapNote;
+      if (note && note.soap_note) note = note.soap_note;
+      // Fallback to old structure if needed
+      setSoapNote(note);
+      setEditedSOAPNote(note);
       setUserAgreement(false);
     } catch (error) {
       console.error('Error generating SOAP note:', error);
@@ -112,54 +117,238 @@ export default function SOAPRecorder() {
     }
   };
 
-  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit }) => {
-    if (!data || Object.keys(data).length === 0) return null;
-    
-    const renderValue = (key, value) => {
-      if (isEditing) {
-        return (
-          <textarea
-            value={value || ''}
-            onChange={(e) => onEdit(sectionKey, key, e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            rows="2"
-          />
-        );
+  // Helper: Remove unmentioned fields/sections (same logic as backend)
+  function cleanSOAPNote(note) {
+    if (!note || typeof note !== 'object') return note;
+    const isUnmentioned = (val) => {
+      if (!val) return true;
+      if (typeof val === 'string') {
+        const valLower = val.trim().toLowerCase();
+        const phrases = [
+          'not mentioned', 'not discussed', 'not addressed',
+          'no known', 'no current', 'pending clinical examination',
+          'vital signs not available', 'no medications prescribed currently',
+          'no known allergies', 'no current medications', 'not available currently',
+          'not specified', 'not available', 'none', 'n/a', 'na',
+          'لم يذكر', 'لم يتم التطرق', 'لا يتناول أدوية حالياً',
+          'لا يوجد تاريخ مرضي مزمن', 'بانتظار الفحص السريري',
+          'العلامات الحيوية غير متوفرة حالياً', 'لم يتم وصف أدوية حالياً',
+          'لم يتم التطرق لهذه النقاط أثناء اللقاء', 'غير متوفرة حالياً',
+          'غير محدد', 'غير متوفر', 'لا يوجد', 'غير متاح', 'غير معروف',
+          'غير مذكور', 'غير محدد في المحادثة', 'لم يتم ذكره',
+          'غير متوفر حالياً', 'غير محدد في المحادثة', 'غير متوفر في المحادثة'
+        ];
+        return phrases.some(p => valLower.includes(p));
       }
+      if (Array.isArray(val)) {
+        // Remove empty/unmentioned items
+        const filtered = val.filter(item => !isUnmentioned(item));
+        return filtered.length === 0;
+      }
+      if (typeof val === 'object') {
+        // Recursively clean
+        const sub = cleanSOAPNote(val);
+        return !sub || Object.keys(sub).length === 0;
+      }
+      return false;
+    };
+    const cleaned = {};
+    for (const [k, v] of Object.entries(note)) {
+      if (v == null) continue;
+      if (Array.isArray(v)) {
+        const filtered = v.filter(item => !isUnmentioned(item));
+        if (filtered.length > 0) cleaned[k] = filtered;
+      } else if (typeof v === 'object' && v !== null) {
+        const sub = cleanSOAPNote(v);
+        if (sub && Object.keys(sub).length > 0) cleaned[k] = sub;
+      } else if (!isUnmentioned(v)) {
+        cleaned[k] = v;
+      }
+    }
+    return cleaned;
+  }
+
+  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit }) => {
+    const renderValue = (key, value) => {
+      if (!value || value === '') return null;
       
+      // Handle arrays
+      if (Array.isArray(value)) {
+        if (value.length === 0) return null;
+        // If array of objects
+        if (typeof value[0] === 'object' && value[0] !== null) {
+          return (
+            <div className="mt-2 space-y-6">
+              {value.map((obj, idx) => {
+                // Separate the 'name' field
+                const entries = Object.entries(obj);
+                const nameEntry = entries.find(([k]) => k.toLowerCase() === 'name');
+                const otherEntries = entries.filter(([k]) => k.toLowerCase() !== 'name');
+                return (
+                  <div key={idx} className="space-y-2 bg-white rounded-lg p-3 shadow-sm border border-gray-200 flex flex-col items-center">
+                    {nameEntry && (
+                      <div className="text-base font-bold text-blue-900 mb-2 text-center">
+                        {nameEntry[1]}
+                      </div>
+                    )}
+                    <div className="w-full max-w-md mx-auto">
+                      {otherEntries.map(([subKey, subValue]) => (
+                        <div key={subKey} className="flex flex-row justify-between items-center w-full mb-1">
+                          <span className="text-xs font-bold text-gray-700 w-32 text-right pr-2">
+                            {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                          </span>
+                          <span className="text-gray-700 w-56 text-left pl-2">{String(subValue)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        } else {
+          // Array of strings/numbers
+          return <span className="text-gray-800 ml-2 text-center">{value.join(', ')}</span>;
+        }
+      }
+
+      // Handle single objects
       if (typeof value === 'object' && value !== null) {
-        // Handle nested objects
         return (
-          <div className="ml-4 mt-2 space-y-1">
+          <div className="mt-2 space-y-1">
             {Object.entries(value).map(([subKey, subValue]) => (
-              <div key={subKey} className="flex flex-col">
-                <span className="text-xs font-medium text-gray-500">
+              <div key={subKey} className="flex flex-col items-center">
+                <span className="text-xs font-bold text-gray-700">
                   {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                 </span>
-                <span className="text-gray-700 ml-2">{subValue}</span>
+                <span className="text-gray-700 ml-2">{String(subValue)}</span>
               </div>
             ))}
           </div>
         );
       }
-      // Handle string values
-      return <span className="text-gray-800 ml-2">{value}</span>;
+      // Handle string/number values
+      return <span className="text-gray-800 ml-2 text-center">{String(value)}</span>;
     };
-    
-    return (
-      <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
-        <div className="space-y-2">
-          {Object.entries(data).map(([key, value]) => (
-            value !== null && value !== undefined && (
-              <div key={key} className="flex flex-col">
-                <span className="text-sm font-medium text-gray-600">
-                  {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+
+    // Helper for editing arrays of objects
+    const renderEditableArrayOfObjects = (arr, fieldKey) => (
+      <div className="space-y-4 w-full">
+        {arr.map((obj, idx) => (
+          <div key={idx} className="flex flex-col items-center bg-white rounded-lg p-3 shadow-sm border border-gray-200">
+            {Object.entries(obj).map(([subKey, subValue]) => (
+              <div key={subKey} className="flex flex-col items-center w-full mb-2">
+                <span className="text-xs font-bold text-gray-700 mb-1">
+                  {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                 </span>
-                {renderValue(key, value)}
+                <input
+                  type="text"
+                  value={subValue}
+                  onChange={e => {
+                    const updatedArr = arr.map((item, i) =>
+                      i === idx ? { ...item, [subKey]: e.target.value } : item
+                    );
+                    onEdit(sectionKey, fieldKey, updatedArr);
+                  }}
+                  className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-xs text-center"
+                />
               </div>
-            )
-          ))}
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+
+    // Helper for editing nested objects
+    const renderEditableObject = (obj, fieldKey) => (
+      <div className="space-y-2 w-full">
+        {Object.entries(obj).map(([subKey, subValue]) => (
+          <div key={subKey} className="flex flex-col items-center w-full">
+            <span className="text-xs font-bold text-gray-700 mb-1">
+              {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+            </span>
+            <input
+              type="text"
+              value={subValue}
+              onChange={e => {
+                onEdit(sectionKey, fieldKey, { ...obj, [subKey]: e.target.value });
+              }}
+              className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-xs text-center"
+            />
+          </div>
+        ))}
+      </div>
+    );
+
+    if (!data || Object.keys(data).length === 0) return null;
+
+    // Fields that should use textarea for editing
+    const longTextFields = [
+      'chief_complaint', 'history_of_present_illness', 'past_medical_history', 'family_history', 'social_history',
+      'physical_exam', 'diagnosis', 'patient_education', 'follow_up_instructions', 'procedures_or_tests',
+      'plan', 'assessment', 'subjective', 'objective', 'risk_factors'
+    ];
+
+    return (
+      <div className="mb-10">
+        <div className="bg-gray-50 rounded-xl shadow-md px-8 py-8 flex flex-col items-center">
+          <h3 className="text-xl font-bold text-blue-900 mb-6 text-center tracking-wide uppercase letter-spacing-wider">{title}</h3>
+          <div className="space-y-6 w-full">
+            {Object.entries(data).map(([key, value]) => {
+              if (!value || value === '') return null;
+              const isLongText = longTextFields.includes(key);
+              // Render editable array of objects
+              if (isEditing && Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+                return (
+                  <div key={key} className="flex flex-col items-center w-full">
+                    <div className="text-base font-bold text-gray-800 mb-1 text-center">
+                      {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                    </div>
+                    {renderEditableArrayOfObjects(value, key)}
+                  </div>
+                );
+              }
+              // Render editable nested object
+              if (isEditing && typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                return (
+                  <div key={key} className="flex flex-col items-center w-full">
+                    <div className="text-base font-bold text-gray-800 mb-1 text-center">
+                      {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                    </div>
+                    {renderEditableObject(value, key)}
+                  </div>
+                );
+              }
+              return (
+                <div key={key} className="flex flex-col items-center w-full">
+                  <div className="text-base font-bold text-gray-800 mb-1 text-center">
+                    {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                  </div>
+                  <div className="text-gray-800 w-full flex justify-center">
+                    {isEditing ? (
+                      isLongText ? (
+                        <textarea
+                          value={editedSOAPNote[sectionKey]?.[key] || value}
+                          onChange={(e) => onEdit(sectionKey, key, e.target.value)}
+                          className="border border-gray-300 rounded px-3 py-2 text-sm w-full min-h-[80px] max-h-60 resize-vertical focus:ring-2 focus:ring-blue-400 focus:border-transparent text-center"
+                          rows={4}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={editedSOAPNote[sectionKey]?.[key] || value}
+                          onChange={(e) => onEdit(sectionKey, key, e.target.value)}
+                          className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-md text-center"
+                        />
+                      )
+                    ) : (
+                      renderValue(key, value)
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -422,51 +611,109 @@ export default function SOAPRecorder() {
     });
   }, []);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          SOAP Note Voice Recorder
-        </h1>
-        {/* Language Selector */}
-        <div className="flex justify-center mb-6">
-          <label className="mr-2 font-medium">Language:</label>
-          <select
-            value={language}
-            onChange={e => setLanguage(e.target.value)}
-            className="border border-gray-300 rounded px-2 py-1"
-          >
-            <option value="en">English</option>
-            <option value="ar">Arabic</option>
-          </select>
-        </div>
+  // In the SOAP Note Display section, before rendering, clean the note:
+  const displaySOAPNote = cleanSOAPNote(soapNote);
+  const displayEditedSOAPNote = cleanSOAPNote(editedSOAPNote);
 
-        {/* Recording Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-          <div className="flex flex-col items-center">
+  return (
+    <div className="min-h-screen bg-gray-100 py-8">
+      <div className="container max-w-4xl mx-auto px-4">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">SOAP Note Generator</h1>
+          <p className="text-gray-600 mt-2">Record audio and generate a structured SOAP note</p>
+          
+          {/* Language Selector */}
+          <div className="mt-4 inline-flex bg-white rounded-lg p-1 shadow-sm">
             <button
-              onClick={isRecording ? stopRecording : startRecording}
-              disabled={isProcessing}
-              className={`p-8 rounded-full transition-all transform hover:scale-110 ${
-                isRecording 
-                  ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                  : 'bg-blue-500 hover:bg-blue-600'
-              } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={() => setLanguage('en')}
+              className={`px-4 py-2 rounded-md transition ${
+                language === 'en' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
             >
-              {isRecording ? (
-                <MicOff className="w-12 h-12 text-white" />
-              ) : (
-                <Mic className="w-12 h-12 text-white" />
-              )}
+              English
             </button>
-            <p className="mt-4 text-gray-600">
-              {isRecording ? 'Recording... Click to stop' : 'Click to start recording'}
-            </p>
+            <button
+              onClick={() => setLanguage('ar')}
+              className={`px-4 py-2 rounded-md transition ${
+                language === 'ar' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              العربية
+            </button>
           </div>
         </div>
 
+        {/* Recording Section */}
+        {!writeMode && (
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+            <div className="flex flex-col items-center">
+              <button
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isProcessing}
+                className={`p-8 rounded-full transition-all transform hover:scale-110 ${
+                  isRecording 
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    : 'bg-blue-500 hover:bg-blue-600'
+                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {isRecording ? (
+                  <MicOff className="w-12 h-12 text-white" />
+                ) : (
+                  <Mic className="w-12 h-12 text-white" />
+                )}
+              </button>
+              <p className="mt-4 text-gray-600">
+                {isRecording ? 'Recording... Click to stop' : 'Click to start recording'}
+              </p>
+              <button
+                onClick={() => setWriteMode(true)}
+                className="mt-6 px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition"
+              >
+                Write Instead
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Write Mode Section */}
+        {writeMode && (
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+            <div className="flex flex-col items-center">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">Type or Paste Transcript</h2>
+              <textarea
+                value={editedTranscript}
+                onChange={e => {
+                  setTranscript(e.target.value);
+                  setEditedTranscript(e.target.value);
+                }}
+                className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
+                placeholder="Type or paste your transcript here..."
+              />
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setWriteMode(false)}
+                  className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition"
+                >
+                  Back to Recording
+                </button>
+                <button
+                  onClick={generateSOAPNote}
+                  disabled={isProcessing || !editedTranscript.trim()}
+                  className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Generate SOAP Note
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Transcript Section */}
-        {transcript && (
+        {transcript && !writeMode && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
             <div className="relative mb-4">
               <h2 className="text-xl font-semibold text-gray-800 text-center">Transcript</h2>
@@ -519,10 +766,75 @@ export default function SOAPRecorder() {
         )}
 
         {/* SOAP Note Display */}
-        {soapNote && (
+        {displaySOAPNote && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="relative mb-6">
               <h2 className="text-2xl font-bold text-gray-800 text-center">SOAP Note</h2>
+              {/* Show metadata if present - now editable */}
+              {displaySOAPNote.patient_id && (
+                <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600 text-center space-y-2">
+                    {isEditingSOAP ? (
+                      <div className="space-y-2">
+                        <div className="flex justify-center items-center space-x-4">
+                          <span>Patient ID: <input 
+                            type="text" 
+                            value={editedSOAPNote.patient_id || displaySOAPNote.patient_id} 
+                            onChange={(e) => handleSOAPEdit('metadata', 'patient_id', e.target.value)}
+                            className="border border-gray-300 rounded px-2 py-1 text-xs"
+                          /></span>
+                          <span>Date: <input 
+                            type="text" 
+                            value={editedSOAPNote.visit_date || displaySOAPNote.visit_date} 
+                            onChange={(e) => handleSOAPEdit('metadata', 'visit_date', e.target.value)}
+                            className="border border-gray-300 rounded px-2 py-1 text-xs"
+                          /></span>
+                          <span>Provider: <input 
+                            type="text" 
+                            value={editedSOAPNote.provider_name || displaySOAPNote.provider_name || 'Not mentioned'} 
+                            onChange={(e) => handleSOAPEdit('metadata', 'provider_name', e.target.value)}
+                            className="border border-gray-300 rounded px-2 py-1 text-xs"
+                          /></span>
+                        </div>
+                        {displaySOAPNote.patient_name && displaySOAPNote.patient_name !== "Unknown" && displaySOAPNote.patient_name !== "غير محدد" && (
+                          <div className="flex justify-center items-center space-x-4">
+                            <span>Patient: <input 
+                              type="text" 
+                              value={editedSOAPNote.patient_name || displaySOAPNote.patient_name} 
+                              onChange={(e) => handleSOAPEdit('metadata', 'patient_name', e.target.value)}
+                              className="border border-gray-300 rounded px-2 py-1 text-xs"
+                            /></span>
+                            {displaySOAPNote.patient_age && displaySOAPNote.patient_age !== "Unknown" && displaySOAPNote.patient_age !== "غير محدد" && (
+                              <span>Age: <input 
+                                type="text" 
+                                value={editedSOAPNote.patient_age || displaySOAPNote.patient_age} 
+                                onChange={(e) => handleSOAPEdit('metadata', 'patient_age', e.target.value)}
+                                className="border border-gray-300 rounded px-2 py-1 text-xs"
+                              /></span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex justify-center items-center space-x-4">
+                          <span>Patient ID: {displaySOAPNote.patient_id}</span>
+                          <span>Date: {displaySOAPNote.visit_date}</span>
+                          <span>Provider: {displaySOAPNote.provider_name || 'Not mentioned'}</span>
+                        </div>
+                        {displaySOAPNote.patient_name && displaySOAPNote.patient_name !== "Unknown" && displaySOAPNote.patient_name !== "غير محدد" && (
+                          <div className="flex justify-center items-center space-x-2">
+                            <span>Patient: {displaySOAPNote.patient_name}</span>
+                            {displaySOAPNote.patient_age && displaySOAPNote.patient_age !== "Unknown" && displaySOAPNote.patient_age !== "غير محدد" && (
+                              <span>Age: {displaySOAPNote.patient_age}</span>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
               {!soapNote.raw_response && (
                 <button
                   onClick={() => {
@@ -568,28 +880,28 @@ export default function SOAPRecorder() {
               <>
                 <SOAPSection 
                   title="SUBJECTIVE" 
-                  data={isEditingSOAP ? editedSOAPNote?.subjective : soapNote.subjective} 
+                  data={isEditingSOAP ? displayEditedSOAPNote?.subjective : displaySOAPNote.subjective} 
                   sectionKey="subjective"
                   isEditing={isEditingSOAP}
                   onEdit={handleSOAPEdit}
                 />
                 <SOAPSection 
                   title="OBJECTIVE" 
-                  data={isEditingSOAP ? editedSOAPNote?.objective : soapNote.objective} 
+                  data={isEditingSOAP ? displayEditedSOAPNote?.objective : displaySOAPNote.objective} 
                   sectionKey="objective"
                   isEditing={isEditingSOAP}
                   onEdit={handleSOAPEdit}
                 />
                 <SOAPSection 
                   title="ASSESSMENT" 
-                  data={isEditingSOAP ? editedSOAPNote?.assessment : soapNote.assessment} 
+                  data={isEditingSOAP ? displayEditedSOAPNote?.assessment : displaySOAPNote.assessment} 
                   sectionKey="assessment"
                   isEditing={isEditingSOAP}
                   onEdit={handleSOAPEdit}
                 />
                 <SOAPSection 
                   title="PLAN" 
-                  data={isEditingSOAP ? editedSOAPNote?.plan : soapNote.plan} 
+                  data={isEditingSOAP ? displayEditedSOAPNote?.plan : displaySOAPNote.plan} 
                   sectionKey="plan"
                   isEditing={isEditingSOAP}
                   onEdit={handleSOAPEdit}
