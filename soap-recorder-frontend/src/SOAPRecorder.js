@@ -287,6 +287,20 @@ export default function SOAPRecorder() {
       </div>
     );
 
+    // Special handling for Objective section - always show it even if empty
+    if (title === "OBJECTIVE" && (!data || Object.keys(data).length === 0)) {
+      return (
+        <div className="mb-10">
+          <div className="bg-gray-50 rounded-xl shadow-md px-8 py-8 flex flex-col items-center">
+            <h3 className="text-xl font-bold text-blue-900 mb-6 text-center tracking-wide uppercase letter-spacing-wider">{title}</h3>
+            <div className="space-y-6 w-full">
+              <div className="text-gray-500 text-center italic">No objective data recorded</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
     if (!data || Object.keys(data).length === 0) return null;
 
     // Fields that should use textarea for editing
@@ -363,13 +377,21 @@ export default function SOAPRecorder() {
 
   // Handle SOAP note editing
   const handleSOAPEdit = (sectionKey, fieldKey, value) => {
-    setEditedSOAPNote(prev => ({
-      ...prev,
-      [sectionKey]: {
-        ...prev[sectionKey],
+    if (sectionKey === 'metadata') {
+      // Handle metadata fields separately
+      setEditedSOAPNote(prev => ({
+        ...prev,
         [fieldKey]: value
-      }
-    }));
+      }));
+    } else {
+      setEditedSOAPNote(prev => ({
+        ...prev,
+        [sectionKey]: {
+          ...prev[sectionKey],
+          [fieldKey]: value
+        }
+      }));
+    }
   };
 
   // Save SOAP note edits
@@ -619,8 +641,16 @@ export default function SOAPRecorder() {
   }, []);
 
   // In the SOAP Note Display section, before rendering, clean the note:
-  const displaySOAPNote = cleanSOAPNote(soapNote);
-  const displayEditedSOAPNote = cleanSOAPNote(editedSOAPNote);
+  const displaySOAPNote = soapNote ? {
+    ...cleanSOAPNote(soapNote),
+    // Always ensure objective section exists
+    objective: soapNote.objective || {}
+  } : null;
+  const displayEditedSOAPNote = editedSOAPNote ? {
+    ...cleanSOAPNote(editedSOAPNote),
+    // Always ensure objective section exists
+    objective: editedSOAPNote.objective || {}
+  } : null;
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">

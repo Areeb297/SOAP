@@ -95,9 +95,14 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
 
 1. PATIENT IDENTIFICATION: Extract and include:
    - Patient's full name (first and last name) - MUST be included in patient_name field
+   - IMPORTANT: Do NOT prefix patient name with "Dr." unless they are explicitly identified as a doctor who is the patient
    - Age (exact number mentioned) - MUST be included in patient_age field
+   - If patient introduces themselves (e.g., "Hi, I'm Sarah"), that's the patient name
+   - If doctor addresses patient by name (e.g., "Hello Sarah"), that's the patient name
    - Location/address/city mentioned
    - Any other demographic information
+   - If patient name is mentioned as "Patient: [Name]" or "The patient [Name]", extract only the name part
+   - If no patient name is explicitly mentioned, you can infer it from context (e.g., the person speaking who is not the doctor)
 
 2. PROVIDER IDENTIFICATION: Extract and include:
    - Doctor's name (Dr. [Name] or د. [Name])
@@ -118,6 +123,7 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
    - Progression of symptoms
    - Impact on daily activities
    - Any other symptoms mentioned in conversation
+   - IMPORTANT: This should be a detailed narrative paragraph, not just bullet points
 
 5. PAST MEDICAL HISTORY: Include ALL mentioned:
    - Chronic diseases
@@ -210,6 +216,22 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
 
 IMPORTANT: Do not omit any information mentioned in the conversation. If something is mentioned, it must be included in the appropriate section. Use exact quotes and details from the conversation rather than generic phrases.
 
+REMINDER FOR PATIENT NAME: 
+- Extract the actual patient name, not the doctor's name
+- If you see "Patient: [Name]" extract only the name part
+- Do NOT prefix patient names with "Dr." unless the patient themselves is explicitly identified as a doctor
+- If a name appears after "Patient:" or "The patient", that is the patient's name
+- If the transcript is very short (e.g., just a greeting), and no names are mentioned:
+  - For provider_name: Keep as "Dr. Unknown" or "Dr. Not mentioned"
+  - For patient_name: Keep as "Unknown" (do not use greetings like "Hello" as names)
+  - For patient_age: Keep as "Unknown" if not mentioned
+- Common greetings like "Hello", "Hi", "Good morning" are NOT names
+
+EXAMPLES:
+- If transcript is "Hello Doctor", patient_name should be "Unknown", NOT "Hello" or "Doctor"
+- If transcript is "Dr. Smith: Hello Sarah, how are you?", then provider_name is "Dr. Smith" and patient_name is "Sarah"
+- If transcript is "Patient: John Doe, 45 years old", then patient_name is "John Doe" and patient_age is "45"
+
 Do not write anything outside the JSON object."""
 
 # Updated Arabic SOAP prompt
@@ -277,9 +299,14 @@ ARABIC_SOAP_PROMPT = """
 
 1. تحديد هوية المريض: استخرج وضمّن:
    - الاسم الكامل للمريض (الاسم الأول والأخير) - يجب تضمينه في حقل patient_name
+   - مهم: لا تضع "د." أو "دكتور" قبل اسم المريض إلا إذا كان المريض نفسه طبيباً
    - العمر (الرقم المحدد المذكور) - يجب تضمينه في حقل patient_age
+   - إذا عرّف المريض عن نفسه (مثل: "مرحبا، أنا سارة")، فهذا اسم المريض
+   - إذا خاطب الطبيب المريض بالاسم (مثل: "مرحبا سارة")، فهذا اسم المريض
    - الموقع/العنوان/المدينة المذكورة
    - أي معلومات ديموغرافية أخرى
+   - إذا ذُكر اسم المريض كـ "المريض: [الاسم]" أو "المريض [الاسم]"، استخرج الاسم فقط
+   - إذا لم يُذكر اسم المريض صراحة، يمكنك استنتاجه من السياق (مثل: الشخص الذي يتحدث وليس الطبيب)
 
 2. تحديد هوية الطبيب: استخرج وضمّن:
    - اسم الطبيب (د. [الاسم])
@@ -392,6 +419,22 @@ ARABIC_SOAP_PROMPT = """
 
 مهم جداً: لا تحذف أي معلومات مذكورة في المحادثة. إذا ذُكر شيء ما، يجب تضمينه في القسم المناسب. استخدم الاقتباسات الدقيقة والتفاصيل من المحادثة بدلاً من العبارات العامة.
 
+تذكير بخصوص اسم المريض:
+- استخرج اسم المريض الفعلي، وليس اسم الطبيب
+- إذا رأيت "المريض: [الاسم]" استخرج الاسم فقط
+- لا تضع "د." قبل اسم المريض إلا إذا كان المريض نفسه طبيباً
+- إذا ظهر اسم بعد "المريض:" أو "المريض"، فهذا هو اسم المريض
+- إذا كانت المحادثة قصيرة جداً (مثل: مجرد تحية)، ولم تُذكر أسماء:
+  - لـ provider_name: احتفظ بـ "د. غير محدد"
+  - لـ patient_name: احتفظ بـ "غير محدد" (لا تستخدم التحيات مثل "مرحبا" كأسماء)
+  - لـ patient_age: احتفظ بـ "غير محدد" إذا لم يُذكر
+- التحيات الشائعة مثل "مرحبا"، "أهلاً"، "صباح الخير" ليست أسماء
+
+أمثلة:
+- إذا كانت المحادثة "مرحبا دكتور"، يجب أن يكون patient_name "غير محدد"، وليس "مرحبا" أو "دكتور"
+- إذا كانت المحادثة "د. أحمد: مرحبا سارة، كيف حالك؟"، فإن provider_name هو "د. أحمد" وpatient_name هو "سارة"
+- إذا كانت المحادثة "المريض: محمد علي، 45 سنة"، فإن patient_name هو "محمد علي" وpatient_age هو "45"
+
 لا تكتب أي شيء خارج كائن JSON."""
 
 def extract_json_from_response(response_text):
@@ -470,6 +513,9 @@ def generate_soap_note_metadata(transcript, language):
     # Generate a simple patient ID
     patient_id = str(uuid.uuid4())[:8]
     
+    print(f"\n=== Extracting metadata from transcript (language: {language}) ===")
+    print(f"Transcript preview: {transcript[:200]}...")
+    
     # Extract provider name from transcript (improved extraction)
     provider_name = "Dr. Unknown" if language == "en" else "د. غير محدد"
     if language == "en":
@@ -505,41 +551,95 @@ def generate_soap_note_metadata(transcript, language):
     patient_age = "Unknown" if language == "en" else "غير محدد"
     
     if language == "en":
-        # Extract English patient name (look for "I'm [Name]" or "My name is [Name]")
-        name_patterns = [
-            r"I'm\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
-            r"My name is\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
-            r"I am\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)",
-            r"name is\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)"
+        # Extract English patient name - improved patterns
+        # First check for "patient:" or "patient is" patterns  
+        patient_patterns = [
+            # Pattern for "Patient: [Name], [age]" or "Patient: [Name]"
+            r"patient\s*:\s*([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*?)(?:\s*,|\s+\d+|$)",
+            # Pattern for "The patient [Name]"
+            r"(?:the\s+)?patient\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*?)(?:\s*,|\s+is|\s+\d+|$)",
+            # Pattern for "patient is [Name]"
+            r"patient\s+is\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*?)(?:\s*,|\s+\d+|$)",
+            # Pattern for "[Name] is a XX-year-old"
+            r"([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)\s+is\s+(?:a\s+)?\d+\s*(?:-)?\s*year",
+            r"I'm\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)",
+            r"My name is\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)",
+            r"I am\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)",
+            r"name is\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)",
+            r"This is\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)"
         ]
-        for pattern in name_patterns:
+        for pattern in patient_patterns:
             match = re.search(pattern, transcript, re.IGNORECASE)
             if match:
-                patient_name = match.group(1)
-                break
+                extracted_name = match.group(1).strip()
+                # Remove common titles if they appear at the start
+                extracted_name = re.sub(r'^(Dr\.?|Mr\.?|Mrs\.?|Ms\.?)\s+', '', extracted_name)
+                # Validate it's a reasonable name (not common words)
+                if len(extracted_name) > 2 and extracted_name.lower() not in ['the', 'and', 'with', 'this', 'that', 'here', 'there', 'dr', 'doctor']:
+                    patient_name = extracted_name
+                    print(f"Matched patient name '{patient_name}' with pattern: {pattern}")
+                    break
         
-        # Extract English patient age (look for "I'm [age] years old" or similar)
-        age_match = re.search(r"(\d+)\s+years?\s+old", transcript, re.IGNORECASE)
-        if age_match:
-            patient_age = age_match.group(1)
+        # Extract English patient age - improved patterns
+        age_patterns = [
+            r"(\d+)\s*(?:-)?\s*year\s*(?:-)?\s*old",
+            r"age\s*(?:is)?\s*[:\s]*(\d+)",
+            r"aged\s+(\d+)",
+            r"he's\s+(\d+)",
+            r"she's\s+(\d+)",
+            r"patient is\s+(\d+)"
+        ]
+        for pattern in age_patterns:
+            age_match = re.search(pattern, transcript, re.IGNORECASE)
+            if age_match:
+                patient_age = age_match.group(1)
+                break
     
     elif language == "ar":
-        # Extract Arabic patient name (look for "اسمي [Name]" or "أنا [Name]")
+        # Extract Arabic patient name - improved patterns
         name_patterns = [
+            # Pattern for "المريض: [الاسم]"
+            r"المريض\s*:\s*([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*?)(?:\s*،|\s*\d+|$)",
+            # Pattern for "المريض [الاسم]"
+            r"المريض\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*?)(?:\s*،|\s*\d+|$)",
+            # Pattern for "المريضة [الاسم]"
+            r"المريضة\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*?)(?:\s*،|\s*\d+|$)",
             r"اسمي\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
             r"أنا\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
-            r"اسمي\s+([^\s،؟!\.]+)"
+            r"اسم المريض\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
+            r"هذا\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)",
+            r"هذه\s+([^\s،؟!\.]+(?:\s+[^\s،؟!\.]+)*)"
         ]
         for pattern in name_patterns:
             match = re.search(pattern, transcript)
             if match:
-                patient_name = match.group(1)
-                break
+                extracted_name = match.group(1).strip()
+                # Remove common prefixes
+                extracted_name = re.sub(r'^(د\.|دكتور|الدكتور)\s+', '', extracted_name)
+                # Validate that it's actually a name (not random text)
+                if len(extracted_name) > 1 and not any(word in extracted_name for word in ['في', 'من', 'إلى', 'على', 'مع', 'هو', 'هي']):
+                    patient_name = extracted_name
+                    print(f"Matched patient name '{patient_name}' with pattern: {pattern}")
+                    break
         
-        # Extract Arabic patient age (look for "عمري [age] سنة" or similar)
-        age_match = re.search(r"عمري\s+(\d+)\s+سنة", transcript)
-        if age_match:
-            patient_age = age_match.group(1)
+        # Extract Arabic patient age - improved patterns
+        age_patterns = [
+            r"عمري\s+(\d+)\s+سنة",
+            r"عمره\s+(\d+)\s+سنة",
+            r"عمرها\s+(\d+)\s+سنة",
+            r"العمر\s*[:]*\s*(\d+)",
+            r"(\d+)\s+سنة"
+        ]
+        for pattern in age_patterns:
+            age_match = re.search(pattern, transcript)
+            if age_match:
+                patient_age = age_match.group(1)
+                break
+    
+    print(f"\nExtracted metadata:")
+    print(f"  Provider: {provider_name}")
+    print(f"  Patient: {patient_name}")
+    print(f"  Age: {patient_age}")
     
     return {
         "patient_id": patient_id,
@@ -694,7 +794,16 @@ def generate_soap():
             # Add metadata to the SOAP note
             metadata = generate_soap_note_metadata(transcript, language)
             if 'soap_note' in soap_note:
-                soap_note['soap_note'].update(metadata)
+                # Only update metadata fields if they were not properly extracted by AI
+                if soap_note['soap_note'].get('provider_name', '').lower() in ['unknown', 'غير محدد', 'not mentioned', 'dr. unknown']:
+                    soap_note['soap_note']['provider_name'] = metadata['provider_name']
+                if soap_note['soap_note'].get('patient_name', '').lower() in ['unknown', 'غير محدد', 'dr', 'د', 'مرحبا', 'hello']:
+                    soap_note['soap_note']['patient_name'] = metadata['patient_name']
+                if soap_note['soap_note'].get('patient_age', '').lower() in ['unknown', 'غير محدد']:
+                    soap_note['soap_note']['patient_age'] = metadata['patient_age']
+                # Always update these
+                soap_note['soap_note']['patient_id'] = metadata['patient_id']
+                soap_note['soap_note']['visit_date'] = metadata['visit_date']
             else:
                 # If the response doesn't have the new structure, wrap it
                 soap_note = {
@@ -744,7 +853,15 @@ def generate_soap():
                     if cleaned:
                         soap_note[main_section] = cleaned
                     else:
-                        del soap_note[main_section]
+                        # For objective section, always keep it even if empty
+                        if main_section == "objective":
+                            soap_note[main_section] = {}
+                        else:
+                            del soap_note[main_section]
+                else:
+                    # Always ensure objective section exists
+                    if main_section == "objective":
+                        soap_note[main_section] = {}
             # === END POST-PROCESSING ===
 
             # Wrap the response in the expected structure if needed

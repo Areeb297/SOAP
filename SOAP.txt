@@ -1,6 +1,6 @@
-Transcript generated on 2025-07-29 16:44:38
+Transcript generated on 2025-07-30 21:55:11
 --------------------------------------------------
-مرحبا
+Hello, how are you? I am Iyad, I am 23 years old.
 
 
 ==================================================
@@ -8,44 +8,59 @@ SOAP NOTE
 ==================================================
 {
   "soap_note": {
-    "patient_id": "232e4504",
-    "visit_date": "2025-07-29",
+    "patient_id": "c2e9a529",
+    "visit_date": "2025-07-30",
     "provider_name": "د. غير محدد",
-    "patient_name": "ليلى أحمد العلي",
-    "patient_age": "28",
+    "patient_name": "مرحباً دكتور",
+    "patient_age": "35",
     "subjective": {
-      "chief_complaint": "ألم في المفاصل منذ 6 شهور",
-      "history_of_present_illness": "الألم يبدأ في الصباح ويستمر طوال اليوم، خصوصاً في مفاصل اليدين والركبتين. المفاصل تتورم وتصبح حمراء وساخنة، ويصعب الحركة. تعب شديد ونوم متقطع وحرارة خفيفة أحياناً. الألم يقل مع الحركة ويزيد مع البرد.",
-      "past_medical_history": "لا توجد أمراض مزمنة، ولا أدوية حالياً.",
-      "family_history": "خالتي لديها روماتيزم، وأمي لديها التهاب في المفاصل.",
-      "social_history": "معلمة في مدرسة ابتدائية، ضغط نفسي من الطلاب، لا تدخن، لا تشرب الكحول، تمارس رياضة خفيفة.",
-      "allergies": [
-        "لا توجد حساسية"
+      "chief_complaint": "ألم شديد في أسفل الظهر منذ 8 أشهر",
+      "history_of_present_illness": "بدأ الألم تدريجياً وأصبح مستمراً، أسوأ في الصباح وعند الجلوس لفترات طويلة، يشع إلى الساق اليمنى حتى القدم، أسوأ عند الانحناء للأمام أو رفع أشياء ثقيلة، أفضل عند الاستلقاء أو الاستحمام بماء ساخن.",
+      "past_medical_history": "حادث سيارة قبل 3 سنوات، ارتفاع خفيف في ضغط الدم متحكم به بالأدوية.",
+      "social_history": "مهندس برمجيات، يجلس أمام الكمبيوتر 8-10 ساعات يومياً.",
+      "medications": [
+        {
+          "name": "إيبوبروفين",
+          "dosage": "",
+          "frequency": "",
+          "route": "",
+          "duration": ""
+        }
       ]
     },
     "objective": {
-      "vital_signs": {
-        "temperature": "37.1",
-        "blood_pressure": "120/80",
-        "heart_rate": "72",
-        "respiratory_rate": "",
-        "oxygen_saturation": ""
-      },
-      "physical_exam": "تورم واحمرار وسخونة في مفاصل اليدين والركبتين."
+      "physical_exam": "فحص الظهر واختبار ردود الفعل والقوة. الألم المشع إلى الساق والخدر يشيران إلى ضغط على العصب."
     },
     "assessment": {
-      "diagnosis": "التهاب المفاصل الروماتويدي المحتمل",
+      "diagnosis": "انزلاق غضروفي في أسفل الظهر، على الأرجح L4-L5 أو L5-S1",
       "risk_factors": [
-        "تاريخ عائلي من التهاب المفاصل"
+        "حادث سيارة سابق",
+        "الجلوس لفترات طويلة",
+        "ارتفاع ضغط الدم"
       ]
     },
     "plan": {
-      "procedures_or_tests": [
-        "فحص دم للروماتويد",
-        "فحص ESR وCRP"
+      "medications_prescribed": [
+        {
+          "name": "مضاد التهاب أقوى",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "مرخي للعضلات",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
       ],
-      "patient_education": "تجنب البرد والحفاظ على النشاط البدني المعتدل. استخدام مسكنات الألم عند الحاجة.",
-      "follow_up_instructions": "متابعة بعد أسبوعين لمراجعة نتائج الفحوصات وتقييم الحالة."
+      "procedures_or_tests": [
+        "رنين مغناطيسي لتأكيد التشخيص ورؤية مدى الانزلاق الغضروفي"
+      ],
+      "patient_education": "شرح طبيعة الانزلاق الغضروفي وأهمية العلاج المحافظ.",
+      "follow_up_instructions": "اعتبار حقن الستيرويد فوق الجافية أو الجراحة إذا فشل العلاج المحافظ. متابعة بعد نتائج الرنين المغناطيسي."
     }
   }
 }
@@ -55,55 +70,356 @@ SOAP NOTE
 ==================================================
 {
   "soap_note": {
-    "patient_id": "33cf4a9b",
-    "visit_date": "2025-07-29",
+    "patient_id": "706973a2",
+    "visit_date": "2025-07-30",
     "provider_name": "د. غير محدد",
-    "patient_name": "فهد عبدالله السبيعي",
-    "patient_age": "32",
+    "patient_name": "مرحباً دكتور",
+    "patient_age": "52",
     "subjective": {
-      "chief_complaint": "ألم شديد في الصدر",
-      "history_of_present_illness": "الألم بدأ منذ ساعتين، يزداد مع التنفس العميق والحركة، يشع للكتف الأيسر والذراع الأيسر، مع تعرق بارد وضيق في التنفس، غثيان ودوخة وشعور بالخوف الشديد. الألم بدأ فجأة في المكتب ويزداد مع أي مجهود بسيط.",
-      "past_medical_history": "ارتفاع في الكوليسترول منذ 5 سنوات، تناول أتورفاستاتين 20 مجم يومياً.",
-      "family_history": "الأب توفي بنوبة قلبية في عمر 55 سنة، الأخ الأكبر لديه قصور في القلب، الأم لديها سكري.",
-      "social_history": "مدير مبيعات في شركة تجارية، ضغط نفسي كبير، مدخن منذ 15 سنة - علبة ونصف في اليوم، لا يشرب الكحول، لا يمارس الرياضة بانتظام.",
+      "chief_complaint": "ألم في الصدر منذ ساعتين",
+      "history_of_present_illness": "ألم في الصدر بدأ فجأة أثناء المشي، يشبه الضغط في وسط الصدر ويشع إلى الذراع الأيسر والفك، شدته 7 من 10، مصحوب بالتعرق والغثيان وضيق في التنفس.",
+      "past_medical_history": "ارتفاع في ضغط الدم والسكري",
+      "family_history": "والده أصيب بنوبة قلبية في عمر 55 سنة",
       "medications": [
         {
-          "name": "أتورفاستاتين",
-          "dosage": "20 مجم",
-          "frequency": "يومياً",
-          "route": "فموي",
-          "duration": "5 سنوات"
+          "name": "ميتفورمين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "route": "غير محدد",
+          "duration": "غير محدد"
+        },
+        {
+          "name": "أميلوديبين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "route": "غير محدد",
+          "duration": "غير محدد"
         }
       ],
       "allergies": [
-        "لا توجد حساسية"
+        "لا توجد حساسية معروفة"
+      ]
+    },
+    "objective": {
+      "physical_exam": "لم يتم ذكر نتائج الفحص البدني"
+    },
+    "assessment": {
+      "diagnosis": "ألم في الصدر يحتمل أن يكون نوبة قلبية",
+      "risk_factors": [
+        "ارتفاع ضغط الدم",
+        "السكري",
+        "تاريخ عائلي لأمراض القلب"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "أسبرين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "غير محدد"
+        },
+        {
+          "name": "نتروجليسرين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "غير محدد"
+        }
+      ],
+      "procedures_or_tests": [
+        "تخطيط قلب كهربائي",
+        "فحوصات دم تشمل إنزيمات القلب",
+        "أشعة سينية للصدر",
+        "قسطرة قلبية محتملة"
+      ],
+      "patient_education": "شرح أهمية المراقبة المستمرة لإيقاع القلب وضغط الدم، وإمكانية الحاجة لإجراء طارئ لفتح الشريان المسدود.",
+      "follow_up_instructions": "البقاء للمراقبة وإعادة فحوصات الدم، ومتابعة مع طبيب القلب إذا لزم الأمر."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3d68e3c5",
+    "visit_date": "2025-07-30",
+    "provider_name": "Dr. Kareem",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Chest tightness and shortness of breath.",
+      "past_medical_history": "High blood pressure, appendectomy 10 years ago.",
+      "family_history": "Father had a heart attack at age 50.",
+      "social_history": "No specific social history mentioned.",
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5 mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "Current medication"
+        }
+      ],
+      "allergies": [
+        "No allergies mentioned"
       ]
     },
     "objective": {
       "vital_signs": {
-        "temperature": "36.8",
-        "blood_pressure": "140/90",
-        "heart_rate": "110",
-        "respiratory_rate": "غير مذكور",
-        "oxygen_saturation": "94%"
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
       }
     },
     "assessment": {
-      "diagnosis": "احتمال نوبة قلبية",
+      "diagnosis": "Chest pain likely due to cardiac origin.",
       "risk_factors": [
-        "ارتفاع الكوليسترول",
-        "تاريخ عائلي لنوبة قلبية",
-        "التدخين",
-        "ضغط نفسي"
+        "High blood pressure",
+        "Family history of heart disease"
       ]
     },
     "plan": {
       "procedures_or_tests": [
-        "تخطيط كهربية القلب",
-        "تحاليل دم لإنزيمات القلب"
+        "ECG",
+        "Blood tests including cardiac enzymes",
+        "Chest X-ray"
       ],
-      "patient_education": "التأكيد على أهمية التوجه إلى الطوارئ فوراً في حالة زيادة الأعراض أو حدوث ألم جديد.",
-      "follow_up_instructions": "متابعة مع طبيب القلب بعد الفحوصات."
+      "patient_education": "Instructed on the importance of monitoring symptoms and when to seek immediate care.",
+      "follow_up_instructions": "Follow up based on test results and symptom progression."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b7a0e095",
+    "visit_date": "2025-07-30",
+    "provider_name": "Dr. Kareem",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Chest tightness and shortness of breath.",
+      "past_medical_history": "Adam has a history of high blood pressure and is currently taking Amlodipine 5 mg once daily. He underwent an appendectomy 10 years ago.",
+      "family_history": "Adam's father had a heart attack at the age of 50.",
+      "social_history": "Adam lives in Jeddah.",
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5 mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "ongoing"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest tightness and shortness of breath, possible cardiac origin.",
+      "risk_factors": [
+        "High blood pressure",
+        "Family history of heart disease"
+      ]
+    },
+    "plan": {
+      "procedures_or_tests": [
+        "ECG",
+        "Blood tests including cardiac enzymes",
+        "Chest X-ray"
+      ],
+      "patient_education": "Educated patient about the importance of monitoring symptoms and potential cardiac issues.",
+      "follow_up_instructions": "Follow up based on test results and further evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3ac3cf27",
+    "visit_date": "2025-07-30",
+    "provider_name": "Dr. Kareem",
+    "patient_name": "Adam Saleh",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Chest tightness and shortness of breath.",
+      "past_medical_history": "Adam has a history of high blood pressure and is currently taking Amlodipine 5 mg once daily. He underwent an appendectomy 10 years ago.",
+      "family_history": "Adam's father had a heart attack at the age of 50.",
+      "social_history": "Adam lives in Jeddah.",
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5 mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "Current"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest tightness and shortness of breath, possible cardiac origin.",
+      "risk_factors": [
+        "High blood pressure",
+        "Family history of heart disease"
+      ]
+    },
+    "plan": {
+      "procedures_or_tests": [
+        "ECG",
+        "Blood tests including cardiac enzymes",
+        "Chest X-ray"
+      ],
+      "patient_education": "Patient educated on the importance of monitoring symptoms and seeking immediate care if symptoms worsen.",
+      "follow_up_instructions": "Follow up based on test results and clinical findings."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "72a036ca",
+    "visit_date": "2025-07-30",
+    "provider_name": "د. عمر خالد",
+    "patient_name": "محمد عبدالله",
+    "patient_age": "35",
+    "subjective": {
+      "chief_complaint": "ألم شديد في أسفل الظهر منذ 8 أشهر",
+      "history_of_present_illness": "بدأ الألم تدريجياً، مستمر، أسوأ في الصباح وعند الجلوس لفترات طويلة، يقع في أسفل الظهر الجانب الأيمن ويشع إلى الساق اليمنى حتى القدم. أسوأ عند الانحناء للأمام أو رفع أشياء ثقيلة، وأفضل عند الاستلقاء أو الاستحمام بماء ساخن.",
+      "past_medical_history": "حادث سيارة قبل 3 سنوات، ارتفاع خفيف في ضغط الدم متحكم به بالأدوية.",
+      "social_history": "مهندس برمجيات، يجلس أمام الكمبيوتر 8-10 ساعات يومياً.",
+      "medications": [
+        {
+          "name": "إيبوبروفين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "route": "فموي",
+          "duration": "غير محدد"
+        }
+      ]
+    },
+    "objective": {
+      "physical_exam": "ألم في أسفل الظهر الجانب الأيمن، خدر ووخز في القدم اليمنى، ضعف في الساق اليمنى. نتائج الفحص تشير إلى ضغط على العصب."
+    },
+    "assessment": {
+      "diagnosis": "انزلاق غضروفي في أسفل الظهر، على الأرجح L4-L5 أو L5-S1",
+      "risk_factors": [
+        "الجلوس لفترات طويلة",
+        "حادث سيارة سابق"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "مضاد التهاب أقوى",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "فموي"
+        },
+        {
+          "name": "مرخي للعضلات",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "فموي"
+        }
+      ],
+      "procedures_or_tests": [
+        "رنين مغناطيسي لتأكيد التشخيص"
+      ],
+      "patient_education": "تجنب الانحناء للأمام ورفع الأشياء الثقيلة، استخدام الماء الساخن لتخفيف الألم.",
+      "follow_up_instructions": "متابعة بعد نتائج الرنين المغناطيسي، اعتبار حقن الستيرويد فوق الجافية أو الجراحة إذا فشل العلاج المحافظ."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "6e5b1c97",
+    "visit_date": "2025-07-30",
+    "provider_name": "Dr. Kareem",
+    "patient_name": "Adam Saleh",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Chest tightness and shortness of breath.",
+      "family_history": "Father had a heart attack at age 50.",
+      "social_history": "Lives in Jeddah.",
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5 mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "Current"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest tightness and shortness of breath, possible cardiac origin.",
+      "risk_factors": [
+        "High blood pressure",
+        "Family history of heart disease"
+      ]
+    },
+    "plan": {
+      "procedures_or_tests": [
+        "ECG",
+        "Blood tests including cardiac enzymes",
+        "Chest X-ray"
+      ],
+      "patient_education": "Informed patient about the tests being conducted and the importance of monitoring his symptoms.",
+      "follow_up_instructions": "Follow-up based on test results."
     }
   }
 }

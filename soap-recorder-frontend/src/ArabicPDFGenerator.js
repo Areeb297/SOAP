@@ -11,17 +11,64 @@ export function generateArabicPDF(soapNote) {
         'medications': 'الأدوية',
         'allergies': 'الحساسية',
         'vital_signs': 'العلامات الحيوية',
+        'physical_exam': 'الفحص البدني',
         'physical_examination_findings': 'نتائج الفحص السريري',
         'diagnosis': 'التشخيص',
         'differential_diagnosis': 'التشخيص التفريقي',
         'risk_factors': 'عوامل الخطر',
         'medications_prescribed': 'الأدوية الموصوفة',
+        'procedures_or_tests': 'الفحوصات والإجراءات',
         'investigations': 'الفحوصات',
+        'patient_education': 'تعليمات المريض',
         'patient_education_counseling': 'تثقيف وإرشاد المريض',
-        'follow_up_instructions': 'تعليمات المتابعة'
+        'follow_up_instructions': 'تعليمات المتابعة',
+        'temperature': 'درجة الحرارة',
+        'blood_pressure': 'ضغط الدم',
+        'heart_rate': 'معدل النبض',
+        'respiratory_rate': 'معدل التنفس',
+        'oxygen_saturation': 'نسبة الأكسجين'
       };
       
       return arabicLabels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    };
+    
+    // Helper function to render field value
+    const renderFieldValue = (value) => {
+      if (!value) return '';
+      
+      // Handle arrays
+      if (Array.isArray(value)) {
+        if (value.length === 0) return '';
+        
+        // If array of objects (like medications)
+        if (typeof value[0] === 'object' && value[0] !== null) {
+          return value.map((item, idx) => {
+            const itemHtml = Object.entries(item).map(([k, v]) => 
+              `<div style="margin-right: 15px; font-size: 10px;">
+                <span style="font-weight: bold;">${formatFieldName(k)}:</span> ${v}
+              </div>`
+            ).join('');
+            return `<div style="background: #f5f5f5; padding: 8px; margin-bottom: 5px; border-radius: 4px;">${itemHtml}</div>`;
+          }).join('');
+        }
+        
+        // Array of strings
+        return value.join('، ');
+      }
+      
+      // Handle objects (like vital_signs)
+      if (typeof value === 'object' && value !== null) {
+        return Object.entries(value)
+          .filter(([k, v]) => v && v.trim())
+          .map(([k, v]) => 
+            `<div style="margin-right: 15px; font-size: 10px;">
+              <span style="font-weight: bold;">${formatFieldName(k)}:</span> ${v}
+            </div>`
+          ).join('');
+      }
+      
+      // String value
+      return value;
     };
   
     // Create HTML content with 2x2 grid layout
@@ -145,6 +192,15 @@ export function generateArabicPDF(soapNote) {
         <div class="header">
           <h1>تقرير الملاحظة الطبية SOAP</h1>
           <p style="font-size: 12px; color: #666;">تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-SA')}</p>
+          ${soapNote.patient_id ? `
+          <div style="margin-top: 10px; font-size: 11px;">
+            <span style="margin-left: 15px;"><strong>رقم المريض:</strong> ${soapNote.patient_id}</span>
+            <span style="margin-left: 15px;"><strong>التاريخ:</strong> ${soapNote.visit_date || new Date().toLocaleDateString('ar-SA')}</span>
+            <span style="margin-left: 15px;"><strong>الطبيب:</strong> ${soapNote.provider_name || 'غير محدد'}</span>
+            ${soapNote.patient_name && soapNote.patient_name !== 'غير محدد' ? `<span style="margin-left: 15px;"><strong>اسم المريض:</strong> ${soapNote.patient_name}</span>` : ''}
+            ${soapNote.patient_age && soapNote.patient_age !== 'غير محدد' ? `<span style="margin-left: 15px;"><strong>العمر:</strong> ${soapNote.patient_age}</span>` : ''}
+          </div>
+          ` : ''}
         </div>
         
         <div class="soap-grid">
@@ -154,11 +210,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.subjective && Object.keys(soapNote.subjective).length > 0 
                 ? Object.entries(soapNote.subjective)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">لا توجد بيانات متاحة</div>'
@@ -172,11 +228,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.objective && Object.keys(soapNote.objective).length > 0 
                 ? Object.entries(soapNote.objective)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">لا توجد بيانات متاحة</div>'
@@ -190,11 +246,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.assessment && Object.keys(soapNote.assessment).length > 0 
                 ? Object.entries(soapNote.assessment)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">لا توجد بيانات متاحة</div>'
@@ -208,11 +264,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.plan && Object.keys(soapNote.plan).length > 0 
                 ? Object.entries(soapNote.plan)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">لا توجد بيانات متاحة</div>'
@@ -253,6 +309,45 @@ export function generateArabicPDF(soapNote) {
                .split(' ')
                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                .join(' ');
+    };
+    
+    // Helper function to render field value
+    const renderFieldValue = (value) => {
+      if (!value) return '';
+      
+      // Handle arrays
+      if (Array.isArray(value)) {
+        if (value.length === 0) return '';
+        
+        // If array of objects (like medications)
+        if (typeof value[0] === 'object' && value[0] !== null) {
+          return value.map((item, idx) => {
+            const itemHtml = Object.entries(item).map(([k, v]) => 
+              `<div style="margin-left: 15px; font-size: 10px;">
+                <span style="font-weight: bold;">${formatFieldName(k)}:</span> ${v}
+              </div>`
+            ).join('');
+            return `<div style="background: #f5f5f5; padding: 8px; margin-bottom: 5px; border-radius: 4px;">${itemHtml}</div>`;
+          }).join('');
+        }
+        
+        // Array of strings
+        return value.join(', ');
+      }
+      
+      // Handle objects (like vital_signs)
+      if (typeof value === 'object' && value !== null) {
+        return Object.entries(value)
+          .filter(([k, v]) => v && v.trim())
+          .map(([k, v]) => 
+            `<div style="margin-left: 15px; font-size: 10px;">
+              <span style="font-weight: bold;">${formatFieldName(k)}:</span> ${v}
+            </div>`
+          ).join('');
+      }
+      
+      // String value
+      return value;
     };
   
     const htmlContent = `
@@ -373,6 +468,15 @@ export function generateArabicPDF(soapNote) {
         <div class="header">
           <h1>SOAP Note Template</h1>
           <p style="font-size: 12px; color: #666;">Generated on: ${new Date().toLocaleDateString()}</p>
+          ${soapNote.patient_id ? `
+          <div style="margin-top: 10px; font-size: 11px;">
+            <span style="margin-right: 15px;"><strong>Patient ID:</strong> ${soapNote.patient_id}</span>
+            <span style="margin-right: 15px;"><strong>Date:</strong> ${soapNote.visit_date || new Date().toLocaleDateString()}</span>
+            <span style="margin-right: 15px;"><strong>Provider:</strong> ${soapNote.provider_name || 'Not mentioned'}</span>
+            ${soapNote.patient_name && soapNote.patient_name !== 'Unknown' ? `<span style="margin-right: 15px;"><strong>Patient Name:</strong> ${soapNote.patient_name}</span>` : ''}
+            ${soapNote.patient_age && soapNote.patient_age !== 'Unknown' ? `<span style="margin-right: 15px;"><strong>Age:</strong> ${soapNote.patient_age}</span>` : ''}
+          </div>
+          ` : ''}
         </div>
         
         <div class="soap-grid">
@@ -382,11 +486,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.subjective && Object.keys(soapNote.subjective).length > 0 
                 ? Object.entries(soapNote.subjective)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">No data available</div>'
@@ -400,11 +504,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.objective && Object.keys(soapNote.objective).length > 0 
                 ? Object.entries(soapNote.objective)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">No data available</div>'
@@ -418,11 +522,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.assessment && Object.keys(soapNote.assessment).length > 0 
                 ? Object.entries(soapNote.assessment)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">No data available</div>'
@@ -436,11 +540,11 @@ export function generateArabicPDF(soapNote) {
             <div class="section-content">
               ${soapNote.plan && Object.keys(soapNote.plan).length > 0 
                 ? Object.entries(soapNote.plan)
-                    .filter(([key, value]) => value && value.trim())
+                    .filter(([key, value]) => value && (typeof value !== 'string' || value.trim()))
                     .map(([key, value]) => `
                       <div class="field-item">
                         <span class="field-label">${formatFieldName(key)}:</span>
-                        <div class="field-value">${value}</div>
+                        <div class="field-value">${renderFieldValue(value)}</div>
                       </div>
                     `).join('')
                 : '<div class="no-data">No data available</div>'
