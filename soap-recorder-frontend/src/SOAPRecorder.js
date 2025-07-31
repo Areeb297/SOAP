@@ -290,7 +290,7 @@ export default function SOAPRecorder() {
     // Special handling for Objective section - always show it even if empty
     if (title === "OBJECTIVE" && (!data || Object.keys(data).length === 0)) {
       return (
-        <div className="mb-10">
+        <div className="mb-10 objective">
           <div className="bg-gray-50 rounded-xl shadow-md px-8 py-8 flex flex-col items-center">
             <h3 className="text-xl font-bold text-blue-900 mb-6 text-center tracking-wide uppercase letter-spacing-wider">{title}</h3>
             <div className="space-y-6 w-full">
@@ -310,8 +310,19 @@ export default function SOAPRecorder() {
       'plan', 'assessment', 'subjective', 'objective', 'risk_factors'
     ];
 
+    // Determine the CSS class based on the section title
+    const getSectionClass = (title) => {
+      switch (title) {
+        case 'SUBJECTIVE': return 'subjective';
+        case 'OBJECTIVE': return 'objective';
+        case 'ASSESSMENT': return 'assessment';
+        case 'PLAN': return 'plan';
+        default: return '';
+      }
+    };
+
     return (
-      <div className="mb-10">
+      <div className={`mb-10 ${getSectionClass(title)}`}>
         <div className="bg-gray-50 rounded-xl shadow-md px-8 py-8 flex flex-col items-center">
           <h3 className="text-xl font-bold text-blue-900 mb-6 text-center tracking-wide uppercase letter-spacing-wider">{title}</h3>
           <div className="space-y-6 w-full">
@@ -915,34 +926,40 @@ export default function SOAPRecorder() {
               </div>
             ) : (
               <>
-                <SOAPSection 
-                  title="SUBJECTIVE" 
-                  data={isEditingSOAP ? displayEditedSOAPNote?.subjective : displaySOAPNote.subjective} 
-                  sectionKey="subjective"
-                  isEditing={isEditingSOAP}
-                  onEdit={handleSOAPEdit}
-                />
-                <SOAPSection 
-                  title="OBJECTIVE" 
-                  data={isEditingSOAP ? displayEditedSOAPNote?.objective : displaySOAPNote.objective} 
-                  sectionKey="objective"
-                  isEditing={isEditingSOAP}
-                  onEdit={handleSOAPEdit}
-                />
-                <SOAPSection 
-                  title="ASSESSMENT" 
-                  data={isEditingSOAP ? displayEditedSOAPNote?.assessment : displaySOAPNote.assessment} 
-                  sectionKey="assessment"
-                  isEditing={isEditingSOAP}
-                  onEdit={handleSOAPEdit}
-                />
-                <SOAPSection 
-                  title="PLAN" 
-                  data={isEditingSOAP ? displayEditedSOAPNote?.plan : displaySOAPNote.plan} 
-                  sectionKey="plan"
-                  isEditing={isEditingSOAP}
-                  onEdit={handleSOAPEdit}
-                />
+                <div className="soap_data">
+                  {/* SUBJECTIVE Section */}
+                  <SOAPSection 
+                    title="SUBJECTIVE" 
+                    data={isEditingSOAP ? displayEditedSOAPNote?.subjective : displaySOAPNote.subjective} 
+                    sectionKey="subjective"
+                    isEditing={isEditingSOAP}
+                    onEdit={handleSOAPEdit}
+                  />
+                  {/* OBJECTIVE Section */}
+                  <SOAPSection 
+                    title="OBJECTIVE" 
+                    data={isEditingSOAP ? displayEditedSOAPNote?.objective : displaySOAPNote.objective} 
+                    sectionKey="objective"
+                    isEditing={isEditingSOAP}
+                    onEdit={handleSOAPEdit}
+                  />
+                  {/* ASSESSMENT Section */}
+                  <SOAPSection 
+                    title="ASSESSMENT" 
+                    data={isEditingSOAP ? displayEditedSOAPNote?.assessment : displaySOAPNote.assessment} 
+                    sectionKey="assessment"
+                    isEditing={isEditingSOAP}
+                    onEdit={handleSOAPEdit}
+                  />
+                  {/* PLAN Section */}
+                  <SOAPSection 
+                    title="PLAN" 
+                    data={isEditingSOAP ? displayEditedSOAPNote?.plan : displaySOAPNote.plan} 
+                    sectionKey="plan"
+                    isEditing={isEditingSOAP}
+                    onEdit={handleSOAPEdit}
+                  />
+                </div>
 
                 {/* User Agreement Checkbox */}
                 {!isEditingSOAP && (

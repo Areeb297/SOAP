@@ -67,6 +67,42 @@
 - [ ] Use Whisper for English transcription in backend
 - [ ] Update backend requirements for transformers and torch 
 
+## New Task: UI Structure Changes for SOAP Note Sections
+
+### Goal
+Implement UI changes to improve SOAP note section structure and styling.
+
+### Changes Required
+1. **Add section names as comments in each div**
+   - Add `<!-- SUBJECTIVE Section -->` before subjective section div
+   - Add `<!-- OBJECTIVE Section -->` before objective section div  
+   - Add `<!-- ASSESSMENT Section -->` before assessment section div
+   - Add `<!-- PLAN Section -->` before plan section div
+
+2. **Add CSS classes to section divs**
+   - Add `subjective` class to subjective section div
+   - Add `objective` class to objective section div
+   - Add `assessment` class to assessment section div
+   - Add `plan` class to plan section div
+
+3. **Add wrapper div for SOAP data**
+   - Add `<div class="soap_data">` before the first SOAP section
+   - Close this div before the Agreement Section
+
+### Implementation Steps
+- [x] Update SOAPSection component to include section-specific CSS classes
+- [x] Add HTML comments for each section
+- [x] Wrap all SOAP sections in a `soap_data` div
+- [x] Test the changes to ensure proper styling and structure
+- [x] Mark task complete after implementation
+
+### Task Status: ✅ COMPLETED
+The UI structure changes have been successfully implemented:
+- Added section-specific CSS classes (`subjective`, `objective`, `assessment`, `plan`) to each SOAP section div
+- Added HTML comments (`<!-- SUBJECTIVE Section -->`, etc.) before each section
+- Wrapped all SOAP sections in a `soap_data` div container
+- The changes maintain existing functionality while improving code structure and styling capabilities
+
 # Task: Integrate Arabic Font for PDF Export (jsPDF)
 
 ## Goal
