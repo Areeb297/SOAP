@@ -149,6 +149,50 @@ The authentication feature has been successfully implemented:
 - Implemented cancel functionality to reset the entire flow
 - Added success message when authentication is completed
 
+## New Task: Fix Text File Download Formatting
+
+### Goal
+Fix the issue where nested objects and arrays show as `[object Object]` in the downloaded text file, and display the actual data properly.
+
+### Problem Identified
+- The `formatSOAPNoteAsText` function was directly converting objects to strings
+- This resulted in `[object Object]` appearing in the text file instead of the actual data
+- Nested objects and arrays were not being properly formatted
+
+### Changes Required
+1. **Create helper function for nested value formatting**
+   - Handle arrays of objects (like medications)
+   - Handle nested objects (like vital signs)
+   - Handle simple arrays and objects
+   - Add proper indentation for readability
+
+2. **Update text formatting function**
+   - Use the new helper function to format values
+   - Maintain the existing section structure
+   - Ensure proper formatting for all data types
+
+3. **Test the fix**
+   - Verify that medications show properly instead of `[object Object]`
+   - Verify that vital signs show properly instead of `[object Object]`
+   - Test with various data structures
+
+### Implementation Steps
+- [x] Create `formatValueForText` helper function
+- [x] Update `formatSOAPNoteAsText` to use the helper function
+- [x] Handle arrays of objects with proper indentation
+- [x] Handle nested objects with proper formatting
+- [x] Test with sample SOAP note data
+- [x] Mark task complete after implementation
+
+### Task Status: ✅ COMPLETED
+The text file download formatting has been successfully fixed:
+- Created `formatValueForText` helper function to properly handle nested data structures
+- Updated `formatSOAPNoteAsText` to use the new helper function
+- Added proper indentation and formatting for arrays of objects
+- Added proper formatting for nested objects
+- Now displays actual data instead of `[object Object]`
+- Maintains readability with proper spacing and structure
+
 # Task: Integrate Arabic Font for PDF Export (jsPDF)
 
 ## Goal

@@ -417,6 +417,50 @@ export default function SOAPRecorder() {
     window.soapNoteForDownload = editedSOAPNote;
   };
 
+  // Helper function to format nested values for text output
+  function formatValueForText(value, indent = '') {
+    if (value === null || value === undefined) return 'None';
+    if (typeof value === 'string' || typeof value === 'number') return String(value);
+    
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'None';
+      
+      // Handle array of objects
+      if (typeof value[0] === 'object' && value[0] !== null) {
+        return value.map((obj, idx) => {
+          const entries = Object.entries(obj);
+          const nameEntry = entries.find(([k]) => k.toLowerCase() === 'name');
+          const otherEntries = entries.filter(([k]) => k.toLowerCase() !== 'name');
+          
+          let result = '';
+          if (nameEntry) {
+            result += `${indent}${nameEntry[1]}\n`;
+          }
+          otherEntries.forEach(([subKey, subValue]) => {
+            const formattedKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            result += `${indent}  ${formattedKey}: ${formatValueForText(subValue, indent + '    ')}\n`;
+          });
+          return result;
+        }).join('\n');
+      } else {
+        // Array of strings/numbers
+        return value.join(', ');
+      }
+    }
+    
+    if (typeof value === 'object') {
+      const entries = Object.entries(value);
+      if (entries.length === 0) return 'None';
+      
+      return entries.map(([subKey, subValue]) => {
+        const formattedKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return `${indent}${formattedKey}: ${formatValueForText(subValue, indent + '  ')}`;
+      }).join('\n');
+    }
+    
+    return String(value);
+  }
+
   // Helper function to format SOAP note as plain text
   function formatSOAPNoteAsText(soapNote) {
     const sectionTitles = {
@@ -430,7 +474,9 @@ export default function SOAPRecorder() {
       text += `\n${sectionTitles[section]}\n`;
       text += '-'.repeat(sectionTitles[section].length) + '\n';
       for (const [key, value] of Object.entries(soapNote[section] || {})) {
-        text += `${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}\n`;
+        const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const formattedValue = formatValueForText(value);
+        text += `${formattedKey}: ${formattedValue}\n`;
       }
       text += '\n';
     }
