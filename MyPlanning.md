@@ -103,6 +103,52 @@ The UI structure changes have been successfully implemented:
 - Wrapped all SOAP sections in a `soap_data` div container
 - The changes maintain existing functionality while improving code structure and styling capabilities
 
+## New Task: Add Username/Password Authentication After User Agreement
+
+### Goal
+Implement an additional security layer by requiring username and password input after the user agreement checkbox before allowing PDF/TXT downloads.
+
+### Changes Required
+1. **Add state management for authentication**
+   - Add state for username and password input
+   - Add state to track if authentication is completed
+   - Add state to show/hide authentication form
+
+2. **Create authentication form component**
+   - Username input field
+   - Password input field (with proper type="password")
+   - Confirm/Save button
+   - Cancel button to go back
+
+3. **Update download button logic**
+   - Change condition from `userAgreement` to `userAgreement && isAuthenticated`
+   - Show authentication form when checkbox is checked
+   - Hide authentication form when authentication is completed
+
+4. **Improve user experience**
+   - Clear form when user unchecks agreement
+   - Add proper validation for username/password fields
+   - Add loading state during authentication process
+
+### Implementation Steps
+- [x] Add new state variables for authentication
+- [x] Create authentication form component
+- [x] Update user agreement checkbox logic
+- [x] Update download button conditions
+- [x] Add form validation and error handling
+- [x] Test the complete authentication flow
+- [x] Mark task complete after implementation
+
+### Task Status: ✅ COMPLETED
+The authentication feature has been successfully implemented:
+- Added state management for username, password, authentication status, and form visibility
+- Created a clean authentication form with proper validation
+- Updated user agreement checkbox to show authentication form when checked
+- Modified download buttons to require both agreement and authentication
+- Added proper error handling and user feedback
+- Implemented cancel functionality to reset the entire flow
+- Added success message when authentication is completed
+
 # Task: Integrate Arabic Font for PDF Export (jsPDF)
 
 ## Goal

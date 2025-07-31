@@ -423,3 +423,59 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b9179d08",
+    "visit_date": "2025-07-31",
+    "provider_name": "Dr. Kareem",
+    "patient_name": "Adam Saleh",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Chest tightness and shortness of breath.",
+      "past_medical_history": "Adam has a history of high blood pressure and is currently taking Amlodipine 5 mg once daily. He had an appendectomy 10 years ago.",
+      "family_history": "Adam's father had a heart attack at the age of 50.",
+      "social_history": "Adam lives in Jeddah.",
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5 mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "Currently taking"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest pain with possible cardiac origin.",
+      "risk_factors": [
+        "High blood pressure",
+        "Family history of heart disease"
+      ]
+    },
+    "plan": {
+      "procedures_or_tests": [
+        "ECG",
+        "Blood tests including cardiac enzymes",
+        "Chest X-ray"
+      ],
+      "patient_education": "Patient advised on the importance of monitoring symptoms and seeking immediate care if they worsen.",
+      "follow_up_instructions": "Follow-up based on test results and clinical findings."
+    }
+  }
+}

@@ -30,6 +30,11 @@ export default function SOAPRecorder() {
   const [editedSOAPNote, setEditedSOAPNote] = useState(null);
   const [userAgreement, setUserAgreement] = useState(false);
   const [writeMode, setWriteMode] = useState(false);
+  const [showAuthForm, setShowAuthForm] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState('');
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -968,13 +973,101 @@ export default function SOAPRecorder() {
                       <input
                         type="checkbox"
                         checked={userAgreement}
-                        onChange={(e) => setUserAgreement(e.target.checked)}
+                        onChange={(e) => {
+                          setUserAgreement(e.target.checked);
+                          if (!e.target.checked) {
+                            // Reset authentication when unchecking
+                            setShowAuthForm(false);
+                            setIsAuthenticated(false);
+                            setUsername('');
+                            setPassword('');
+                            setAuthError('');
+                          } else {
+                            // Show auth form when checking
+                            setShowAuthForm(true);
+                          }
+                        }}
                         className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">
                         I have reviewed and agree with the contents of this SOAP note. I understand that this document contains medical information and I am responsible for its accuracy and appropriate use.
                       </span>
                     </label>
+                    
+                    {/* Authentication Form */}
+                    {showAuthForm && !isAuthenticated && (
+                      <div className="mt-4 p-4 bg-white border border-gray-300 rounded-lg">
+                        <h4 className="text-sm font-semibold text-gray-800 mb-3">Authentication Required</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Username
+                            </label>
+                            <input
+                              type="text"
+                              value={username}
+                              onChange={(e) => setUsername(e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Enter your username"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Password
+                            </label>
+                            <input
+                              type="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Enter your password"
+                            />
+                          </div>
+                          {authError && (
+                            <div className="text-red-600 text-xs">{authError}</div>
+                          )}
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                if (!username.trim() || !password.trim()) {
+                                  setAuthError('Please enter both username and password');
+                                  return;
+                                }
+                                // Simulate authentication (in real app, this would call an API)
+                                setIsAuthenticated(true);
+                                setShowAuthForm(false);
+                                setAuthError('');
+                              }}
+                              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-md transition"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => {
+                                setShowAuthForm(false);
+                                setUserAgreement(false);
+                                setUsername('');
+                                setPassword('');
+                                setAuthError('');
+                              }}
+                              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm rounded-md transition"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Authentication Success Message */}
+                    {isAuthenticated && (
+                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-600" />
+                          <span className="text-sm text-green-800">Authentication successful. You can now download the SOAP note.</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -983,25 +1076,27 @@ export default function SOAPRecorder() {
                   <div className="flex gap-4 justify-center mt-6">
                     <button
                       onClick={() => downloadSOAPNote('txt')}
-                      disabled={!userAgreement}
+                      disabled={!userAgreement || !isAuthenticated}
                       className={`px-4 py-2 rounded-lg transition ${
-                        userAgreement 
+                        userAgreement && isAuthenticated
                           ? 'bg-blue-500 hover:bg-blue-600 text-white cursor-pointer' 
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
-                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : ''}
+                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : 
+                             !isAuthenticated ? 'Please complete authentication before downloading' : ''}
                     >
                       Download as TXT
                     </button>
                     <button
                       onClick={() => downloadSOAPNote('pdf')}
-                      disabled={!userAgreement}
+                      disabled={!userAgreement || !isAuthenticated}
                       className={`px-4 py-2 rounded-lg transition ${
-                        userAgreement 
+                        userAgreement && isAuthenticated
                           ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer' 
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
-                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : ''}
+                      title={!userAgreement ? 'Please review and agree with the SOAP note contents before downloading' : 
+                             !isAuthenticated ? 'Please complete authentication before downloading' : ''}
                     >
                       {/* Check if content is Arabic to show appropriate label */}
                       {(checkArabic(soapNote.subjective) || 
