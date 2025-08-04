@@ -330,26 +330,30 @@ Answer only "yes" or "no"."""
         print(f"Using LLM to identify medical terms in text (length: {len(text)} chars)")
         try:
             prompt = f"""Analyze this medical transcript and identify ONLY the actual medical terms. 
-            
+
 Include ONLY:
-- Medical conditions/diseases (diabetes, hypertension, pneumonia)
-- Medications/drugs (metformin, aspirin, insulin)
-- Medical procedures (surgery, biopsy, X-ray, MRI, CT scan)
-- Laboratory tests (HbA1c, CBC, blood sugar, cholesterol)  
-- Body parts/anatomy (heart, liver, kidney)
-- Medical symptoms when specific (chest pain, shortness of breath)
+- Medical conditions/diseases (diabetes, mellitus, hyperglycemia, hypertension, pneumonia, asthma)
+- Medications/drugs (metformin, aspirin, insulin, lisinopril, atorvastatin)
+- Medical procedures (surgery, biopsy, X-ray, MRI, CT scan, echocardiogram)
+- Laboratory tests (HbA1c, A1C, CBC, blood sugar, glucose, cholesterol, creatinine)  
+- Body parts/anatomy (heart, liver, kidney, abdomen, chest)
+- Medical symptoms when specific (chest pain, shortness of breath, nausea, headache)
 - Dosages with medical context (500mg, twice daily when referring to medication)
+- Medical terminology components (mellitus in "diabetes mellitus", hyperglycemic, hypoglycemic)
 
 EXCLUDE:
-- Common words, greetings, names (Good morning, Khan, Dr. Smith)
-- Time phrases (last week, this morning, a month ago)
-- General conversation (How are you, I'm okay, Thank you)
-- Non-medical descriptors (tired, okay, fine, better)
+- Common words, greetings, names (Good morning, Khan, Dr. Smith, patient names)
+- Time phrases (last week, this morning, a month ago, today, yesterday)  
+- General conversation (How are you, I'm okay, Thank you, Hello, Goodbye)
+- Non-medical descriptors (tired, okay, fine, better, worse, little, much)
+- Articles and prepositions (the, a, an, in, on, at, with, for)
+
+IMPORTANT: Include diabetes-related terms like "diabetes", "mellitus", "hyperglycemia", "blood sugar", "glucose", "HbA1c", "A1C".
 
 Text: "{text}"
 
 Format your response as JSON with this exact structure:
-{{"medical_terms": [{{"term": "diabetes", "category": "condition"}}, {{"term": "HbA1c", "category": "test"}}]}}
+{{"medical_terms": [{{"term": "diabetes", "category": "condition"}}, {{"term": "mellitus", "category": "condition"}}, {{"term": "HbA1c", "category": "test"}}]}}
 
 Return only the JSON, no other text."""
 
@@ -527,6 +531,9 @@ Return only the JSON, no other text."""
             # If LLM identified this term and SNOMED fails, keep it as correct
             if llm_identified:
                 print(f"Keeping LLM-identified term '{term}' as correct despite SNOMED timeout")
+                result["is_correct"] = True
+                result["confidence"] = 0.8
+                result["source"] = "llm_identified_snomed_timeout"
                 return result
         
         # Get suggestions from local dictionary
@@ -611,7 +618,7 @@ Return only the JSON, no other text."""
         """
         return self.identify_medical_terms_llm(text)
     
-    def check_text(self, text: str) -> List[Dict[str, any]]:
+    def check_text(self, text: str) -> Dict[str, any]:
         """
         Check spelling of all medical terms in a text with batch processing
         
@@ -619,13 +626,16 @@ Return only the JSON, no other text."""
             text: The text to check
             
         Returns:
-            List of spell check results for each medical term
+            Dictionary with spell check results and unique term counts
         """
         medical_terms = self.identify_medical_terms(text)
         results = []
         
         # Determine if terms came from LLM (higher confidence they're correct)
         llm_available = self.use_llm and self.llm_client
+        
+        # Track unique terms for counting
+        unique_terms = set()
         
         # Process in chunks to avoid timeouts on large texts
         chunk_size = 50  # Process 50 terms at a time
@@ -640,8 +650,16 @@ Return only the JSON, no other text."""
                 spell_result["end_pos"] = end
                 spell_result["category"] = category
                 results.append(spell_result)
+                
+                # Add to unique terms set (normalize for counting)
+                unique_terms.add(term.lower().strip())
         
-        return results
+        return {
+            "results": results,
+            "unique_terms": sorted(list(unique_terms)),
+            "unique_count": len(unique_terms),
+            "total_occurrences": len(results)
+        }
     
     def add_medicine_to_dynamic_list(self, term: str):
         """Add a medicine term to the dynamic list"""

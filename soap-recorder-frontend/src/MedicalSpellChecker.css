@@ -47,6 +47,12 @@
   font-weight: 500;
 }
 
+.occurrence-count {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
 .spell-check-text {
   white-space: pre-wrap;
   word-wrap: break-word;

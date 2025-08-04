@@ -391,3 +391,128 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "48701070",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "family_history": "Unknown",
+      "social_history": "Works and feels tired after coming home, which affects his ability to exercise.",
+      "medications": [
+        {
+          "name": "Unknown diabetes medication",
+          "dosage": "Unknown",
+          "frequency": "Missed a few doses last week",
+          "route": "Oral",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes mellitus.",
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Infrequent blood sugar monitoring",
+        "Sedentary lifestyle"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Adjusted diabetes medication",
+          "dosage": "Unknown",
+          "frequency": "As prescribed",
+          "duration": "Unknown",
+          "route": "Oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator"
+      ],
+      "patient_education": "Recommended daily blood sugar monitoring and realistic exercise goals.",
+      "follow_up_instructions": "Schedule a follow-up in one month and call if there are any concerns."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f503a302",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "family_history": "Unknown",
+      "medications": [
+        {
+          "name": "Unknown",
+          "dosage": "Unknown",
+          "frequency": "Missed a few doses last week",
+          "route": "Oral",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes mellitus.",
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Infrequent blood sugar monitoring",
+        "Sedentary lifestyle"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Adjust medication",
+          "dosage": "Unknown",
+          "frequency": "Regular",
+          "duration": "Ongoing",
+          "route": "Oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator"
+      ],
+      "patient_education": "Recommended daily blood sugar checks and realistic exercise goals.",
+      "follow_up_instructions": "Schedule follow-up in one month; call if any concerns arise."
+    }
+  }
+}

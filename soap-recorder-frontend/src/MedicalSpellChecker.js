@@ -42,10 +42,16 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     fetchNlpStatus();
   }, [BACKEND_URL]);
 
+  // State for unique term counts
+  const [uniqueTermCount, setUniqueTermCount] = useState(0);
+  const [totalOccurrences, setTotalOccurrences] = useState(0);
+
   // Check medical terms with debouncing and caching
   const checkMedicalTerms = useCallback(async (textToCheck) => {
     if (!enabled || !textToCheck) {
       setMedicalTerms([]);
+      setUniqueTermCount(0);
+      setTotalOccurrences(0);
       return;
     }
 
@@ -56,6 +62,8 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
 
     if (!textToCheck.trim()) {
       setMedicalTerms([]);
+      setUniqueTermCount(0);
+      setTotalOccurrences(0);
       return;
     }
 
@@ -65,7 +73,9 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     // Check cache first
     if (termCache.has(cacheKey)) {
       const cachedResult = termCache.get(cacheKey);
-      setMedicalTerms(cachedResult);
+      setMedicalTerms(cachedResult.results || cachedResult);
+      setUniqueTermCount(cachedResult.unique_count || 0);
+      setTotalOccurrences(cachedResult.total_occurrences || (cachedResult.results || cachedResult).length);
       setCacheStats(prev => ({ ...prev, hits: prev.hits + 1 }));
       return;
     }
@@ -83,11 +93,13 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
       if (response.ok) {
         const data = await response.json();
         const results = data.results || [];
+        const uniqueCount = data.unique_count || 0;
+        const totalOccurs = data.total_occurrences || results.length;
         
-        // Cache the results
+        // Cache the full response data
         setTermCache(prev => {
           const newCache = new Map(prev);
-          newCache.set(cacheKey, results);
+          newCache.set(cacheKey, data);
           
           // Limit cache size to prevent memory issues
           if (newCache.size > 100) {
@@ -100,6 +112,8 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
         
         setCacheStats(prev => ({ ...prev, misses: prev.misses + 1 }));
         setMedicalTerms(results);
+        setUniqueTermCount(uniqueCount);
+        setTotalOccurrences(totalOccurs);
       }
     } catch (error) {
       console.error('Error checking medical terms:', error);
@@ -199,7 +213,14 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
 
   // Get CSS class based on term category and correctness
   const getTermClassName = (term) => {
-    const baseClass = term.isCorrect ? 'medical-term-correct' : 'medical-term-incorrect';
+    // Determine if term is medical based on multiple criteria
+    const isMedical = term.isCorrect || 
+                     term.source === 'llm_identified' || 
+                     term.source === 'llm_identified_snomed_timeout' ||
+                     term.source === 'spacy_nlp' ||
+                     term.source === 'local_dictionary';
+    
+    const baseClass = isMedical ? 'medical-term-correct' : 'medical-term-incorrect';
     const category = term.category || 'general';
     
     // Add category-specific classes
@@ -384,7 +405,10 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
               {showLegend ? 'Hide' : 'Show'} Legend
             </button>
             <span className="term-count">
-              {medicalTerms.length} medical term{medicalTerms.length !== 1 ? 's' : ''} found
+              {uniqueTermCount > 0 ? uniqueTermCount : medicalTerms.length} medical term{(uniqueTermCount > 0 ? uniqueTermCount : medicalTerms.length) !== 1 ? 's' : ''} found
+              {totalOccurrences > uniqueTermCount && uniqueTermCount > 0 && (
+                <span className="occurrence-count"> ({totalOccurrences} occurrences)</span>
+              )}
             </span>
           </div>
         )}
