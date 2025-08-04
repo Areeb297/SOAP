@@ -33,6 +33,10 @@ source venv/bin/activate 2>/dev/null || venv\Scripts\activate
 echo "📥 Installing Python dependencies..."
 pip install -r requirements.txt
 
+# Setup TextBlob corpora
+echo "📚 Setting up TextBlob corpora..."
+python setup_textblob.py
+
 # Check for .env file
 if [ ! -f .env ]; then
     echo "📝 Creating .env file..."

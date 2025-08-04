@@ -1,0 +1,162 @@
+/* Spell Checked Text Area Styles */
+
+.spell-checked-textarea {
+  position: relative;
+  width: 100%;
+}
+
+.spell-check-container {
+  min-height: 100px;
+  cursor: text;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.spell-check-container:hover:not(.disabled) {
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.placeholder-text {
+  color: #9ca3af;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.edit-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.edit-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.edit-textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Disabled state */
+.spell-checked-textarea.disabled .spell-check-container {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.spell-checked-textarea.disabled .spell-check-container:hover {
+  background-color: transparent;
+}
+
+.spell-checked-textarea.disabled .edit-textarea {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* RTL support */
+.edit-textarea[dir="rtl"] {
+  text-align: right;
+}
+
+/* Integration with medical spell checker */
+.spell-checked-textarea .medical-spell-checker {
+  margin: 0;
+}
+
+.spell-checked-textarea .spell-check-text {
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.2s ease;
+}
+
+.spell-checked-textarea .spell-check-text:hover {
+  border-color: #d1d5db;
+}
+
+/* Edit mode indicator */
+.spell-checked-textarea::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.2s ease;
+}
+
+.spell-checked-textarea:has(.edit-textarea:focus)::before {
+  opacity: 0.1;
+}
+
+/* Loading indicator */
+.spell-checked-textarea .loading-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .edit-textarea,
+  .spell-check-text,
+  .placeholder-text {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .spell-checked-textarea {
+    color: #f3f4f6;
+  }
+  
+  .edit-textarea {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    border-color: #4b5563;
+  }
+  
+  .edit-textarea:focus {
+    border-color: #3b82f6;
+  }
+  
+  .spell-check-container:hover:not(.disabled) {
+    background-color: #374151;
+  }
+  
+  .placeholder-text {
+    background-color: #1f2937;
+    border-color: #4b5563;
+    color: #6b7280;
+  }
+}

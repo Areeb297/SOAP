@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Loader2, Edit3, Send, Check } from 'lucide-react';
+import SpellCheckedTextArea from './SpellCheckedTextArea';
+import SpellCheckedSOAPField from './SpellCheckedSOAPField';
 
 // AmiriFont.js - Simplified approach without external dependencies
 export const loadAmiriFont = async () => {
@@ -121,6 +123,17 @@ export default function SOAPRecorder() {
       setSoapNote(note);
       setEditedSOAPNote(note);
       setUserAgreement(false);
+      
+      // Apply spell checking to SOAP note automatically
+      if (note) {
+        // Convert SOAP note to text for spell checking
+        const soapText = JSON.stringify(note, null, 2);
+        // Trigger spell checking on the SOAP note
+        setTimeout(() => {
+          // This will trigger the spell checking in the SOAP note display
+          // The MedicalSpellChecker component will automatically check the text
+        }, 100);
+      }
     } catch (error) {
       console.error('Error generating SOAP note:', error);
       alert('Failed to generate SOAP note. Please check if the backend server is running.');
@@ -180,7 +193,7 @@ export default function SOAPRecorder() {
     return cleaned;
   }
 
-  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit }) => {
+  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit, language }) => {
     const renderValue = (key, value) => {
       if (!value || value === '') return null;
       
@@ -363,23 +376,28 @@ export default function SOAPRecorder() {
                   </div>
                   <div className="text-gray-800 w-full flex justify-center">
                     {isEditing ? (
-                      isLongText ? (
-                        <textarea
-                          value={editedSOAPNote[sectionKey]?.[key] || value}
-                          onChange={(e) => onEdit(sectionKey, key, e.target.value)}
-                          className="border border-gray-300 rounded px-3 py-2 text-sm w-full min-h-[80px] max-h-60 resize-vertical focus:ring-2 focus:ring-blue-400 focus:border-transparent text-center"
-                          rows={4}
+                      <SpellCheckedSOAPField
+                        value={editedSOAPNote[sectionKey]?.[key] || value}
+                        onChange={(newValue) => onEdit(sectionKey, key, newValue)}
+                        isEditing={true}
+                        language={language}
+                        placeholder={`Enter ${key.replace(/_/g, ' ')}`}
+                        className="w-full max-w-md"
+                      />
+                    ) : (
+                      // Only use SpellCheckedSOAPField for string values, not objects or arrays
+                      typeof value === 'string' || typeof value === 'number' ? (
+                        <SpellCheckedSOAPField
+                          value={String(value)}
+                          onChange={(newValue) => onEdit(sectionKey, key, newValue)}
+                          isEditing={false}
+                          language={language}
+                          className="w-full max-w-md"
                         />
                       ) : (
-                        <input
-                          type="text"
-                          value={editedSOAPNote[sectionKey]?.[key] || value}
-                          onChange={(e) => onEdit(sectionKey, key, e.target.value)}
-                          className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-md text-center"
-                        />
+                        // For objects and arrays, use regular rendering
+                        renderValue(key, value)
                       )
-                    ) : (
-                      renderValue(key, value)
                     )}
                   </div>
                 </div>
@@ -783,15 +801,19 @@ export default function SOAPRecorder() {
           <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
             <div className="flex flex-col items-center">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Type or Paste Transcript</h2>
-              <textarea
-                value={editedTranscript}
-                onChange={e => {
-                  setTranscript(e.target.value);
-                  setEditedTranscript(e.target.value);
-                }}
-                className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
-                placeholder="Type or paste your transcript here..."
-              />
+              <div className="w-full mb-4">
+                <SpellCheckedTextArea
+                  value={editedTranscript}
+                  onChange={(newValue) => {
+                    setTranscript(newValue);
+                    setEditedTranscript(newValue);
+                  }}
+                  placeholder="Type or paste your transcript here..."
+                  language={language}
+                  enableSpellCheck={true}
+                  rows={10}
+                />
+              </div>
               <div className="flex gap-4">
                 <button
                   onClick={() => setWriteMode(false)}
@@ -816,33 +838,16 @@ export default function SOAPRecorder() {
           <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
             <div className="relative mb-4">
               <h2 className="text-xl font-semibold text-gray-800 text-center">Transcript</h2>
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
-              >
-                {isEditing ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    Save
-                  </>
-                ) : (
-                  <>
-                    <Edit3 className="w-4 h-4" />
-                    Edit
-                  </>
-                )}
-              </button>
             </div>
             
-            {isEditing ? (
-              <textarea
-                value={editedTranscript}
-                onChange={(e) => setEditedTranscript(e.target.value)}
-                className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            ) : (
-              <p className="text-gray-700 whitespace-pre-wrap">{editedTranscript}</p>
-            )}
+            <SpellCheckedTextArea
+              value={editedTranscript}
+              onChange={(newValue) => setEditedTranscript(newValue)}
+              placeholder="Transcript will appear here..."
+              language={language}
+              enableSpellCheck={true}
+              rows={8}
+            />
             
             <button
               onClick={generateSOAPNote}
@@ -985,6 +990,7 @@ export default function SOAPRecorder() {
                     sectionKey="subjective"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    language={language}
                   />
                   {/* OBJECTIVE Section */}
                   <SOAPSection 
@@ -993,6 +999,7 @@ export default function SOAPRecorder() {
                     sectionKey="objective"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    language={language}
                   />
                   {/* ASSESSMENT Section */}
                   <SOAPSection 
@@ -1001,6 +1008,7 @@ export default function SOAPRecorder() {
                     sectionKey="assessment"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    language={language}
                   />
                   {/* PLAN Section */}
                   <SOAPSection 
@@ -1009,6 +1017,7 @@ export default function SOAPRecorder() {
                     sectionKey="plan"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    language={language}
                   />
                 </div>
 

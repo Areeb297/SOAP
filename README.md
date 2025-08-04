@@ -6,6 +6,7 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 
 - **Voice Recording**: Simple click-to-record interface with visual feedback
 - **Speech-to-Text**: Uses OpenAI Whisper for accurate transcription
+- **Intelligent Medical Spell Checking**: Real-time spell correction for medical terms with SNOMED CT integration
 - **Editable Transcripts**: Doctors can edit transcripts before processing
 - **AI-Powered SOAP Generation**: Uses GPT-4o-mini to structure conversations into SOAP format
 - **Structured Output**: Displays SOAP notes in an organized, professional format

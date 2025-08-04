@@ -1,0 +1,107 @@
+/* SOAP Field Spell Checker Styles */
+
+/* For single-line fields */
+.spell-checked-input .spell-checked-textarea {
+  margin: 0;
+}
+
+.spell-checked-input .spell-check-text {
+  min-height: 40px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.spell-checked-input .edit-textarea {
+  min-height: 40px;
+  padding: 8px 12px;
+  resize: none;
+}
+
+/* For SOAP field specific styling */
+.soap-field-textarea .spell-check-text {
+  text-align: center;
+}
+
+.soap-field-textarea .edit-textarea {
+  text-align: center;
+}
+
+.soap-field-input .spell-check-text {
+  min-height: 40px;
+  text-align: center;
+}
+
+.soap-field-input .edit-textarea {
+  text-align: center;
+}
+
+/* Integration with SOAP sections */
+.soap_data .spell-checked-textarea {
+  margin: 0 auto;
+}
+
+.soap_data .medical-term-correct,
+.soap_data .medical-term-incorrect {
+  font-weight: 500;
+}
+
+/* Responsive handling for SOAP fields */
+@media (max-width: 768px) {
+  .soap-field-textarea,
+  .soap-field-input {
+    width: 100%;
+  }
+}
+
+/* Arabic support for SOAP fields */
+.soap-field-textarea[dir="rtl"] .spell-check-text,
+.soap-field-textarea[dir="rtl"] .edit-textarea,
+.soap-field-input[dir="rtl"] .spell-check-text,
+.soap-field-input[dir="rtl"] .edit-textarea {
+  text-align: right;
+}
+
+/* Disabled state for readonly SOAP notes */
+.soap_data .spell-checked-textarea.disabled {
+  pointer-events: none;
+}
+
+/* Loading state for spell checking */
+.soap_data .spell-check-loading {
+  display: none;
+}
+
+/* Hover effects for better UX */
+.soap_data .spell-check-container:hover {
+  background-color: #f9fafb;
+  cursor: text;
+}
+
+/* Focus state for better visibility */
+.soap_data .edit-textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Suggestion dropdown positioning in SOAP context */
+.soap_data .suggestions-dropdown {
+  z-index: 1001;
+}
+
+/* Print styles */
+@media print {
+  .medical-term-correct,
+  .medical-term-incorrect {
+    border-bottom: none;
+    text-decoration: none;
+  }
+  
+  .spell-check-container {
+    border: none;
+  }
+  
+  .suggestions-dropdown {
+    display: none;
+  }
+}

@@ -10,6 +10,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 import subprocess
+from medical_spell_check import MedicalSpellChecker
 
 # Set temporary directory to system default
 temp_dir = tempfile.gettempdir()
@@ -30,6 +31,9 @@ if not openai.api_key:
 
 # Use OpenAI Python SDK 1.x for chat completions
 client = OpenAI()
+
+# Initialize medical spell checker
+medical_spell_checker = MedicalSpellChecker()
 
 # Updated English SOAP prompt
 SOAP_SYSTEM_PROMPT = """You are a medical documentation assistant specialized in creating SOAP notes from doctor-patient conversations.
@@ -919,6 +923,110 @@ def home():
 def health_check():
     """Health check endpoint"""
     return jsonify({'status': 'healthy'})
+
+@app.route('/check-medical-terms', methods=['POST'])
+def check_medical_terms():
+    """Check medical terms in text for spelling errors"""
+    try:
+        data = request.json
+        text = data.get('text', '')
+        
+        if not text:
+            return jsonify({'error': 'No text provided'}), 400
+        
+        # Ensure text is a string to fix .trim() error
+        if not isinstance(text, str):
+            text = str(text) if text else ""
+        
+        # Check medical terms
+        results = medical_spell_checker.check_text(text)
+        
+        # Format results for frontend
+        formatted_results = []
+        for result in results:
+            formatted_results.append({
+                'term': result['term'],
+                'start': result['start_pos'],
+                'end': result['end_pos'],
+                'isCorrect': result['is_correct'],
+                'suggestions': result['suggestions'],
+                'confidence': result['confidence']
+            })
+        
+        return jsonify({
+            'results': formatted_results,
+            'text': text
+        })
+        
+    except Exception as e:
+        print(f"Error checking medical terms: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/add-medicine', methods=['POST'])
+def add_medicine():
+    """Add a medicine term to the dynamic list"""
+    try:
+        data = request.json
+        term = data.get('term', '')
+        
+        if not term:
+            return jsonify({'error': 'No term provided'}), 400
+        
+        # Add to dynamic list
+        medical_spell_checker.add_medicine_to_dynamic_list(term)
+        
+        return jsonify({
+            'message': f'Added "{term}" to dynamic medicine list',
+            'success': True
+        })
+        
+    except Exception as e:
+        print(f"Error adding medicine: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/dynamic-list-stats', methods=['GET'])
+def get_dynamic_list_stats():
+    """Get statistics about the dynamic medicine list"""
+    try:
+        stats = medical_spell_checker.get_dynamic_list_stats()
+        return jsonify(stats)
+    except Exception as e:
+        print(f"Error getting dynamic list stats: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/validate-medical-term', methods=['POST'])
+def validate_medical_term():
+    """Validate a single medical term"""
+    try:
+        data = request.json
+        term = data.get('term', '')
+        context = data.get('context', '')
+        position = data.get('position', 0)
+        
+        if not term:
+            return jsonify({'error': 'No term provided'}), 400
+        
+        # Check the term
+        result = medical_spell_checker.check_spelling(term)
+        
+        # Get contextual suggestions if available
+        if context and not result['is_correct']:
+            contextual_suggestions = medical_spell_checker.get_contextual_suggestions(
+                term, context, position
+            )
+            if contextual_suggestions:
+                result['suggestions'] = contextual_suggestions
+        
+        return jsonify({
+            'term': term,
+            'isCorrect': result['is_correct'],
+            'suggestions': result['suggestions'],
+            'confidence': result['confidence']
+        })
+        
+    except Exception as e:
+        print(f"Error validating medical term: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     print("Starting SOAP Note Backend Server...")

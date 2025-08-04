@@ -1,0 +1,235 @@
+/* Medical Spell Checker Styles */
+
+.medical-spell-checker {
+  position: relative;
+  width: 100%;
+  min-height: 20px;
+}
+
+.spell-check-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+.medical-term-correct {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+  background-color: rgba(37, 99, 235, 0.1);
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.medical-term-correct:hover {
+  background-color: rgba(37, 99, 235, 0.2);
+}
+
+.medical-term-incorrect {
+  color: #dc2626;
+  text-decoration: underline;
+  cursor: pointer;
+  background-color: rgba(220, 38, 38, 0.1);
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.medical-term-incorrect:hover {
+  background-color: rgba(220, 38, 38, 0.2);
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.suggestions-header {
+  padding: 8px 12px;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #d1d5db;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+  border-radius: 8px 8px 0 0;
+}
+
+.suggestions-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+  color: #374151;
+}
+
+.suggestion-item:hover {
+  background-color: #f9fafb;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.confirm-item {
+  padding: 12px;
+}
+
+.confirm-item > div:first-child {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-yes,
+.confirm-no {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.confirm-yes {
+  background-color: #10b981;
+  color: white;
+}
+
+.confirm-yes:hover {
+  background-color: #059669;
+}
+
+.confirm-no {
+  background-color: #6b7280;
+  color: white;
+}
+
+.confirm-no:hover {
+  background-color: #4b5563;
+}
+
+.spell-check-indicator {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background-color: #3b82f6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  z-index: 10;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Disabled state */
+.medical-spell-checker.disabled .medical-term-correct,
+.medical-spell-checker.disabled .medical-term-incorrect {
+  border-bottom: none;
+  cursor: default;
+}
+
+.medical-spell-checker.disabled .medical-term-correct:hover,
+.medical-spell-checker.disabled .medical-term-incorrect:hover {
+  background-color: transparent;
+}
+
+/* Arabic language support */
+.medical-spell-checker[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+.medical-spell-checker[dir="rtl"] .suggestions-dropdown {
+  right: auto;
+  left: auto;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .suggestions-dropdown {
+    max-width: 250px;
+    font-size: 13px;
+  }
+  
+  .suggestion-item {
+    padding: 8px 10px;
+  }
+}
+
+/* Animation for underlines */
+@keyframes underline-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.medical-term-incorrect {
+  animation: underline-pulse 2s ease-in-out infinite;
+}
+
+/* Tooltip styles */
+.medical-term-correct::after,
+.medical-term-incorrect::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #1f2937;
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.medical-term-correct:hover::after,
+.medical-term-incorrect:hover::after {
+  opacity: 0;
+}
+
+/* Integration with existing styles */
+.medical-spell-checker textarea {
+  display: none;
+}
+
+.medical-spell-checker.editing textarea {
+  display: block;
+}
+
+.medical-spell-checker.editing .spell-check-text {
+  display: none;
+}

@@ -1,0 +1,309 @@
+{
+  "medicines": [],
+  "cache": {
+    "indicate": {
+      "term": "indicate",
+      "is_correct": false,
+      "suggestions": [
+        "diabetes"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 12,
+      "end_pos": 20
+    },
+    "cholesterol": {
+      "term": "cholesterol",
+      "is_correct": false,
+      "suggestions": [
+        "cholestrol"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 21,
+      "end_pos": 32
+    },
+    "pain": {
+      "term": "pain",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 13,
+      "end_pos": 17
+    },
+    "troponin": {
+      "term": "troponin",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 30,
+      "end_pos": 38
+    },
+    "cholestrol": {
+      "term": "cholestrol",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 22,
+      "end_pos": 32
+    },
+    "rate": {
+      "term": "rate",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 55,
+      "end_pos": 59
+    },
+    "radiate": {
+      "term": "radiate",
+      "is_correct": false,
+      "suggestions": [
+        "diabetes"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 542,
+      "end_pos": 549
+    },
+    "500mg": {
+      "term": "500mg",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 980,
+      "end_pos": 985
+    },
+    "20mg": {
+      "term": "20mg",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1012,
+      "end_pos": 1016
+    },
+    "10mg": {
+      "term": "10mg",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1044,
+      "end_pos": 1048
+    },
+    "nitroglycerin": {
+      "term": "nitroglycerin",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "50mcg": {
+      "term": "50mcg",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1560,
+      "end_pos": 1565
+    },
+    "sertraline": {
+      "term": "Sertraline",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1590,
+      "end_pos": 1600
+    },
+    "warfarin": {
+      "term": "Warfarin",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1158,
+      "end_pos": 1166
+    },
+    "5mg": {
+      "term": "5mg",
+      "is_correct": false,
+      "suggestions": [
+        "my"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 1167,
+      "end_pos": 1170
+    },
+    "metoprolol": {
+      "term": "Metoprolol",
+      "is_correct": false,
+      "suggestions": [
+        "omeprazole"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 1205,
+      "end_pos": 1215
+    },
+    "25mg": {
+      "term": "25mg",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1216,
+      "end_pos": 1220
+    },
+    "penicillin": {
+      "term": "penicillin",
+      "is_correct": false,
+      "suggestions": [
+        "amoxicillin"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 1267,
+      "end_pos": 1277
+    },
+    "brain": {
+      "term": "brain",
+      "is_correct": false,
+      "suggestions": [
+        "migraine"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 2023,
+      "end_pos": 2028
+    },
+    "neurology": {
+      "term": "neurology",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 39,
+      "end_pos": 48
+    },
+    "properly": {
+      "term": "properly",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 359,
+      "end_pos": 367
+    },
+    "problems": {
+      "term": "problems",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 639,
+      "end_pos": 647
+    },
+    "pressure": {
+      "term": "pressure",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1068,
+      "end_pos": 1076
+    },
+    "previous": {
+      "term": "previous",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1284,
+      "end_pos": 1292
+    },
+    "neurological": {
+      "term": "neurological",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "immediate": {
+      "term": "immediate",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 2073,
+      "end_pos": 2082
+    },
+    "asperin": {
+      "term": "asperin",
+      "is_correct": false,
+      "suggestions": [
+        "aspirin"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 2049,
+      "end_pos": 2056
+    },
+    "werfarin": {
+      "term": "Werfarin",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1160,
+      "end_pos": 1168
+    },
+    "metoprolool": {
+      "term": "Metoprolool",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1208,
+      "end_pos": 1219
+    },
+    "warfen": {
+      "term": "warfen",
+      "is_correct": false,
+      "suggestions": [
+        "Warfarin"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 11,
+      "end_pos": 17
+    },
+    "paninclin": {
+      "term": "paninclin",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 19,
+      "end_pos": 28
+    },
+    "ibroufen": {
+      "term": "ibroufen",
+      "is_correct": false,
+      "suggestions": [
+        "ibuprofen"
+      ],
+      "confidence": 0.7,
+      "source": null
+    }
+  },
+  "classification_cache": {},
+  "last_updated": "2025-08-03T16:56:52.410205"
+}
