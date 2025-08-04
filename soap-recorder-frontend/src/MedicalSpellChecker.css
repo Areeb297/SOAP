@@ -6,10 +6,52 @@
   min-height: 20px;
 }
 
+/* Spell Check Content Wrapper */
+.spell-check-content {
+  position: relative;
+  width: 100%;
+}
+
+/* Spell Checker Controls */
+.spell-checker-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  z-index: 5;
+}
+
+.legend-toggle {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.legend-toggle:hover {
+  background-color: #2563eb;
+}
+
+.term-count {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 .spell-check-text {
   white-space: pre-wrap;
   word-wrap: break-word;
   line-height: 1.5;
+  color: #374151; /* Ensure text is dark, not grey */
 }
 
 .medical-term-correct {
@@ -232,4 +274,228 @@
 
 .medical-spell-checker.editing .spell-check-text {
   display: none;
+}
+
+/* Medical Term Categories */
+.medical-category-medication {
+  border-left: 3px solid #10b981 !important;
+}
+
+.medical-category-condition {
+  border-left: 3px solid #f59e0b !important;
+}
+
+.medical-category-test {
+  border-left: 3px solid #8b5cf6 !important;
+}
+
+.medical-category-vital-sign {
+  border-left: 3px solid #ef4444 !important;
+}
+
+.medical-category-imaging {
+  border-left: 3px solid #06b6d4 !important;
+}
+
+.medical-category-dosage {
+  border-left: 3px solid #84cc16 !important;
+}
+
+.medical-category-anatomy {
+  border-left: 3px solid #f97316 !important;
+}
+
+.medical-category-symptom {
+  border-left: 3px solid #ec4899 !important;
+}
+
+.medical-category-procedure {
+  border-left: 3px solid #6366f1 !important;
+}
+
+/* Legend Styles */
+.medical-legend {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  min-width: 250px;
+  max-width: 350px;
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #d1d5db;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+.legend-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.legend-close:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.legend-content {
+  padding: 12px 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.legend-section {
+  margin-bottom: 16px;
+}
+
+.legend-section:last-child {
+  margin-bottom: 0;
+}
+
+.legend-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  margin-right: 8px;
+  border: 1px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+/* Legend color mappings */
+.legend-color.medical-term-correct {
+  background-color: #2563eb;
+}
+
+.legend-color.medical-term-incorrect {
+  background-color: #dc2626;
+}
+
+.legend-color.medical-category-medication {
+  background-color: #10b981;
+}
+
+.legend-color.medical-category-condition {
+  background-color: #f59e0b;
+}
+
+.legend-color.medical-category-test {
+  background-color: #8b5cf6;
+}
+
+.legend-color.medical-category-vital-sign {
+  background-color: #ef4444;
+}
+
+.legend-color.medical-category-imaging {
+  background-color: #06b6d4;
+}
+
+.legend-color.medical-category-dosage {
+  background-color: #84cc16;
+}
+
+.legend-color.medical-category-anatomy {
+  background-color: #f97316;
+}
+
+.legend-color.medical-category-symptom {
+  background-color: #ec4899;
+}
+
+.legend-color.medical-category-procedure {
+  background-color: #6366f1;
+}
+
+/* NLP Status */
+.nlp-status {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.status-indicator.available {
+  background-color: #10b981;
+}
+
+.status-indicator.unavailable {
+  background-color: #ef4444;
+}
+
+.model-info {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+  margin-left: 14px;
+}
+
+/* Cache Statistics */
+.cache-stats {
+  font-size: 12px;
+  color: #374151;
+}
+
+.cache-stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding: 2px 0;
+}
+
+.cache-stat:last-child {
+  margin-bottom: 0;
+}
+
+.cache-stat span {
+  font-weight: 500;
 }

@@ -1,23 +1,47 @@
 # requirements.txt - Python dependencies for SOAP Note Voice Recorder
+# Compatible with Python 3.12
 
 # Flask web framework
-flask==3.0.0
-flask-cors==4.0.0
+Flask==3.0.3
+flask-cors==4.0.1
 
-# OpenAI API for GPT-4 mini (latest stable version, as of July 2025)
-openai>=1.23.0   # Use the latest pip release: pip install -U openai
+# OpenAI SDK (latest stable version, as of August 2025)
+openai==1.98.0
 
-# Additional utilities
-python-dotenv==1.0.1      # Latest stable
-transformers>=4.41.0      # Recent version, update if you need latest
-torch>=2.2.0              # Works with 3.11 and transformers
-pydub
+# Environment variables
+python-dotenv==1.0.1
+
+# HTTP and typing (often resolved transitively, pinned here for stability)
+requests==2.32.3
+typing-extensions==4.14.1
+setuptools>=68.0.0
+
+# Audio helpers (ffmpeg is an external binary, install separately on system PATH)
 ffmpeg-python==0.2.0
-numpy==1.26.2
-scipy==1.11.4
 
 # Medical spell checking dependencies
-textblob==0.18.0
+textblob==0.18.0.post0
 fuzzywuzzy==0.18.0
-python-Levenshtein==0.25.1  # For better fuzzy matching performance
-requests==2.32.3  # For SNOMED CT API calls
+python-Levenshtein==0.25.1  # For better fuzzy matching performance - eliminates warning
+
+# Medical NLP with spaCy and scispaCy
+spacy>=3.7.0
+scispacy>=0.5.4
+
+# spaCy models (install after pip install)
+# REQUIRED: Basic English model
+# python -m spacy download en_core_web_sm
+
+# OPTIONAL: Enhanced medical vocabulary models (for better accuracy)
+# Run: python install_medical_models.py
+# OR manually install:
+# pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz
+# pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz
+
+# Testing (optional but repo includes tests)
+pytest==8.3.2
+
+# Notes:
+# - transformers/torch/pydub/numpy/scipy were removed as they are not used by app.py
+# - Ensure FFmpeg is installed separately and `ffmpeg` is available on PATH
+# - python-Levenshtein provides significant speed improvements for fuzzywuzzy

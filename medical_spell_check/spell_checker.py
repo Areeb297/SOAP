@@ -10,12 +10,27 @@ from typing import List, Dict, Tuple, Optional
 from .medical_dictionary import MedicalDictionary
 from .snomed_api import SnomedAPI
 from .dynamic_medicine_list import DynamicMedicineList
+from .medical_nlp import MedicalNLP
+import openai
+from openai import OpenAI
+import os
 
 class MedicalSpellChecker:
     def __init__(self):
         self.medical_dict = MedicalDictionary()
         self.snomed_api = SnomedAPI()
         self.dynamic_list = DynamicMedicineList()
+        
+        # Initialize Medical NLP (replaces LLM for better performance)
+        self.medical_nlp = MedicalNLP()
+        
+        # Initialize OpenAI client for LLM-based classification (fallback only)
+        try:
+            self.llm_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            self.use_llm = bool(os.getenv("OPENAI_API_KEY"))
+        except:
+            self.llm_client = None
+            self.use_llm = False
         
         # Enhanced medical term patterns for faster detection
         self.medical_patterns = [
@@ -38,98 +53,439 @@ class MedicalSpellChecker:
         # Compile patterns for efficiency
         self.compiled_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in self.medical_patterns]
         
-        # Smart skip words (expanded but focused)
+        # Comprehensive skip words - common English words that are not medical terms
         self.skip_words = {
+            # Articles, conjunctions, prepositions
             'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-            'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-            'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those',
+            'of', 'with', 'by', 'from', 'into', 'through', 'during', 'before', 'after',
+            'above', 'below', 'up', 'down', 'out', 'off', 'over', 'under', 'again',
+            'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how',
+            
+            # Verbs
+            'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
+            'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might',
+            'can', 'must', 'shall', 'ought', 'need', 'dare', 'used', 'want', 'like',
+            'know', 'think', 'see', 'get', 'go', 'come', 'take', 'give', 'make',
+            'put', 'say', 'tell', 'ask', 'help', 'try', 'keep', 'let', 'seem',
+            'turn', 'start', 'show', 'hear', 'play', 'run', 'move', 'live', 'believe',
+            'bring', 'happen', 'write', 'provide', 'sit', 'stand', 'lose', 'pay',
+            'meet', 'include', 'continue', 'set', 'learn', 'change', 'lead', 'understand',
+            'watch', 'follow', 'stop', 'create', 'speak', 'read', 'allow', 'add',
+            'spend', 'grow', 'open', 'walk', 'win', 'offer', 'remember', 'love',
+            'consider', 'appear', 'buy', 'wait', 'serve', 'die', 'send', 'expect',
+            'build', 'stay', 'fall', 'cut', 'reach', 'kill', 'remain', 'suggest',
+            'raise', 'pass', 'sell', 'require', 'report', 'decide', 'pull',
+            
+            # Pronouns
             'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her',
             'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their',
-            'mine', 'yours', 'his', 'hers', 'ours', 'theirs',
-            # User's specific examples
-            'online', 'decide', 'side', 'alcohol', 'wine', 'beer', 'coffee',
-            'water', 'food', 'sleep', 'work', 'home', 'car', 'phone', 'computer',
-            'book', 'paper', 'pen', 'table', 'chair', 'door', 'window', 'light',
-            'time', 'day', 'night', 'morning', 'evening', 'afternoon'
+            'mine', 'yours', 'his', 'hers', 'ours', 'theirs', 'myself', 'yourself',
+            'himself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves',
+            'this', 'that', 'these', 'those', 'who', 'whom', 'whose', 'which', 'what',
+            
+            # Common adjectives/adverbs
+            'good', 'bad', 'big', 'small', 'large', 'little', 'long', 'short',
+            'high', 'low', 'hot', 'cold', 'warm', 'cool', 'new', 'old', 'young',
+            'great', 'important', 'public', 'same', 'different', 'able', 'ready',
+            'possible', 'available', 'free', 'sure', 'common', 'whole', 'clear',
+            'easy', 'hard', 'simple', 'difficult', 'early', 'late', 'strong', 'weak',
+            'nice', 'fine', 'ok', 'okay', 'right', 'wrong', 'true', 'false',
+            'real', 'full', 'empty', 'clean', 'dirty', 'safe', 'dangerous', 'happy',
+            'sad', 'angry', 'afraid', 'surprised', 'excited', 'tired', 'hungry',
+            'thirsty', 'sick', 'healthy', 'rich', 'poor', 'smart', 'stupid',
+            'beautiful', 'ugly', 'interesting', 'boring', 'funny', 'serious',
+            'quiet', 'loud', 'fast', 'slow', 'careful', 'careless', 'kind', 'mean',
+            'friendly', 'unfriendly', 'polite', 'rude', 'honest', 'dishonest',
+            'very', 'quite', 'rather', 'pretty', 'really', 'actually', 'just',
+            'only', 'even', 'also', 'too', 'so', 'such', 'much', 'many', 'few',
+            'more', 'most', 'less', 'least', 'enough', 'almost', 'always', 'never',
+            'sometimes', 'often', 'usually', 'rarely', 'hardly', 'nearly', 'probably',
+            'certainly', 'perhaps', 'maybe', 'definitely', 'absolutely', 'completely',
+            'totally', 'exactly', 'directly', 'immediately', 'quickly', 'slowly',
+            'carefully', 'easily', 'simply', 'clearly', 'obviously', 'especially',
+            'particularly', 'generally', 'usually', 'normally', 'typically',
+            
+            # Common nouns (non-medical)
+            'time', 'day', 'night', 'morning', 'evening', 'afternoon', 'week', 'month',
+            'year', 'today', 'tomorrow', 'yesterday', 'hour', 'minute', 'second',
+            'moment', 'while', 'period', 'season', 'spring', 'summer', 'fall', 'winter',
+            'home', 'house', 'room', 'kitchen', 'bedroom', 'bathroom', 'office',
+            'school', 'store', 'shop', 'restaurant', 'hotel', 'hospital', 'church',
+            'park', 'street', 'road', 'car', 'bus', 'train', 'plane', 'bike',
+            'boat', 'ship', 'phone', 'computer', 'internet', 'email', 'website',
+            'book', 'paper', 'pen', 'pencil', 'table', 'chair', 'door', 'window',
+            'wall', 'floor', 'ceiling', 'light', 'lamp', 'bed', 'couch', 'tv',
+            'radio', 'music', 'movie', 'game', 'sport', 'ball', 'team', 'player',
+            'money', 'dollar', 'cent', 'price', 'cost', 'job', 'work', 'business',
+            'company', 'boss', 'employee', 'worker', 'customer', 'client', 'service',
+            'product', 'item', 'thing', 'stuff', 'object', 'tool', 'machine',
+            'equipment', 'device', 'system', 'method', 'way', 'process', 'step',
+            'part', 'piece', 'section', 'area', 'place', 'location', 'position',
+            'point', 'line', 'circle', 'square', 'triangle', 'shape', 'form',
+            'size', 'length', 'width', 'height', 'weight', 'speed', 'distance',
+            'number', 'amount', 'quantity', 'level', 'degree', 'rate', 'percent',
+            'food', 'water', 'drink', 'coffee', 'tea', 'milk', 'juice', 'beer',
+            'wine', 'alcohol', 'bread', 'meat', 'fish', 'chicken', 'beef', 'pork',
+            'cheese', 'egg', 'fruit', 'apple', 'orange', 'banana', 'vegetable',
+            'potato', 'tomato', 'onion', 'rice', 'pasta', 'pizza', 'sandwich',
+            'soup', 'salad', 'cake', 'cookie', 'ice', 'cream', 'sugar', 'salt',
+            'people', 'person', 'man', 'woman', 'child', 'baby', 'boy', 'girl',
+            'family', 'parent', 'father', 'mother', 'son', 'daughter', 'brother',
+            'sister', 'husband', 'wife', 'friend', 'neighbor', 'guest', 'visitor',
+            'name', 'age', 'birthday', 'address', 'phone', 'email', 'country',
+            'city', 'state', 'world', 'earth', 'sky', 'sun', 'moon', 'star',
+            'cloud', 'rain', 'snow', 'wind', 'weather', 'temperature', 'season',
+            'color', 'red', 'blue', 'green', 'yellow', 'black', 'white', 'brown',
+            'orange', 'purple', 'pink', 'gray', 'silver', 'gold',
+            
+            # Medical context words that should NOT be flagged for spelling
+            'preventing', 'prevention', 'routine', 'treatment', 'treatments', 'prescribed', 
+            'prescribing', 'medicine', 'medicines', 'medication', 'medications', 'therapy',
+            'therapies', 'procedure', 'procedures', 'diagnosis', 'diagnoses', 'symptom',
+            'symptoms', 'condition', 'conditions', 'patient', 'patients', 'doctor', 'doctors',
+            'physician', 'physicians', 'nurse', 'nurses', 'hospital', 'clinic', 'medical',
+            'clinical', 'health', 'healthcare', 'examination', 'exam', 'visit', 'appointment',
+            'follow', 'followup', 'follow-up', 'checkup', 'check-up', 'monitoring', 'monitor',
+            'screening', 'tested', 'testing', 'results', 'finding', 'findings', 'normal',
+            'abnormal', 'positive', 'negative', 'elevated', 'decreased', 'increased', 'stable',
+            'chronic', 'acute', 'severe', 'mild', 'moderate', 'recent', 'history', 'family',
+            'personal', 'social', 'allergic', 'allergy', 'allergies', 'reaction', 'reactions',
+            'dosage', 'dose', 'doses', 'daily', 'weekly', 'monthly', 'twice', 'once', 'times',
+            'morning', 'evening', 'night', 'bedtime', 'meals', 'before', 'after', 'with', 'without',
+            'take', 'taking', 'taken', 'discontinue', 'continue', 'start', 'stop', 'increase',
+            'decrease', 'adjust', 'change', 'switch', 'replace', 'substitute', 'alternative',
+            'recommend', 'recommended', 'suggest', 'suggested', 'advise', 'advised', 'instruct',
+            'instructed', 'explain', 'explained', 'discuss', 'discussed', 'review', 'reviewed',
+            'assess', 'assessed', 'evaluate', 'evaluated', 'examine', 'examined', 'observe',
+            'observed', 'report', 'reported', 'complain', 'complained', 'concern', 'concerned',
+            'worry', 'worried', 'improve', 'improved', 'worsen', 'worsened', 'progress',
+            'progressed', 'recover', 'recovered', 'healing', 'healed', 'response', 'responded',
+            'effective', 'ineffective', 'helpful', 'unhelpful', 'beneficial', 'harmful',
+            'side', 'effects', 'adverse', 'contraindication', 'indication', 'precaution',
+            'warning', 'caution', 'safety', 'risk', 'benefit', 'outcome', 'prognosis',
+            
+            # Words that commonly get flagged incorrectly
+            'online', 'decide', 'provide', 'provided', 'service', 'services',
+            'include', 'including', 'information', 'system', 'systems', 'process',
+            'processes', 'method', 'methods', 'way', 'ways', 'type', 'types',
+            'kind', 'kinds', 'form', 'forms', 'part', 'parts', 'section', 'sections',
+            'area', 'areas', 'place', 'places', 'time', 'times', 'case', 'cases',
+            'example', 'examples', 'problem', 'problems', 'question', 'questions',
+            'answer', 'answers', 'solution', 'solutions', 'result', 'results',
+            'effect', 'effects', 'cause', 'causes', 'reason', 'reasons', 'purpose',
+            'purposes', 'goal', 'goals', 'plan', 'plans', 'idea', 'ideas',
+            'thought', 'thoughts', 'opinion', 'opinions', 'view', 'views',
+            'point', 'points', 'fact', 'facts', 'detail', 'details', 'item',
+            'items', 'list', 'lists', 'order', 'orders', 'number', 'numbers',
+            'amount', 'amounts', 'level', 'levels', 'rate', 'rates', 'value',
+            'values', 'price', 'prices', 'cost', 'costs', 'benefit', 'benefits',
+            'advantage', 'advantages', 'disadvantage', 'disadvantages', 'feature',
+            'features', 'option', 'options', 'choice', 'choices', 'decision',
+            'decisions', 'action', 'actions', 'activity', 'activities', 'event',
+            'events', 'situation', 'situations', 'condition', 'conditions',
+            'state', 'states', 'status', 'position', 'positions', 'role', 'roles',
+            'function', 'functions', 'job', 'jobs', 'task', 'tasks', 'duty', 'duties',
+            'responsibility', 'responsibilities', 'opportunity', 'opportunities',
+            'chance', 'chances', 'possibility', 'possibilities', 'ability',
+            'abilities', 'skill', 'skills', 'knowledge', 'experience', 'background',
+            'education', 'training', 'learning', 'study', 'research', 'test',
+            'tests', 'exam', 'exams', 'grade', 'grades', 'score', 'scores',
+            'mark', 'marks', 'record', 'records', 'report', 'reports', 'document',
+            'documents', 'file', 'files', 'page', 'pages', 'line', 'lines',
+            'word', 'words', 'sentence', 'sentences', 'paragraph', 'paragraphs',
+            'text', 'texts', 'message', 'messages', 'letter', 'letters', 'note',
+            'notes', 'comment', 'comments', 'remark', 'remarks', 'statement',
+            'statements', 'explanation', 'explanations', 'description', 'descriptions',
+            'definition', 'definitions', 'instruction', 'instructions', 'direction',
+            'directions', 'rule', 'rules', 'law', 'laws', 'regulation', 'regulations',
+            'policy', 'policies', 'procedure', 'procedures', 'standard', 'standards',
+            'requirement', 'requirements', 'specification', 'specifications',
+            'guideline', 'guidelines', 'principle', 'principles', 'theory',
+            'theories', 'concept', 'concepts', 'model', 'models', 'pattern',
+            'patterns', 'structure', 'structures', 'design', 'designs', 'style',
+            'styles', 'fashion', 'trend', 'trends', 'culture', 'society',
+            'community', 'group', 'groups', 'team', 'teams', 'organization',
+            'organizations', 'company', 'companies', 'business', 'businesses',
+            'industry', 'industries', 'market', 'markets', 'economy', 'economics',
+            'politics', 'government', 'authority', 'authorities', 'power', 'powers',
+            'control', 'influence', 'leadership', 'management', 'administration',
+            'operation', 'operations', 'production', 'manufacturing', 'development',
+            'improvement', 'progress', 'growth', 'change', 'changes', 'difference',
+            'differences', 'comparison', 'comparisons', 'contrast', 'contrasts',
+            'relationship', 'relationships', 'connection', 'connections', 'link',
+            'links', 'association', 'associations', 'partnership', 'partnerships',
+            'cooperation', 'collaboration', 'communication', 'conversation',
+            'conversations', 'discussion', 'discussions', 'meeting', 'meetings',
+            'conference', 'conferences', 'presentation', 'presentations', 'speech',
+            'speeches', 'talk', 'talks', 'interview', 'interviews', 'negotiation',
+            'negotiations', 'agreement', 'agreements', 'contract', 'contracts',
+            'deal', 'deals', 'offer', 'offers', 'proposal', 'proposals', 'suggestion',
+            'suggestions', 'recommendation', 'recommendations', 'advice', 'tip',
+            'tips', 'hint', 'hints', 'clue', 'clues', 'sign', 'signs', 'signal',
+            'signals', 'warning', 'warnings', 'alarm', 'alarms', 'emergency',
+            'emergencies', 'crisis', 'danger', 'dangers', 'risk', 'risks',
+            'threat', 'threats', 'challenge', 'challenges', 'difficulty',
+            'difficulties', 'trouble', 'troubles', 'issue', 'issues', 'concern',
+            'concerns', 'worry', 'worries', 'fear', 'fears', 'anxiety', 'stress',
+            'pressure', 'tension', 'conflict', 'conflicts', 'dispute', 'disputes',
+            'argument', 'arguments', 'fight', 'fights', 'war', 'wars', 'battle',
+            'battles', 'competition', 'competitions', 'contest', 'contests',
+            'game', 'games', 'match', 'matches', 'race', 'races', 'tournament',
+            'tournaments', 'championship', 'championships', 'victory', 'victories',
+            'win', 'wins', 'success', 'failure', 'failures', 'mistake', 'mistakes',
+            'error', 'errors', 'fault', 'faults', 'blame', 'criticism', 'praise',
+            'compliment', 'compliments', 'reward', 'rewards', 'prize', 'prizes',
+            'gift', 'gifts', 'present', 'presents', 'surprise', 'surprises',
+            'celebration', 'celebrations', 'party', 'parties', 'festival',
+            'festivals', 'holiday', 'holidays', 'vacation', 'vacations', 'trip',
+            'trips', 'journey', 'journeys', 'travel', 'adventure', 'adventures',
+            'experience', 'experiences', 'memory', 'memories', 'dream', 'dreams',
+            'hope', 'hopes', 'wish', 'wishes', 'desire', 'desires', 'need',
+            'needs', 'want', 'wants', 'interest', 'interests', 'hobby', 'hobbies',
+            
+            # Numbers and units (non-medical)
+            'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
+            'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
+            'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'thirty',
+            'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'hundred',
+            'thousand', 'million', 'billion', 'trillion', 'first', 'second', 'third',
+            'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
+            'last', 'next', 'previous', 'following', 'final', 'initial', 'original',
+            'main', 'primary', 'secondary', 'basic', 'advanced', 'professional',
+            'personal', 'private', 'public', 'general', 'specific', 'special',
+            'particular', 'individual', 'single', 'double', 'triple', 'multiple',
+            'several', 'various', 'different', 'similar', 'same', 'other', 'another',
+            'additional', 'extra', 'more', 'less', 'fewer', 'most', 'least',
+            'all', 'some', 'any', 'every', 'each', 'both', 'either', 'neither',
+            'none', 'nothing', 'something', 'anything', 'everything', 'somewhere',
+            'anywhere', 'everywhere', 'nowhere', 'someone', 'anyone', 'everyone',
+            'no-one', 'nobody', 'somebody', 'anybody', 'everybody'
         }
     
-    def identify_medical_terms(self, text: str) -> List[Tuple[str, int, int]]:
+    def is_medical_term_llm(self, term: str) -> bool:
         """
-        Identify potential medical terms in the text using fast pattern matching
+        Use LLM to determine if a term is medical-related
+        
+        Args:
+            term: The term to check
+            
+        Returns:
+            True if the term is medical-related, False otherwise
+        """
+        if not self.use_llm or not self.llm_client:
+            return False
+            
+        # Cache results to avoid repeated API calls
+        if not hasattr(self, '_llm_cache'):
+            self._llm_cache = {}
+            
+        term_lower = term.lower()
+        if term_lower in self._llm_cache:
+            return self._llm_cache[term_lower]
+        
+        try:
+            prompt = f"""Is the word "{term}" a medical term? This includes:
+- Medications/drugs (e.g., aspirin, metformin)
+- Medical conditions/diseases (e.g., diabetes, hypertension) 
+- Medical procedures (e.g., surgery, biopsy)
+- Body parts/anatomy (e.g., heart, lung)
+- Medical equipment/devices
+- Medical symptoms (e.g., nausea, fatigue)
+- Medical specialties (e.g., cardiology)
+
+Answer only "yes" or "no"."""
+
+            response = self.llm_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=5
+            )
+            
+            answer = response.choices[0].message.content.lower().strip()
+            is_medical = answer.startswith('yes')
+            
+            # Cache the result
+            self._llm_cache[term_lower] = is_medical
+            return is_medical
+            
+        except Exception as e:
+            print(f"LLM classification error for term '{term}': {e}")
+            return False
+    
+    def identify_medical_terms_llm(self, text: str) -> List[Tuple[str, int, int, str]]:
+        """
+        Use LLM to identify ONLY actual medical terms in text
         
         Args:
             text: The text to analyze
             
         Returns:
-            List of tuples (term, start_pos, end_pos)
+            List of tuples (term, start_pos, end_pos, category)
+        """
+        if not self.use_llm or not self.llm_client:
+            print("LLM not available, using NLP fallback")
+            return self.identify_medical_terms_nlp(text)
+        
+        print(f"Using LLM to identify medical terms in text (length: {len(text)} chars)")
+        try:
+            prompt = f"""Analyze this medical transcript and identify ONLY the actual medical terms. 
+            
+Include ONLY:
+- Medical conditions/diseases (diabetes, hypertension, pneumonia)
+- Medications/drugs (metformin, aspirin, insulin)
+- Medical procedures (surgery, biopsy, X-ray, MRI, CT scan)
+- Laboratory tests (HbA1c, CBC, blood sugar, cholesterol)  
+- Body parts/anatomy (heart, liver, kidney)
+- Medical symptoms when specific (chest pain, shortness of breath)
+- Dosages with medical context (500mg, twice daily when referring to medication)
+
+EXCLUDE:
+- Common words, greetings, names (Good morning, Khan, Dr. Smith)
+- Time phrases (last week, this morning, a month ago)
+- General conversation (How are you, I'm okay, Thank you)
+- Non-medical descriptors (tired, okay, fine, better)
+
+Text: "{text}"
+
+Format your response as JSON with this exact structure:
+{{"medical_terms": [{{"term": "diabetes", "category": "condition"}}, {{"term": "HbA1c", "category": "test"}}]}}
+
+Return only the JSON, no other text."""
+
+            response = self.llm_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=1000
+            )
+            
+            result = response.choices[0].message.content.strip()
+            
+            # Clean up markdown code blocks if present
+            import re
+            import json
+            
+            # Remove markdown code block markers
+            result = re.sub(r'^```json\s*', '', result, flags=re.MULTILINE)
+            result = re.sub(r'^```\s*$', '', result, flags=re.MULTILINE)
+            result = result.strip()
+            
+            # Parse JSON response
+            try:
+                data = json.loads(result)
+                llm_terms = data.get("medical_terms", [])
+                print(f"Successfully parsed LLM response: {len(llm_terms)} terms found")
+            except json.JSONDecodeError:
+                print(f"LLM returned invalid JSON after cleanup: {result[:200]}...")
+                print("Falling back to NLP method")
+                return self.identify_medical_terms_nlp(text)
+            
+            # Find positions of LLM-identified terms in the text
+            medical_terms = []
+            text_lower = text.lower()
+            
+            for term_data in llm_terms:
+                term = term_data.get("term", "")
+                category = term_data.get("category", "medical")
+                
+                if not term:
+                    continue
+                    
+                # Find all occurrences of this term in the text
+                term_lower = term.lower()
+                start_pos = 0
+                
+                while True:
+                    pos = text_lower.find(term_lower, start_pos)
+                    if pos == -1:
+                        break
+                    
+                    # Check if it's a whole word (not part of another word)
+                    if (pos == 0 or not text[pos-1].isalnum()) and \
+                       (pos + len(term) == len(text) or not text[pos + len(term)].isalnum()):
+                        end_pos = pos + len(term)
+                        medical_terms.append((text[pos:end_pos], pos, end_pos, category))
+                    
+                    start_pos = pos + 1
+            
+            # Sort by position and remove duplicates
+            medical_terms = list(set(medical_terms))  # Remove duplicates
+            medical_terms.sort(key=lambda x: x[1])  # Sort by start position
+            
+            print(f"LLM identified {len(medical_terms)} medical terms: {[term[0] for term in medical_terms]}")
+            return medical_terms
+            
+        except Exception as e:
+            print(f"LLM medical term identification error: {e}")
+            print("Falling back to NLP method due to LLM error")
+            return self.identify_medical_terms_nlp(text)
+    
+    def identify_medical_terms_nlp(self, text: str) -> List[Tuple[str, int, int, str]]:
+        """
+        Fallback: Identify potential medical terms using NLP (when LLM unavailable)
+        
+        Args:
+            text: The text to analyze
+            
+        Returns:
+            List of tuples (term, start_pos, end_pos, category)
         """
         medical_terms = []
         
-        # First, use pattern matching for fast detection
-        for pattern in self.compiled_patterns:
-            for match in pattern.finditer(text):
-                term = match.group()
-                # Skip if it's a common word
-                if term.lower() in self.skip_words:
-                    continue
-                medical_terms.append((term, match.start(), match.end()))
+        print("Using NLP fallback for medical term identification")
         
-        # Then check individual words that might be missed by patterns
-        words = re.findall(r'\b\w+\b', text)
+        # Conservative skip words for common terms that should never be highlighted
+        conservative_skip_words = {
+            'good', 'morning', 'afternoon', 'evening', 'night', 'hello', 'hi', 'bye', 'goodbye',
+            'thank', 'thanks', 'please', 'okay', 'ok', 'yes', 'no', 'sure', 'fine', 'well',
+            'today', 'yesterday', 'tomorrow', 'week', 'month', 'year', 'day', 'time',
+            'last', 'next', 'this', 'that', 'these', 'those', 'here', 'there', 'where',
+            'doctor', 'patient', 'mr', 'mrs', 'ms', 'dr', 'khan', 'smith', 'john', 'mary',
+            'feel', 'feeling', 'felt', 'tired', 'better', 'worse', 'little', 'much', 'more',
+            'take', 'taking', 'taken', 'give', 'giving', 'come', 'coming', 'go', 'going'
+        }
         
-        for word in words:
-            # Skip common words and short terms
-            if self.dynamic_list.should_skip_term(word) or word.lower() in self.skip_words:
-                continue
-                
-            # Check if it's in our dynamic medicine list
-            if self.dynamic_list.is_medicine(word):
-                # Find all occurrences of this word
-                for match in re.finditer(r'\b' + re.escape(word) + r'\b', text, re.IGNORECASE):
-                    medical_terms.append((match.group(), match.start(), match.end()))
-                continue
-            
-            # Check if it's in our local medical dictionary
-            if self.medical_dict.is_medical_term(word):
-                # Find all occurrences of this word
-                for match in re.finditer(r'\b' + re.escape(word) + r'\b', text, re.IGNORECASE):
-                    medical_terms.append((match.group(), match.start(), match.end()))
-                continue
+        # Use medical NLP for primary detection (fast and accurate)
+        if self.medical_nlp.is_available():
+            try:
+                nlp_entities = self.medical_nlp.identify_medical_entities(text)
+                for entity_text, start, end, label, category in nlp_entities:
+                    # Skip common words and obvious non-medical terms
+                    entity_lower = entity_text.lower()
+                    if (entity_lower not in conservative_skip_words and 
+                        len(entity_text) > 2 and  # Skip very short terms
+                        not entity_lower.startswith(('mr', 'mrs', 'ms', 'dr')) and  # Skip titles
+                        entity_text.replace(' ', '').isalpha()):  # Skip numbers-only terms
+                        medical_terms.append((entity_text, start, end, category))
+                        print(f"NLP fallback identified: {entity_text} ({category})")
+            except Exception as e:
+                print(f"Medical NLP error: {e}")
         
-        # Sort by position and remove duplicates
-        medical_terms.sort(key=lambda x: x[1])
-        
-        # Remove duplicates while preserving order
-        seen = set()
-        unique_terms = []
-        for term, start, end in medical_terms:
-            term_key = (term.lower(), start, end)
-            if term_key not in seen:
-                seen.add(term_key)
-                unique_terms.append((term, start, end))
-        
-        return unique_terms
+        # Only return very conservative medical terms
+        print(f"NLP fallback found {len(medical_terms)} medical terms")
+        return medical_terms
     
-    def check_spelling(self, term: str) -> Dict[str, any]:
+    def check_spelling(self, term: str, llm_identified: bool = False) -> Dict[str, any]:
         """
         Check if a medical term is spelled correctly
         
         Args:
             term: The term to check
+            llm_identified: If True, term was identified by LLM as medical (higher confidence it's correct)
             
         Returns:
             Dictionary with spell check results
         """
         result = {
             "term": term,
-            "is_correct": False,
+            "is_correct": llm_identified,  # LLM-identified terms default to correct
             "suggestions": [],
-            "confidence": 0.0,
-            "source": None
+            "confidence": 0.8 if llm_identified else 0.0,  # Higher confidence for LLM terms
+            "source": "llm_identified" if llm_identified else None
         }
         
-        # First, check our dynamic medicine list
+        # Check our dynamic medicine list (confirmed correct)
         if self.dynamic_list.is_medicine(term):
             result["is_correct"] = True
             result["confidence"] = 1.0
@@ -144,6 +500,7 @@ class MedicalSpellChecker:
                 result["confidence"] = 1.0
                 result["source"] = "local_dictionary"
             else:
+                # Found a close match in dictionary - this is a spelling error
                 result["is_correct"] = False
                 result["suggestions"] = [correct_spelling]
                 result["confidence"] = 0.9
@@ -167,6 +524,10 @@ class MedicalSpellChecker:
                 return result
         except Exception as e:
             print(f"SNOMED API error for term '{term}': {e}")
+            # If LLM identified this term and SNOMED fails, keep it as correct
+            if llm_identified:
+                print(f"Keeping LLM-identified term '{term}' as correct despite SNOMED timeout")
+                return result
         
         # Get suggestions from local dictionary
         local_suggestions = self.medical_dict.get_suggestions(term)
@@ -218,16 +579,41 @@ class MedicalSpellChecker:
             except:
                 pass
         
-        result["confidence"] = 0.7 if result["suggestions"] else 0.3
+        # For LLM-identified terms, only mark as incorrect if we have very strong suggestions
+        if llm_identified and result["suggestions"]:
+            # Check if suggestions have very high similarity (indicating likely spelling error)
+            best_score = max([fuzz.ratio(term.lower(), sugg.lower()) for sugg in result["suggestions"]] + [0])
+            if best_score < 85:  # Not similar enough to override LLM confidence
+                result["suggestions"] = []  # Remove weak suggestions
+                result["is_correct"] = True  # Keep as correct
+                result["confidence"] = 0.8
+        
+        # Set confidence based on whether we have suggestions and term source
+        if result["is_correct"]:
+            result["confidence"] = 0.8 if llm_identified else 0.7
+        else:
+            result["confidence"] = 0.7 if result["suggestions"] else 0.3
         
         # Cache the result
         self.dynamic_list.cache_snomed_result(term, result)
         
         return result
     
+    def identify_medical_terms(self, text: str) -> List[Tuple[str, int, int, str]]:
+        """
+        Main method: Identify medical terms using LLM-first approach
+        
+        Args:
+            text: The text to analyze
+            
+        Returns:
+            List of tuples (term, start_pos, end_pos, category)
+        """
+        return self.identify_medical_terms_llm(text)
+    
     def check_text(self, text: str) -> List[Dict[str, any]]:
         """
-        Check spelling of all medical terms in a text
+        Check spelling of all medical terms in a text with batch processing
         
         Args:
             text: The text to check
@@ -238,11 +624,22 @@ class MedicalSpellChecker:
         medical_terms = self.identify_medical_terms(text)
         results = []
         
-        for term, start, end in medical_terms:
-            spell_result = self.check_spelling(term)
-            spell_result["start_pos"] = start
-            spell_result["end_pos"] = end
-            results.append(spell_result)
+        # Determine if terms came from LLM (higher confidence they're correct)
+        llm_available = self.use_llm and self.llm_client
+        
+        # Process in chunks to avoid timeouts on large texts
+        chunk_size = 50  # Process 50 terms at a time
+        
+        for i in range(0, len(medical_terms), chunk_size):
+            chunk = medical_terms[i:i + chunk_size]
+            
+            for term, start, end, category in chunk:
+                # Terms identified by LLM should be treated as more likely to be correct
+                spell_result = self.check_spelling(term, llm_identified=llm_available)
+                spell_result["start_pos"] = start
+                spell_result["end_pos"] = end
+                spell_result["category"] = category
+                results.append(spell_result)
         
         return results
     
@@ -253,6 +650,10 @@ class MedicalSpellChecker:
     def get_dynamic_list_stats(self) -> Dict:
         """Get statistics about the dynamic medicine list"""
         return self.dynamic_list.get_stats()
+    
+    def get_medical_nlp_status(self) -> Dict:
+        """Get medical NLP status and configuration"""
+        return self.medical_nlp.get_status()
     
     def correct_text(self, text: str, interactive: bool = False) -> str:
         """

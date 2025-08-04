@@ -994,6 +994,16 @@ def get_dynamic_list_stats():
         print(f"Error getting dynamic list stats: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/medical-nlp-status', methods=['GET'])
+def get_medical_nlp_status():
+    """Get medical NLP status and configuration"""
+    try:
+        status = medical_spell_checker.get_medical_nlp_status()
+        return jsonify(status)
+    except Exception as e:
+        print(f"Error getting medical NLP status: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/validate-medical-term', methods=['POST'])
 def validate_medical_term():
     """Validate a single medical term"""

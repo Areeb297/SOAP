@@ -1,3 +1,393 @@
 Transcript generated on 2025-08-04 14:44:40
 --------------------------------------------------
 Hello, how are you? My name is Ziad, I'm 25 years old. I live in Egypt, I'm from Mansoura.
+
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "e3ad45f5",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Mike",
+    "patient_name": "Peter",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Diabetes and high blood pressure",
+      "history_of_present_illness": "Patient was informed about having diabetes and high blood pressure during the visit.",
+      "past_medical_history": "Unknown",
+      "family_history": "Unknown",
+      "social_history": "Unknown"
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      },
+      "physical_exam": "Unknown"
+    },
+    "assessment": {
+      "diagnosis": "Diabetes and high blood pressure"
+    },
+    "plan": {
+      "patient_education": "Patient was informed about their conditions."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "bb752780",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Concern about blood pressure and typhoid.",
+      "history_of_present_illness": "The patient expresses concern regarding their blood pressure and mentions typhoid. No specific details about symptoms, duration, or associated symptoms were provided.",
+      "past_medical_history": "Unknown",
+      "family_history": "Unknown",
+      "social_history": "Unknown"
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      },
+      "physical_exam": "Unknown"
+    },
+    "assessment": {
+      "diagnosis": "Concern about blood pressure and possible typhoid infection."
+    },
+    "plan": {
+      "patient_education": "Unknown",
+      "follow_up_instructions": "Unknown"
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "cb415b37",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "to have paracetamol",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Request for paracetamol",
+      "history_of_present_illness": "The patient is seeking paracetamol, possibly for pain relief or fever reduction. No specific symptoms or duration mentioned.",
+      "past_medical_history": "No past medical history provided.",
+      "family_history": "No family history provided.",
+      "social_history": "No social history provided.",
+      "medications": [
+        {
+          "name": "Paracetamol",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "No allergies mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Need for paracetamol, likely for symptomatic relief.",
+      "risk_factors": [
+        "No risk factors mentioned"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Paracetamol",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "No procedures or tests mentioned"
+      ],
+      "patient_education": "Instructed on the use of paracetamol for pain relief or fever.",
+      "follow_up_instructions": "Follow up if symptoms persist or worsen."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "7c25333a",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "past_medical_history": "Diabetes, prescribed medication for diabetes.",
+      "family_history": "Unknown",
+      "medications": [
+        {
+          "name": "Unknown",
+          "dosage": "Unknown",
+          "frequency": "Missed a few doses last week",
+          "route": "Unknown",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Uncontrolled diabetes mellitus with symptoms of polyuria and polydipsia.",
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Sedentary lifestyle",
+        "Increased fasting blood sugar and HbA1c"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Adjustments to current diabetes medication",
+          "dosage": "Unknown",
+          "frequency": "Unknown",
+          "duration": "Ongoing",
+          "route": "Unknown"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator for support with diet and lifestyle"
+      ],
+      "patient_education": "Recommended daily blood sugar monitoring and realistic exercise goals.",
+      "follow_up_instructions": "Schedule a follow-up in one month; call if any concerns arise before then."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "67a6697c",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "past_medical_history": "Diabetes.",
+      "family_history": "Unknown.",
+      "social_history": "Works full-time; feels tired after coming home, which affects his ability to exercise.",
+      "medications": [
+        {
+          "name": "Unknown",
+          "dosage": "Unknown",
+          "frequency": "As prescribed, but missed doses last week",
+          "route": "Oral",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Uncontrolled diabetes mellitus.",
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Sedentary lifestyle",
+        "Increased thirst and urination"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Unknown",
+          "dosage": "Adjusted dosage",
+          "frequency": "As prescribed",
+          "duration": "Ongoing",
+          "route": "Oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator"
+      ],
+      "follow_up_instructions": "Schedule follow-up in one month; call if concerns arise."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "d3c353e3",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "history_of_present_illness": "Mr. Khan reports feeling thirsty a lot and has been going to the bathroom more often, especially at night. He has noticed these symptoms in relation to his recent blood tests showing higher fasting blood sugar and HbA1c levels. He does not experience episodes of feeling shaky, dizzy, or sweating a lot, but sometimes feels weak in the afternoons. He tries to avoid sweets but admits to missing a few doses of his prescribed medication last week. He checks his blood sugar at home once or twice a week.",
+      "past_medical_history": "Diabetes.",
+      "family_history": "Unknown.",
+      "social_history": "Works full-time; feels tired after work which affects his ability to exercise.",
+      "medications": [
+        {
+          "name": "Unknown diabetes medication",
+          "dosage": "Unknown",
+          "frequency": "Missed a few doses last week",
+          "route": "Oral",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Sedentary lifestyle",
+        "Increased thirst and urination"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Adjustments to current diabetes medication",
+          "dosage": "Unknown",
+          "frequency": "As prescribed",
+          "duration": "Ongoing",
+          "route": "Oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator"
+      ],
+      "follow_up_instructions": "Follow-up in one month; call if any concerns arise before then."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "af6a7d52",
+    "visit_date": "2025-08-04",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Mr. Khan",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Feeling tired lately.",
+      "past_medical_history": "Diabetes, currently taking prescribed medication.",
+      "family_history": "Unknown",
+      "social_history": "Works full-time; feels tired after work which affects his ability to exercise.",
+      "medications": [
+        {
+          "name": "Unknown",
+          "dosage": "Unknown",
+          "frequency": "Irregular",
+          "route": "Oral",
+          "duration": "Unknown"
+        }
+      ],
+      "allergies": [
+        "None reported"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Unknown",
+        "blood_pressure": "Unknown",
+        "heart_rate": "Unknown",
+        "respiratory_rate": "Unknown",
+        "oxygen_saturation": "Unknown"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Uncontrolled diabetes mellitus with symptoms of hyperglycemia.",
+      "risk_factors": [
+        "Inconsistent medication adherence",
+        "Sedentary lifestyle",
+        "Increased blood sugar levels"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Unknown",
+          "dosage": "Adjusted dosage",
+          "frequency": "Regular",
+          "duration": "Ongoing",
+          "route": "Oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Referral to diabetes educator"
+      ],
+      "patient_education": "Encouraged daily blood sugar monitoring and realistic exercise goals.",
+      "follow_up_instructions": "Schedule follow-up in one month; call if concerns arise."
+    }
+  }
+}

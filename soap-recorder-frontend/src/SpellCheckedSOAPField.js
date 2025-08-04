@@ -39,7 +39,6 @@ const SpellCheckedSOAPField = ({
         text={localValue}
         onTextChange={handleTextChange}
         enabled={true}
-        language={language}
       />
     </div>
   );
