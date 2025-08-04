@@ -302,8 +302,250 @@
       ],
       "confidence": 0.7,
       "source": null
+    },
+    "infection": {
+      "term": "infection",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 50,
+      "end_pos": 59
+    },
+    "provided": {
+      "term": "provided",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "paracetamol": {
+      "term": "paracetamol",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "prescribed": {
+      "term": "prescribed",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 10,
+      "end_pos": 20
+    },
+    "blood": {
+      "term": "blood",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 18,
+      "end_pos": 23
+    },
+    "mellitus": {
+      "term": "mellitus",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 22,
+      "end_pos": 30
+    },
+    "medication": {
+      "term": "medication",
+      "is_correct": false,
+      "suggestions": [
+        "meditation"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 21,
+      "end_pos": 31
+    },
+    "symptoms": {
+      "term": "symptoms",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 36,
+      "end_pos": 44
+    },
+    "polyuria": {
+      "term": "polyuria",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 48,
+      "end_pos": 56
+    },
+    "polydipsia": {
+      "term": "polydipsia",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 61,
+      "end_pos": 71
+    },
+    "hba1c": {
+      "term": "HbA1c",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 228,
+      "end_pos": 233
+    },
+    "urination": {
+      "term": "urination",
+      "is_correct": false,
+      "suggestions": [
+        "privation"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 316,
+      "end_pos": 325
+    },
+    "medications": {
+      "term": "medications",
+      "is_correct": false,
+      "suggestions": [
+        "meditations"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 744,
+      "end_pos": 755
+    },
+    "medicine": {
+      "term": "medicine",
+      "is_correct": false,
+      "suggestions": [
+        "migraine"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 826,
+      "end_pos": 834
+    },
+    "doses": {
+      "term": "doses",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 870,
+      "end_pos": 875
+    },
+    "routine": {
+      "term": "routine",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 983,
+      "end_pos": 990
+    },
+    "treatment": {
+      "term": "treatment",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 1250,
+      "end_pos": 1259
+    },
+    "preventing": {
+      "term": "preventing",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "good morning": {
+      "term": "Good morning",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 8,
+      "end_pos": 20,
+      "category": "general"
+    },
+    "khan": {
+      "term": "Khan",
+      "is_correct": false,
+      "suggestions": [
+        "Than"
+      ],
+      "confidence": 0.7,
+      "source": "textblob",
+      "start_pos": 26,
+      "end_pos": 30,
+      "category": "general"
+    },
+    "one month": {
+      "term": "one month",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 22,
+      "end_pos": 31,
+      "category": "general"
+    },
+    "last week": {
+      "term": "last week",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 876,
+      "end_pos": 885,
+      "category": "general"
+    },
+    "a month": {
+      "term": "a month",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
+    },
+    "blood sugar": {
+      "term": "blood sugar",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null,
+      "start_pos": 212,
+      "end_pos": 223,
+      "category": "test"
+    },
+    "diabetes mellitus": {
+      "term": "diabetes mellitus",
+      "is_correct": false,
+      "suggestions": [
+        "diabetes"
+      ],
+      "confidence": 0.7,
+      "source": null,
+      "start_pos": 13,
+      "end_pos": 30,
+      "category": "condition"
+    },
+    "hyperglycemia": {
+      "term": "hyperglycemia",
+      "is_correct": false,
+      "suggestions": [],
+      "confidence": 0.3,
+      "source": null
     }
   },
   "classification_cache": {},
-  "last_updated": "2025-08-03T16:56:52.410205"
+  "last_updated": "2025-08-04T16:57:08.101062"
 }

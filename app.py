@@ -939,7 +939,20 @@ def check_medical_terms():
             text = str(text) if text else ""
         
         # Check medical terms
-        results = medical_spell_checker.check_text(text)
+        check_result = medical_spell_checker.check_text(text)
+        
+        # Handle new format with unique counts
+        if isinstance(check_result, dict):
+            results = check_result.get('results', [])
+            unique_terms = check_result.get('unique_terms', [])
+            unique_count = check_result.get('unique_count', 0)
+            total_occurrences = check_result.get('total_occurrences', 0)
+        else:
+            # Fallback for old format
+            results = check_result
+            unique_terms = list(set([r['term'].lower() for r in results]))
+            unique_count = len(unique_terms)
+            total_occurrences = len(results)
         
         # Format results for frontend
         formatted_results = []
@@ -950,11 +963,15 @@ def check_medical_terms():
                 'end': result['end_pos'],
                 'isCorrect': result['is_correct'],
                 'suggestions': result['suggestions'],
-                'confidence': result['confidence']
+                'confidence': result['confidence'],
+                'category': result.get('category', 'medical')
             })
         
         return jsonify({
             'results': formatted_results,
+            'unique_terms': unique_terms,
+            'unique_count': unique_count,
+            'total_occurrences': total_occurrences,
             'text': text
         })
         
@@ -992,6 +1009,16 @@ def get_dynamic_list_stats():
         return jsonify(stats)
     except Exception as e:
         print(f"Error getting dynamic list stats: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/medical-nlp-status', methods=['GET'])
+def get_medical_nlp_status():
+    """Get medical NLP status and configuration"""
+    try:
+        status = medical_spell_checker.get_medical_nlp_status()
+        return jsonify(status)
+    except Exception as e:
+        print(f"Error getting medical NLP status: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/validate-medical-term', methods=['POST'])

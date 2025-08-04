@@ -37,6 +37,11 @@ class MedicalDictionary:
             # Common conditions
             "hypertension": ["hipertension", "high blood pressure", "htn"],
             "diabetes": ["diabetis", "diabeties", "dm"],
+            "diabetes mellitus": ["diabetes mellitus", "diabetic", "dm"],
+            "mellitus": ["melletus", "melitus", "mellitis"],
+            "hyperglycemia": ["hyperglycaemia", "hyperglycemic", "hyperglycaemic", "high blood sugar"],
+            "hypoglycemia": ["hypoglycaemia", "hypoglycemic", "hypoglycaemic", "low blood sugar"],
+            "blood sugar": ["blood glucose", "glucose", "sugar level"],
             "asthma": ["asma", "athsma", "asthma"],
             "pneumonia": ["pnuemonia", "neumonia", "pneumonia"],
             "bronchitis": ["bronchitus", "bronkitis", "bronchitis"],
@@ -57,6 +62,15 @@ class MedicalDictionary:
             "endoscopy": ["endoscopy", "gastroscopy"],
             "biopsy": ["byopsy", "biopsy"],
             "angiography": ["angiogram", "angiography"],
+            
+            # Laboratory tests
+            "hba1c": ["hba1c", "a1c", "hemoglobin a1c", "glycated hemoglobin"],
+            "hemoglobin": ["haemoglobin", "hgb", "hb"],
+            "cholesterol": ["cholestrol", "lipid panel", "lipids"],
+            "triglycerides": ["tryglicerides", "tg", "trigs"],
+            "creatinine": ["creatinin", "cr", "serum creatinine"],
+            "glucose": ["glucos", "blood glucose", "fasting glucose"],
+            "thyroid": ["thyriod", "tsh", "thyroid function"],
             
             # Body parts
             "abdomen": ["abdomin", "abdoman", "belly"],

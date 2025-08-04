@@ -134,29 +134,4 @@
   }
 }
 
-/* Dark mode support (if needed) */
-@media (prefers-color-scheme: dark) {
-  .spell-checked-textarea {
-    color: #f3f4f6;
-  }
-  
-  .edit-textarea {
-    background-color: #1f2937;
-    color: #f3f4f6;
-    border-color: #4b5563;
-  }
-  
-  .edit-textarea:focus {
-    border-color: #3b82f6;
-  }
-  
-  .spell-check-container:hover:not(.disabled) {
-    background-color: #374151;
-  }
-  
-  .placeholder-text {
-    background-color: #1f2937;
-    border-color: #4b5563;
-    color: #6b7280;
-  }
-}
+/* Dark mode support removed to prevent automatic theme switching */

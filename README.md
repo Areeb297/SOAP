@@ -15,7 +15,9 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 
 ### Prerequisites
 
-- Python 3.8+ installed on your system
+- **Python 3.12** (recommended) or Python 3.8-3.11 installed on your system
+  - ⚠️ **Important**: Python 3.13 may cause compatibility issues with some dependencies
+  - Use Python 3.12 for best compatibility with OpenAI SDK and other packages
 - Node.js 16+ and npm for the React frontend
 - FFmpeg for audio processing (required by Whisper)
 - OpenAI API Key for GPT-4o-mini
@@ -35,9 +37,22 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 
 2. **Set up Python Backend**
    ```bash
-   # Create and activate virtual environment
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # Create and activate virtual environment with Python 3.12
+   # If you have Python 3.12 installed:
+   python3.12 -m venv venv
+   # OR on Windows:
+   py -3.12 -m venv venv
+   # OR if you only have one Python version:
+   python -m venv venv
+   
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   
+   # Upgrade pip to latest version
+   python -m pip install --upgrade pip
    
    # Install Python dependencies
    pip install -r requirements.txt
@@ -45,11 +60,11 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 
 3. **Set OpenAI API Key**
    ```bash
-   # Copy environment template
-   cp .env.example .env
+   # Create .env file
+   echo OPENAI_API_KEY=your-openai-api-key-here > .env
    
-   # Edit .env and add your OpenAI API key
-   OPENAI_API_KEY=your-openai-api-key-here
+   # Or manually create .env file and add:
+   # OPENAI_API_KEY=your-openai-api-key-here
    ```
 
 4. **Set up React Frontend**
@@ -150,6 +165,26 @@ soap-recorder/
 
 ## 🚨 Troubleshooting
 
+### Python Version Issues
+- **Problem**: `TypeError: Client.__init__() got an unexpected keyword argument 'proxies'`
+- **Solution**: Use Python 3.12 instead of Python 3.13
+- **Commands**:
+  ```bash
+  # Remove current venv
+  deactivate
+  rmdir /s venv
+  
+  # Create new venv with Python 3.12
+  python3.12 -m venv venv
+  # OR on Windows:
+  py -3.12 -m venv venv
+  
+  # Activate and install
+  venv\Scripts\activate
+  python -m pip install --upgrade pip
+  pip install -r requirements.txt
+  ```
+
 ### Microphone Access
 - Ensure your browser has permission to access the microphone
 - Use HTTPS in production for microphone access
@@ -167,6 +202,19 @@ soap-recorder/
 - Verify your API key is correct
 - Check your OpenAI account has credits
 - Ensure you have access to gpt-4o-mini model
+
+### Package Installation Issues
+- If you encounter installation errors, try installing packages one by one:
+  ```bash
+  pip install Flask==3.0.3
+  pip install flask-cors==4.0.1
+  pip install openai==1.98.0
+  pip install python-dotenv==1.0.1
+  pip install requests==2.32.3
+  pip install textblob==0.18.0.post0
+  pip install fuzzywuzzy==0.18.0
+  pip install python-Levenshtein==0.25.1
+  ```
 
 ## 🔄 Development
 

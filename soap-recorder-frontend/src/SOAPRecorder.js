@@ -23,11 +23,8 @@ export default function SOAPRecorder() {
   const [transcript, setTranscript] = useState('');
   const [soapNote, setSoapNote] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [editedTranscript, setEditedTranscript] = useState('');
-  const [audioBlob, setAudioBlob] = useState(null);
-  const [language, setLanguage] = useState('en'); // 'en' or 'ar'
-  const [arabicFontLoaded, setArabicFontLoaded] = useState(false);
+  const [language, setLanguage] = useState('en'); // 'en' or 'ar' 
   const [isEditingSOAP, setIsEditingSOAP] = useState(false);
   const [editedSOAPNote, setEditedSOAPNote] = useState(null);
   const [userAgreement, setUserAgreement] = useState(false);
@@ -56,7 +53,6 @@ export default function SOAPRecorder() {
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        setAudioBlob(audioBlob);
         processAudio(audioBlob);
         stream.getTracks().forEach(track => track.stop());
       };
@@ -126,13 +122,7 @@ export default function SOAPRecorder() {
       
       // Apply spell checking to SOAP note automatically
       if (note) {
-        // Convert SOAP note to text for spell checking
-        const soapText = JSON.stringify(note, null, 2);
-        // Trigger spell checking on the SOAP note
-        setTimeout(() => {
-          // This will trigger the spell checking in the SOAP note display
-          // The MedicalSpellChecker component will automatically check the text
-        }, 100);
+        // Spell checking is now handled automatically by SpellCheckedSOAPField components
       }
     } catch (error) {
       console.error('Error generating SOAP note:', error);
@@ -321,13 +311,6 @@ export default function SOAPRecorder() {
     
     if (!data || Object.keys(data).length === 0) return null;
 
-    // Fields that should use textarea for editing
-    const longTextFields = [
-      'chief_complaint', 'history_of_present_illness', 'past_medical_history', 'family_history', 'social_history',
-      'physical_exam', 'diagnosis', 'patient_education', 'follow_up_instructions', 'procedures_or_tests',
-      'plan', 'assessment', 'subjective', 'objective', 'risk_factors'
-    ];
-
     // Determine the CSS class based on the section title
     const getSectionClass = (title) => {
       switch (title) {
@@ -346,7 +329,6 @@ export default function SOAPRecorder() {
           <div className="space-y-6 w-full">
             {Object.entries(data).map(([key, value]) => {
               if (!value || value === '') return null;
-              const isLongText = longTextFields.includes(key);
               // Render editable array of objects
               if (isEditing && Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
                 return (
@@ -715,7 +697,6 @@ export default function SOAPRecorder() {
   // Load Arabic font on component mount
   useEffect(() => {
     loadAmiriFont().then(loaded => {
-      setArabicFontLoaded(loaded);
       console.log('Arabic font loaded:', loaded);
     });
   }, []);
@@ -851,7 +832,7 @@ export default function SOAPRecorder() {
             
             <button
               onClick={generateSOAPNote}
-              disabled={isProcessing || isEditing}
+              disabled={isProcessing}
               className="mt-4 flex items-center gap-2 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? (
