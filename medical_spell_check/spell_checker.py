@@ -32,6 +32,10 @@ class MedicalSpellChecker:
             self.llm_client = None
             self.use_llm = False
         
+        # Configuration flags
+        self.use_snomed_api = True  # Can be disabled for LLM-only mode
+        self.llm_only_mode = False  # Flag to bypass SNOMED entirely
+        
         # Enhanced medical term patterns for faster detection
         self.medical_patterns = [
             # Medications (common drug suffixes)
@@ -470,6 +474,72 @@ Return only the JSON, no other text."""
         print(f"NLP fallback found {len(medical_terms)} medical terms")
         return medical_terms
     
+    def _sanitize_result_for_caching(self, result: Dict[str, any]) -> Dict[str, any]:
+        """
+        Sanitize result dictionary to ensure only JSON-serializable data is cached
+        
+        Args:
+            result: Original result dictionary
+            
+        Returns:
+            Sanitized dictionary safe for JSON serialization
+        """
+        import json
+        
+        def _deep_sanitize(obj):
+            """Recursively sanitize an object"""
+            if obj is None or isinstance(obj, (str, int, float, bool)):
+                return obj
+            elif isinstance(obj, list):
+                sanitized_list = []
+                for item in obj:
+                    try:
+                        # Test if item is serializable
+                        json.dumps(item)
+                        sanitized_list.append(_deep_sanitize(item))
+                    except (TypeError, ValueError):
+                        # Skip non-serializable items
+                        print(f"Skipping non-serializable list item: {type(item)}")
+                        continue
+                return sanitized_list
+            elif isinstance(obj, dict):
+                sanitized_dict = {}
+                for key, value in obj.items():
+                    try:
+                        # Test if key-value pair is serializable
+                        json.dumps({key: value})
+                        sanitized_dict[key] = _deep_sanitize(value)
+                    except (TypeError, ValueError):
+                        # Skip non-serializable key-value pairs
+                        print(f"Skipping non-serializable dict item: {key} = {type(value)}")
+                        continue
+                return sanitized_dict
+            else:
+                # For other types, try to serialize, if it fails, skip
+                try:
+                    json.dumps(obj)
+                    return obj
+                except (TypeError, ValueError):
+                    print(f"Skipping non-serializable object of type: {type(obj)}")
+                    return None
+        
+        sanitized = _deep_sanitize(result)
+        
+        # Final validation - try to serialize the entire result
+        try:
+            json.dumps(sanitized)
+            return sanitized
+        except (TypeError, ValueError) as e:
+            print(f"Final sanitization failed: {e}")
+            # Return a minimal safe result
+            return {
+                "term": result.get("term", ""),
+                "is_correct": bool(result.get("is_correct", False)),
+                "suggestions": [s for s in result.get("suggestions", []) if isinstance(s, str)],
+                "confidence": float(result.get("confidence", 0.0)),
+                "source": str(result.get("source", ""))
+            }
+
     def check_spelling(self, term: str, llm_identified: bool = False) -> Dict[str, any]:
         """
         Check if a medical term is spelled correctly
@@ -481,9 +551,14 @@ Return only the JSON, no other text."""
         Returns:
             Dictionary with spell check results
         """
+        # Ensure llm_identified is actually a boolean (safety check)
+        if not isinstance(llm_identified, bool):
+            print(f"⚠️  Warning: llm_identified is not boolean: {type(llm_identified)}, converting to bool")
+            llm_identified = bool(llm_identified)
+        
         result = {
             "term": term,
-            "is_correct": llm_identified,  # LLM-identified terms default to correct
+            "is_correct": bool(llm_identified),  # Ensure it's always boolean
             "suggestions": [],
             "confidence": 0.8 if llm_identified else 0.0,  # Higher confidence for LLM terms
             "source": "llm_identified" if llm_identified else None
@@ -517,34 +592,50 @@ Return only the JSON, no other text."""
             result.update(cached_result)
             return result
         
-        # Check with SNOMED CT (with timeout and error handling)
-        try:
-            if self.snomed_api.validate_term(term):
-                result["is_correct"] = True
-                result["confidence"] = 0.95
-                result["source"] = "snomed_ct"
-                # Cache the result
-                self.dynamic_list.cache_snomed_result(term, result)
-                return result
-        except Exception as e:
-            print(f"SNOMED API error for term '{term}': {e}")
-            # If LLM identified this term and SNOMED fails, keep it as correct
+        # Check with SNOMED CT (with timeout and error handling) - only if not in LLM-only mode
+        if self.use_snomed_api and not self.llm_only_mode:
+            try:
+                if self.snomed_api.validate_term(term):
+                    result["is_correct"] = True
+                    result["confidence"] = 0.95
+                    result["source"] = "snomed_ct"
+                    # Cache the sanitized result
+                    sanitized_result = self._sanitize_result_for_caching(result)
+                    self.dynamic_list.cache_snomed_result(term, sanitized_result)
+                    return result
+            except Exception as e:
+                print(f"SNOMED API error for term '{term}': {e}")
+                # Check if we should switch to LLM-only mode due to persistent failures
+                if hasattr(self.snomed_api, 'circuit_breaker_state') and self.snomed_api.circuit_breaker_state == "open":
+                    print("SNOMED API circuit breaker is open - temporarily switching to LLM-only mode")
+                    self.llm_only_mode = True
+                
+                # If LLM identified this term and SNOMED fails, keep it as correct
+                if llm_identified:
+                    print(f"Keeping LLM-identified term '{term}' as correct despite SNOMED timeout")
+                    result["is_correct"] = True
+                    result["confidence"] = 0.8
+                    result["source"] = "llm_identified_snomed_timeout"
+                    return result
+        elif self.llm_only_mode:
+            print(f"LLM-only mode: Skipping SNOMED check for term '{term}'")
+            # In LLM-only mode, trust LLM identification more
             if llm_identified:
-                print(f"Keeping LLM-identified term '{term}' as correct despite SNOMED timeout")
                 result["is_correct"] = True
-                result["confidence"] = 0.8
-                result["source"] = "llm_identified_snomed_timeout"
+                result["confidence"] = 0.85
+                result["source"] = "llm_only_mode"
                 return result
         
         # Get suggestions from local dictionary
         local_suggestions = self.medical_dict.get_suggestions(term)
         
-        # Get suggestions from SNOMED (with error handling)
+        # Get suggestions from SNOMED (with error handling) - only if not in LLM-only mode
         snomed_suggestions = []
-        try:
-            snomed_suggestions = self.snomed_api.get_suggestions(term, max_suggestions=3)
-        except Exception as e:
-            print(f"SNOMED suggestions error for term '{term}': {e}")
+        if self.use_snomed_api and not self.llm_only_mode:
+            try:
+                snomed_suggestions = self.snomed_api.get_suggestions(term, max_suggestions=3)
+            except Exception as e:
+                print(f"SNOMED suggestions error for term '{term}': {e}")
         
         # Combine and rank suggestions
         all_suggestions = []
@@ -557,14 +648,15 @@ Return only the JSON, no other text."""
                 "source": "local"
             })
         
-        # Add SNOMED suggestions
-        for sugg in snomed_suggestions[:3]:
-            if not any(s["term"].lower() == sugg.lower() for s in all_suggestions):
-                all_suggestions.append({
-                    "term": sugg,
-                    "score": fuzz.ratio(term.lower(), sugg.lower()),
-                    "source": "snomed"
-                })
+        # Add SNOMED suggestions (only if available)
+        if not self.llm_only_mode:
+            for sugg in snomed_suggestions[:3]:
+                if not any(s["term"].lower() == sugg.lower() for s in all_suggestions):
+                    all_suggestions.append({
+                        "term": sugg,
+                        "score": fuzz.ratio(term.lower(), sugg.lower()),
+                        "source": "snomed"
+                    })
         
         # Sort by score and filter out low-quality suggestions
         all_suggestions.sort(key=lambda x: x["score"], reverse=True)
@@ -601,8 +693,9 @@ Return only the JSON, no other text."""
         else:
             result["confidence"] = 0.7 if result["suggestions"] else 0.3
         
-        # Cache the result
-        self.dynamic_list.cache_snomed_result(term, result)
+        # Cache the sanitized result
+        sanitized_result = self._sanitize_result_for_caching(result)
+        self.dynamic_list.cache_snomed_result(term, sanitized_result)
         
         return result
     
@@ -618,9 +711,56 @@ Return only the JSON, no other text."""
         """
         return self.identify_medical_terms_llm(text)
     
+    def _batch_check_terms(self, terms_batch: List[Tuple[str, int, int, str]], llm_identified: bool = False) -> List[Dict]:
+        """
+        Check a batch of terms efficiently with optimized processing
+        
+        Args:
+            terms_batch: List of (term, start, end, category) tuples
+            llm_identified: Whether terms were identified by LLM
+            
+        Returns:
+            List of spell check results
+        """
+        results = []
+        unique_terms = set()
+        
+        # Group identical terms to avoid duplicate processing
+        term_groups = {}
+        for term, start, end, category in terms_batch:
+            term_key = term.lower().strip()
+            if term_key not in term_groups:
+                term_groups[term_key] = {
+                    'original_term': term,
+                    'positions': [],
+                    'category': category
+                }
+            term_groups[term_key]['positions'].append((start, end))
+        
+        # Process unique terms only once
+        for term_key, group_data in term_groups.items():
+            original_term = group_data['original_term']
+            positions = group_data['positions']
+            category = group_data['category']
+            
+            # Check spelling once per unique term
+            spell_result = self.check_spelling(original_term, llm_identified=llm_identified)
+            
+            # Create results for each occurrence
+            for start, end in positions:
+                result_copy = spell_result.copy()
+                result_copy["start_pos"] = start
+                result_copy["end_pos"] = end
+                result_copy["category"] = category
+                results.append(result_copy)
+            
+            unique_terms.add(term_key)
+        
+        return results
+
     def check_text(self, text: str) -> Dict[str, any]:
         """
-        Check spelling of all medical terms in a text with batch processing
+        Check spelling of all medical terms in a text with optimized batch processing
         
         Args:
             text: The text to check
@@ -629,36 +769,48 @@ Return only the JSON, no other text."""
             Dictionary with spell check results and unique term counts
         """
         medical_terms = self.identify_medical_terms(text)
-        results = []
+        
+        if not medical_terms:
+            return {
+                "results": [],
+                "unique_terms": [],
+                "unique_count": 0,
+                "total_occurrences": 0
+            }
         
         # Determine if terms came from LLM (higher confidence they're correct)
-        llm_available = self.use_llm and self.llm_client
+        llm_available = bool(self.use_llm and self.llm_client)
         
-        # Track unique terms for counting
-        unique_terms = set()
+        # Process in smaller batches to optimize performance and avoid timeouts
+        batch_size = 20  # Reduced from 50 to 20 for better performance
+        all_results = []
+        all_unique_terms = set()
         
-        # Process in chunks to avoid timeouts on large texts
-        chunk_size = 50  # Process 50 terms at a time
+        print(f"Processing {len(medical_terms)} medical terms in batches of {batch_size}")
         
-        for i in range(0, len(medical_terms), chunk_size):
-            chunk = medical_terms[i:i + chunk_size]
+        for i in range(0, len(medical_terms), batch_size):
+            batch = medical_terms[i:i + batch_size]
+            print(f"Processing batch {i//batch_size + 1}/{(len(medical_terms) + batch_size - 1)//batch_size}")
             
-            for term, start, end, category in chunk:
-                # Terms identified by LLM should be treated as more likely to be correct
-                spell_result = self.check_spelling(term, llm_identified=llm_available)
-                spell_result["start_pos"] = start
-                spell_result["end_pos"] = end
-                spell_result["category"] = category
-                results.append(spell_result)
+            try:
+                # Process batch with optimized checking
+                batch_results = self._batch_check_terms(batch, llm_identified=llm_available)
+                all_results.extend(batch_results)
                 
-                # Add to unique terms set (normalize for counting)
-                unique_terms.add(term.lower().strip())
+                # Track unique terms from this batch
+                for term, _, _, _ in batch:
+                    all_unique_terms.add(term.lower().strip())
+                    
+            except Exception as e:
+                print(f"Error processing batch {i//batch_size + 1}: {e}")
+                # Continue with next batch even if one fails
+                continue
         
         return {
-            "results": results,
-            "unique_terms": sorted(list(unique_terms)),
-            "unique_count": len(unique_terms),
-            "total_occurrences": len(results)
+            "results": all_results,
+            "unique_terms": sorted(list(all_unique_terms)),
+            "unique_count": len(all_unique_terms),
+            "total_occurrences": len(all_results)
         }
     
     def add_medicine_to_dynamic_list(self, term: str):
@@ -671,7 +823,39 @@ Return only the JSON, no other text."""
     
     def get_medical_nlp_status(self) -> Dict:
         """Get medical NLP status and configuration"""
-        return self.medical_nlp.get_status()
+        status = self.medical_nlp.get_status()
+        # Add spell checker configuration info
+        status.update({
+            "spell_checker_config": {
+                "use_snomed_api": self.use_snomed_api,
+                "llm_only_mode": self.llm_only_mode,
+                "use_llm": self.use_llm,
+                "snomed_circuit_breaker": getattr(self.snomed_api, 'circuit_breaker_state', 'unknown') if hasattr(self.snomed_api, 'circuit_breaker_state') else 'unknown'
+            }
+        })
+        return status
+    
+    def enable_llm_only_mode(self):
+        """Enable LLM-only mode (disable SNOMED API)"""
+        self.llm_only_mode = True
+        print("Enabled LLM-only mode - SNOMED API disabled")
+    
+    def disable_llm_only_mode(self):
+        """Disable LLM-only mode (re-enable SNOMED API)"""
+        self.llm_only_mode = False
+        print("Disabled LLM-only mode - SNOMED API re-enabled")
+    
+    def reset_snomed_circuit_breaker(self):
+        """Reset the SNOMED API circuit breaker"""
+        if hasattr(self.snomed_api, 'circuit_breaker_state'):
+            self.snomed_api.circuit_breaker_state = "closed"
+            self.snomed_api.circuit_breaker_failures = 0
+            self.snomed_api.circuit_breaker_opened_at = None
+            print("SNOMED API circuit breaker reset")
+            # Re-enable SNOMED API if it was disabled
+            if self.llm_only_mode:
+                self.llm_only_mode = False
+                print("Re-enabled SNOMED API after circuit breaker reset")
     
     def correct_text(self, text: str, interactive: bool = False) -> str:
         """

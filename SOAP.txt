@@ -644,3 +644,211 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "21ed2618",
+    "visit_date": "2025-08-05",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "No previous similar symptoms reported.",
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not performed during the conversation."
+    },
+    "assessment": {
+      "diagnosis": "Possible stroke or transient ischemic attack (TIA) given the acute onset of neurological symptoms.",
+      "risk_factors": [
+        "Age (67 years)",
+        "Possible hypertension or other vascular risk factors (not mentioned)"
+      ]
+    },
+    "plan": {
+      "procedures_or_tests": [
+        "Neurological examination",
+        "CT scan or MRI of the brain",
+        "Blood tests"
+      ],
+      "patient_education": "Instructed to seek immediate medical attention for acute neurological symptoms.",
+      "follow_up_instructions": "Follow up with neurology after imaging and evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "62d596de",
+    "visit_date": "2025-08-05",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in the left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, and history of hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago and drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam reveals left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "It's crucial to call 911 immediately if you experience any worsening symptoms. Information about stroke rehabilitation was provided.",
+      "follow_up_instructions": "Patient will need to stay in the hospital for monitoring and rehabilitation, and blood thinners will need adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f931c325",
+    "visit_date": "2025-08-05",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, Paroxysmal atrial fibrillation, and history of hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago and consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Paroxysmal atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "It's crucial to call 911 immediately if you experience any worsening symptoms. Information about stroke rehabilitation will be provided.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjustments to blood thinners will be made as needed."
+    }
+  }
+}

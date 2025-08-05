@@ -6,12 +6,30 @@ This module provides integration with SNOMED CT API for medical term validation
 import requests
 import json
 import time
+import os
 from typing import List, Dict, Optional
+from datetime import datetime, timedelta
 
 class SnomedAPI:
     def __init__(self):
-        # Using the public SNOMED CT browser API
-        self.base_url = "https://snowstorm.ihtsdotools.org/snowstorm/snomed-ct"
+        # Using the authenticated SNOMED API from haiapi.shaip.com
+        self.base_url = "https://haiapi.shaip.com/snomed_output"
+        
+        # Read API key from environment variable first, then fallback to hardcoded
+        self.api_key = os.getenv("X_API_KEY")
+        if not self.api_key:
+            print("⚠️  X_API_KEY not found in environment, using hardcoded fallback")
+            self.api_key = "027554fd-92c9-48ff-9302-ff6efae8eb4f"  # Updated to new valid key
+        else:
+            print(f"✅ SNOMED API key loaded from environment: {self.api_key[:8]}...")
+        
+        # Verify API key is valid (should be UUID format)
+        if len(self.api_key) == 36 and self.api_key.count('-') == 4:
+            print(f"✅ API key format appears valid: {self.api_key[:8]}...{self.api_key[-4:]}")
+        else:
+            print(f"⚠️  API key format may be invalid: {len(self.api_key)} chars")
+        
+        # Legacy fields for backward compatibility (not used with new API)
         self.edition = "MAIN"
         self.version = "MAIN"
         
@@ -19,8 +37,15 @@ class SnomedAPI:
         self._cache = {}
         self._cache_expiry = {}
         self.cache_duration = 300  # 5 minutes
-        self.retry_attempts = 2
+        self.retry_attempts = 1  # Reduced from 2 to 1 retry (total 2 attempts)
         self.retry_delay = 1  # 1 second
+        
+        # Circuit breaker pattern to prevent cascading failures
+        self.circuit_breaker_failures = 0
+        self.circuit_breaker_threshold = 5  # Open circuit after 5 consecutive failures
+        self.circuit_breaker_timeout = 60  # Keep circuit open for 60 seconds
+        self.circuit_breaker_opened_at = None
+        self.circuit_breaker_state = "closed"  # closed, open, half-open
     
     def _get_cache_key(self, term: str, operation: str = "search") -> str:
         """Generate cache key for term and operation"""
@@ -51,10 +76,102 @@ class SnomedAPI:
         if self._is_cache_valid(cache_key):
             return self._cache.get(cache_key)
         return None
+    
+    def _is_circuit_open(self) -> bool:
+        """Check if circuit breaker is open"""
+        if self.circuit_breaker_state == "closed":
+            return False
+        elif self.circuit_breaker_state == "open":
+            # Check if timeout has expired
+            if self.circuit_breaker_opened_at and \
+               datetime.now() > self.circuit_breaker_opened_at + timedelta(seconds=self.circuit_breaker_timeout):
+                self.circuit_breaker_state = "half-open"
+                print("SNOMED API circuit breaker moving to half-open state")
+                return False
+            return True
+        else:  # half-open
+            return False
+    
+    def _record_success(self):
+        """Record successful API call"""
+        if self.circuit_breaker_state == "half-open":
+            print("SNOMED API circuit breaker closing after successful call")
+            self.circuit_breaker_state = "closed"
+        self.circuit_breaker_failures = 0
+    
+    def _record_failure(self):
+        """Record failed API call"""
+        self.circuit_breaker_failures += 1
+        if self.circuit_breaker_failures >= self.circuit_breaker_threshold:
+            self.circuit_breaker_state = "open"
+            self.circuit_breaker_opened_at = datetime.now()
+            print(f"SNOMED API circuit breaker opened after {self.circuit_breaker_failures} failures")
+    
+    def _should_skip_api_call(self) -> bool:
+        """Check if API call should be skipped due to circuit breaker"""
+        if self._is_circuit_open():
+            print("SNOMED API circuit breaker is open, skipping API call")
+            return True
+        return False
+    
+    def _parse_haiapi_response(self, response_data: Dict, limit: int = 5) -> List[Dict]:
+        """
+        Parse the response from haiapi.shaip.com SNOMED API
+        
+        Args:
+            response_data: Raw response from the API
+            limit: Maximum number of results to return
+            
+        Returns:
+            List of standardized concept dictionaries
+        """
+        try:
+            results = []
+            
+            # The API response format may vary, so we need to handle different structures
+            if isinstance(response_data, dict):
+                # Look for SNOMED codes or medical terms in the response
+                if 'concepts' in response_data:
+                    concepts = response_data['concepts']
+                elif 'results' in response_data:
+                    concepts = response_data['results']
+                elif 'data' in response_data:
+                    concepts = response_data['data']
+                else:
+                    # If the response contains SNOMED codes directly
+                    concepts = [response_data] if response_data else []
+                
+                # Convert to standardized format
+                for i, concept in enumerate(concepts[:limit]):
+                    if isinstance(concept, dict):
+                        # Standardize the concept format
+                        standardized = {
+                            "conceptId": concept.get("conceptId", concept.get("id", f"unknown_{i}")),
+                            "pt": {
+                                "term": concept.get("preferredTerm", concept.get("term", concept.get("display", "")))
+                            },
+                            "fsn": {
+                                "term": concept.get("fullySpecifiedName", concept.get("fsn", ""))
+                            }
+                        }
+                        results.append(standardized)
+                    elif isinstance(concept, str):
+                        # If concept is just a string (term)
+                        results.append({
+                            "conceptId": f"term_{i}",
+                            "pt": {"term": concept},
+                            "fsn": {"term": concept}
+                        })
+            
+            return results[:limit]
+            
+        except Exception as e:
+            print(f"Error parsing haiapi response: {e}")
+            return []
         
     def search_concepts(self, term: str, limit: int = 5) -> List[Dict]:
         """
-        Search for SNOMED CT concepts matching the given term with caching and retry
+        Search for SNOMED CT concepts using the authenticated haiapi.shaip.com API
         
         Args:
             term: The search term
@@ -69,31 +186,35 @@ class SnomedAPI:
         if cached_result is not None:
             return cached_result
         
+        # Check circuit breaker before making API calls
+        if self._should_skip_api_call():
+            # Return empty result when circuit is open
+            self._set_cache(cache_key, [])
+            return []
+        
         # Try API call with retry logic
         for attempt in range(self.retry_attempts + 1):
             try:
-                url = f"{self.base_url}/browser/{self.edition}/concepts"
-                params = {
-                    "term": term,
-                    "activeFilter": True,
-                    "termActive": True,
-                    "limit": limit,
-                    "offset": 0,
-                    "groupByConcept": True,
-                    "searchMode": "partialMatching",
-                    "lang": "english",
-                    "skipTo": 0,
-                    "returnLimit": limit
+                headers = {
+                    "Content-Type": "application/json",
+                    "x-api-key": self.api_key
                 }
                 
-                # Reduced timeout to 3 seconds
-                response = requests.get(url, params=params, timeout=3)
+                payload = {
+                    "data": term
+                }
+                
+                # Increased timeout to 8 seconds for better reliability
+                response = requests.post(self.base_url, json=payload, headers=headers, timeout=8)
                 
                 if response.status_code == 200:
                     data = response.json()
-                    result = data.get("items", [])
+                    # Parse the response from the new API format
+                    result = self._parse_haiapi_response(data, limit)
                     # Cache successful result
                     self._set_cache(cache_key, result)
+                    # Record success for circuit breaker
+                    self._record_success()
                     return result
                 elif response.status_code == 429:
                     print(f"SNOMED API rate limited for term '{term}' (attempt {attempt + 1})")
@@ -104,7 +225,7 @@ class SnomedAPI:
                     self._set_cache(cache_key, [])
                     return []
                 else:
-                    print(f"SNOMED API error: {response.status_code} for term '{term}'")
+                    print(f"SNOMED API error: {response.status_code} for term '{term}' - {response.text}")
                     if attempt < self.retry_attempts:
                         time.sleep(self.retry_delay)
                         continue
@@ -115,17 +236,24 @@ class SnomedAPI:
                 if attempt < self.retry_attempts:
                     time.sleep(self.retry_delay)
                     continue
+                # Record failure on final attempt
+                self._record_failure()
                 return []
             except requests.exceptions.RequestException as e:
                 print(f"SNOMED API request error: {e} (attempt {attempt + 1})")
                 if attempt < self.retry_attempts:
                     time.sleep(self.retry_delay)
                     continue
+                # Record failure on final attempt
+                self._record_failure()
                 return []
             except Exception as e:
                 print(f"SNOMED API error: {e}")
+                self._record_failure()
                 return []
         
+        # Record failure if all attempts exhausted
+        self._record_failure()
         return []
     
     def validate_term(self, term: str) -> bool:
@@ -202,7 +330,7 @@ class SnomedAPI:
         """
         try:
             url = f"{self.base_url}/{self.version}/concepts/{concept_id}"
-            response = requests.get(url, timeout=3)
+            response = requests.get(url, timeout=8)
             
             if response.status_code == 200:
                 return response.json()

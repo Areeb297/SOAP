@@ -70,8 +70,8 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 4. **Set up React Frontend**
    ```bash
    # Create React app
-   npx create-react-app frontend
-   cd frontend
+   npx create-react-app soap-recorder-frontend
+   cd soap-recorder-frontend
    
    # Install dependencies
    npm install lucide-react
@@ -89,7 +89,7 @@ A complete voice recording application for generating SOAP notes from doctor-pat
 
 2. **Start the Frontend** (Terminal 2):
    ```bash
-   cd frontend
+   cd soap-recorder-frontend
    npm start
    ```
    Frontend runs on http://localhost:3000
