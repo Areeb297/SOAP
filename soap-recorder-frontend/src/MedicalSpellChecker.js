@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './MedicalSpellChecker.css';
 
-const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
+const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect }) => {
   const [medicalTerms, setMedicalTerms] = useState([]);
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestionPosition, setSuggestionPosition] = useState({ top: 0, left: 0 });
   const [isChecking, setIsChecking] = useState(false);
+  const [showingAlternatives, setShowingAlternatives] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
   const [nlpStatus, setNlpStatus] = useState(null);
   
@@ -143,6 +144,8 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
   const handleTermClick = async (term, event) => {
     event.preventDefault();
     event.stopPropagation();
+    
+    console.log('Medical term clicked, preventing edit mode trigger');
 
     const rect = event.target.getBoundingClientRect();
     const containerRect = textAreaRef.current.parentElement.getBoundingClientRect();
@@ -154,27 +157,82 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     });
 
     setSelectedTerm(term);
-    setSuggestions(term.suggestions || []);
+    setShowingAlternatives(false); // Reset alternatives state for new term
+    
+    // Combine spell-check suggestions with database suggestions
+    let allSuggestions = term.suggestions || [];
+    
+    // Fetch database suggestions
+    try {
+      console.log(`Fetching database suggestions for term: "${term.term}"`);
+      const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(term.term)}`);
+      console.log(`Database response status: ${response.status}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Database response data:', data);
+        
+        const dbSuggestions = data.results || [];
+        console.log(`Database suggestions found: ${dbSuggestions.length}`);
+        console.log('Database suggestions:', dbSuggestions);
+        
+        // Add database suggestions with source information
+        const formattedDbSuggestions = dbSuggestions.map(result => ({
+          value: result.value,
+          typeName: result.typeName,
+          source: 'database'
+        }));
+        
+        console.log('Formatted database suggestions:', formattedDbSuggestions);
+        
+        // Combine suggestions: spell-check first, then database
+        allSuggestions = [
+          ...allSuggestions.map(s => ({ value: s, source: 'spellcheck' })),
+          ...formattedDbSuggestions
+        ];
+        
+        console.log('All combined suggestions:', allSuggestions);
+      } else {
+        console.error(`Database request failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error fetching database suggestions:', error);
+      // Continue with just spell-check suggestions if database fails
+      allSuggestions = allSuggestions.map(s => ({ value: s, source: 'spellcheck' }));
+    }
+    
+    console.log('Setting suggestions state:', allSuggestions);
+    console.log('Current showSuggestions state before:', showSuggestions);
+    setSuggestions(allSuggestions);
     setShowSuggestions(true);
+    console.log('Set showSuggestions to true');
   };
 
   // Handle suggestion selection
   const handleSuggestionSelect = (suggestion) => {
-    if (selectedTerm && onTextChange) {
-      // Replace the term in the text
-      let newText = text;
+    if (selectedTerm) {
       const { start, end } = selectedTerm;
       
       // Calculate the actual positions in the current text
       const beforeText = text.substring(0, start);
       const afterText = text.substring(end);
       
-      newText = beforeText + suggestion + afterText;
-      onTextChange(newText);
+      // Extract the actual value from suggestion object or use as string
+      const replacementText = typeof suggestion === 'object' ? suggestion.value : suggestion;
+      
+      const newText = beforeText + replacementText + afterText;
+      
+      // If parent component has onSuggestionSelect callback, use it to enter edit mode
+      if (onSuggestionSelect) {
+        onSuggestionSelect(newText, { start, end: start + replacementText.length });
+      } else if (onTextChange) {
+        onTextChange(newText);
+      }
     }
 
     setShowSuggestions(false);
     setSelectedTerm(null);
+    setShowingAlternatives(false); // Reset alternatives state
   };
 
   // Handle confirmation for correct terms
@@ -195,6 +253,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     }
     setShowSuggestions(false);
     setSelectedTerm(null);
+    setShowingAlternatives(false); // Reset alternatives state
   };
 
   // Handle click outside
@@ -202,6 +261,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     const handleClickOutside = (event) => {
       if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
         setShowSuggestions(false);
+        setShowingAlternatives(false); // Reset alternatives state
       }
     };
 
@@ -380,6 +440,9 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
     );
   };
 
+  // Debug logging for render
+  console.log('MedicalSpellChecker render - showSuggestions:', showSuggestions, 'suggestions:', suggestions, 'selectedTerm:', selectedTerm, 'showingAlternatives:', showingAlternatives);
+
   return (
     <div className="medical-spell-checker" ref={textAreaRef}>
       {isChecking && (
@@ -416,7 +479,12 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
         {renderHighlightedText()}
       </div>
       
-      {showSuggestions && suggestions.length > 0 && (
+      {(() => {
+        console.log('Rendering check - showSuggestions:', showSuggestions, 'suggestions.length:', suggestions.length, 'suggestions:', suggestions);
+        const shouldShow = showSuggestions && (suggestions.length > 0 || selectedTerm);
+        console.log('Should show dropdown:', shouldShow);
+        return shouldShow;
+      })() && (
         <div 
           ref={suggestionsRef}
           className="suggestions-dropdown"
@@ -427,10 +495,10 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
           }}
         >
           <div className="suggestions-header">
-            {selectedTerm.isCorrect ? 'Confirm Medical Term' : 'Spelling Suggestions'}
+            {selectedTerm.isCorrect && !showingAlternatives ? 'Confirm Medical Term' : 'Spelling Suggestions'}
           </div>
           <div className="suggestions-list">
-            {selectedTerm.isCorrect ? (
+            {selectedTerm.isCorrect && !showingAlternatives ? (
               <div className="suggestion-item confirm-item">
                 <div>Are you sure this is the correct medical term?</div>
                 <div className="confirm-buttons">
@@ -442,23 +510,51 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
                   </button>
                   <button 
                     className="confirm-no"
-                    onClick={() => {
-                      // Show alternative suggestions
-                      setSuggestions(['Loading suggestions...']);
-                      // Fetch alternative suggestions
-                      fetch(`${BACKEND_URL}/validate-medical-term`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          term: selectedTerm.term,
-                          context: text,
-                          position: selectedTerm.start
-                        })
-                      })
-                      .then(res => res.json())
-                      .then(data => {
-                        setSuggestions(data.suggestions || []);
-                      });
+                    onClick={async (event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      console.log('User clicked "No, show alternatives"');
+                      setShowingAlternatives(true); // Set state to show alternatives
+                      setSuggestions([{ value: 'Loading suggestions...', source: 'loading' }]);
+                      
+                      // Fetch database suggestions using same logic as handleTermClick
+                      let allSuggestions = [];
+                      
+                      try {
+                        console.log(`Fetching alternatives for term: "${selectedTerm.term}"`);
+                        const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(selectedTerm.term)}`);
+                        console.log(`Alternative suggestions response status: ${response.status}`);
+                        
+                        if (response.ok) {
+                          const data = await response.json();
+                          console.log('Alternative suggestions data:', data);
+                          
+                          const dbSuggestions = data.results || [];
+                          console.log(`Alternative database suggestions found: ${dbSuggestions.length}`);
+                          
+                          // Format database suggestions
+                          allSuggestions = dbSuggestions.map(result => ({
+                            value: result.value,
+                            typeName: result.typeName,
+                            source: 'database'
+                          }));
+                          
+                          console.log('Formatted alternative suggestions:', allSuggestions);
+                          console.log('About to set alternative suggestions state');
+                        } else {
+                          console.error(`Alternative suggestions request failed: ${response.status}`);
+                          allSuggestions = [{ value: 'No alternatives found', source: 'error' }];
+                        }
+                      } catch (error) {
+                        console.error('Error fetching alternative suggestions:', error);
+                        allSuggestions = [{ value: 'Error loading alternatives', source: 'error' }];
+                      }
+                      
+                      setSuggestions(allSuggestions);
+                      console.log('Set alternative suggestions:', allSuggestions);
+                      console.log('showSuggestions state should remain true');
+                      // Force re-render by ensuring showSuggestions stays true
+                      setShowSuggestions(true);
                     }}
                   >
                     No, show alternatives
@@ -466,15 +562,53 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true }) => {
                 </div>
               </div>
             ) : (
-              suggestions.map((suggestion, index) => (
-                <div
-                  key={index}
-                  className="suggestion-item"
-                  onClick={() => handleSuggestionSelect(suggestion)}
-                >
-                  {suggestion}
-                </div>
-              ))
+              <>
+                {/* Group suggestions by source */}
+                {suggestions.filter(s => (typeof s === 'object' ? s.source === 'spellcheck' : true)).length > 0 && (
+                  <>
+                    <div className="suggestion-category-header">Spelling Suggestions</div>
+                    {suggestions
+                      .filter(s => (typeof s === 'object' ? s.source === 'spellcheck' : true))
+                      .map((suggestion, index) => (
+                        <div
+                          key={`spell-${index}`}
+                          className="suggestion-item spellcheck-suggestion"
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                        >
+                          {typeof suggestion === 'object' ? suggestion.value : suggestion}
+                        </div>
+                      ))
+                    }
+                  </>
+                )}
+                
+                {/* Database suggestions */}
+                {suggestions.filter(s => typeof s === 'object' && s.source === 'database').length > 0 && (
+                  <>
+                    <div className="suggestion-category-header">Related Medical Products</div>
+                    {suggestions
+                      .filter(s => typeof s === 'object' && s.source === 'database')
+                      .map((suggestion, index) => (
+                        <div
+                          key={`db-${index}`}
+                          className="suggestion-item database-suggestion"
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                          title={`Category: ${suggestion.typeName}`}
+                        >
+                          <div className="suggestion-value">{suggestion.value}</div>
+                        </div>
+                      ))
+                    }
+                  </>
+                )}
+                
+                {/* Fallback message when no suggestions found */}
+                {suggestions.length === 0 && (
+                  <div className="suggestion-item">
+                    No suggestions available
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
