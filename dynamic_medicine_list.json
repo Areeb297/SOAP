@@ -1,5 +1,7 @@
 {
-  "medicines": [],
+  "medicines": [
+    "diabetes"
+  ],
   "cache": {
     "indicate": {
       "term": "indicate",
@@ -547,5 +549,5 @@
     }
   },
   "classification_cache": {},
-  "last_updated": "2025-08-04T16:57:08.101062"
+  "last_updated": "2025-08-05T11:02:56.904589"
 }

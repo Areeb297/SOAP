@@ -48,6 +48,21 @@ const SpellCheckedTextArea = ({
     onChange(newText);
   };
 
+  const handleSuggestionSelect = (newText, position) => {
+    // When a suggestion is selected, enter edit mode and update text
+    setLocalValue(newText);
+    onChange(newText);
+    setIsEditing(true);
+    
+    // Focus and set cursor position after text is updated
+    setTimeout(() => {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+        textAreaRef.current.setSelectionRange(position.end, position.end);
+      }
+    }, 0);
+  };
+
   return (
     <div className={`spell-checked-textarea ${className} ${disabled ? 'disabled' : ''}`}>
       {isEditing ? (
@@ -63,20 +78,30 @@ const SpellCheckedTextArea = ({
           dir={language === 'ar' ? 'rtl' : 'ltr'}
         />
       ) : (
-        <div 
-          className="spell-check-container"
-          onClick={!disabled ? handleEditClick : undefined}
-          title={!disabled ? "Click to edit" : ""}
-        >
+        <div className="spell-check-container">
+          {/* Edit button */}
+          {!disabled && (
+            <button
+              className="edit-transcript-button"
+              onClick={handleEditClick}
+              title="Edit transcript"
+            >
+              ✏️ Edit
+            </button>
+          )}
+          
           {localValue ? (
             <MedicalSpellChecker
               text={localValue}
               onTextChange={handleSpellCheckerChange}
+              onSuggestionSelect={handleSuggestionSelect}
               enabled={enableSpellCheck && !disabled}
               language={language}
             />
           ) : (
-            <div className="placeholder-text">{placeholder}</div>
+            <div className="placeholder-text" onClick={!disabled ? handleEditClick : undefined}>
+              {placeholder}
+            </div>
           )}
         </div>
       )}

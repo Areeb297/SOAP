@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import subprocess
 from medical_spell_check import MedicalSpellChecker
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 # Set temporary directory to system default
 temp_dir = tempfile.gettempdir()
@@ -556,9 +558,11 @@ def generate_soap_note_metadata(transcript, language):
     
     if language == "en":
         # Extract English patient name - improved patterns
-        # First check for "patient:" or "patient is" patterns  
+        # Look for formal titles and names in doctor-patient dialogue first
         patient_patterns = [
-            # Pattern for "Patient: [Name], [age]" or "Patient: [Name]"
+            # Pattern for "Mr./Mrs./Ms./Dr. [Name]" in dialogue
+            r"(?:Mr\.?|Mrs\.?|Ms\.?|Miss)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)",
+            # Pattern for "Patient: [Name], [age]" or "Patient: [Name]" (but exclude greetings)
             r"patient\s*:\s*([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*?)(?:\s*,|\s+\d+|$)",
             # Pattern for "The patient [Name]"
             r"(?:the\s+)?patient\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*?)(?:\s*,|\s+is|\s+\d+|$)",
@@ -578,8 +582,11 @@ def generate_soap_note_metadata(transcript, language):
                 extracted_name = match.group(1).strip()
                 # Remove common titles if they appear at the start
                 extracted_name = re.sub(r'^(Dr\.?|Mr\.?|Mrs\.?|Ms\.?)\s+', '', extracted_name)
-                # Validate it's a reasonable name (not common words)
-                if len(extracted_name) > 2 and extracted_name.lower() not in ['the', 'and', 'with', 'this', 'that', 'here', 'there', 'dr', 'doctor']:
+                # Validate it's a reasonable name (not common words or greetings)
+                invalid_names = ['the', 'and', 'with', 'this', 'that', 'here', 'there', 'dr', 'doctor', 
+                               'good', 'morning', 'afternoon', 'evening', 'hello', 'hi', 'hey', 'thank', 'you',
+                               'please', 'yes', 'no', 'okay', 'alright', 'sure', 'well', 'now', 'today']
+                if len(extracted_name) > 2 and extracted_name.lower() not in invalid_names:
                     patient_name = extracted_name
                     print(f"Matched patient name '{patient_name}' with pattern: {pattern}")
                     break
@@ -923,6 +930,87 @@ def home():
 def health_check():
     """Health check endpoint"""
     return jsonify({'status': 'healthy'})
+
+@app.route('/suggest', methods=['GET'])
+def get_medical_suggestions():
+    """Get medical suggestions from Supabase database"""
+    try:
+        word = request.args.get('word', '').strip()
+        
+        if not word:
+            return jsonify({'error': 'No word provided'}), 400
+        
+        if len(word) < 2:
+            return jsonify({'error': 'Word must be at least 2 characters'}), 400
+        
+        # Get database URL from environment
+        database_url = os.getenv('DATABASE_URL')
+        if not database_url:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Connect to Supabase database
+        try:
+            conn = psycopg2.connect(database_url)
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            
+            # Execute the SQL query with proper parameterization
+            query = """
+                SELECT T."TypeName", C."CodeDisplayValue" 
+                FROM "Sys_TypeLookups" T
+                INNER JOIN "Sys_Codes" C ON T."TypeID" = C."TypeID"
+                WHERE C."CodeDisplayValue" ILIKE %s
+                LIMIT 30
+            """
+            
+            # Use parameterized query to prevent SQL injection
+            search_pattern = f'%{word}%'
+            cursor.execute(query, (search_pattern,))
+            
+            results = cursor.fetchall()
+            print(f"Database query returned {len(results)} raw results for word '{word}'")
+            
+            # Format results and remove duplicates
+            formatted_results = []
+            seen_values = set()
+            
+            for row in results:
+                display_value = row['CodeDisplayValue']
+                type_name = row['TypeName']
+                print(f"Raw result: {display_value} | Type: {type_name}")
+                
+                # Case-insensitive deduplication
+                display_value_lower = display_value.lower()
+                if display_value_lower not in seen_values:
+                    seen_values.add(display_value_lower)
+                    formatted_results.append({
+                        'typeName': type_name,
+                        'value': display_value
+                    })
+            
+            print(f"Formatted results after deduplication: {len(formatted_results)} items")
+            print(f"Final response: {formatted_results}")
+            
+            # Close database connection
+            cursor.close()
+            conn.close()
+            
+            response_data = {
+                'word': word,
+                'results': formatted_results,
+                'uniqueCount': len(formatted_results),
+                'source': 'supabase'
+            }
+            print(f"Sending response: {response_data}")
+            
+            return jsonify(response_data)
+            
+        except psycopg2.Error as db_error:
+            print(f"Database error: {str(db_error)}")
+            return jsonify({'error': 'Database query failed'}), 500
+        
+    except Exception as e:
+        print(f"Error in get_medical_suggestions: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/check-medical-terms', methods=['POST'])
 def check_medical_terms():

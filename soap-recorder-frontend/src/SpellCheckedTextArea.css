@@ -7,7 +7,6 @@
 
 .spell-check-container {
   min-height: 100px;
-  cursor: text;
   position: relative;
   transition: all 0.2s ease;
 }
@@ -132,6 +131,34 @@
     padding: 10px;
     font-size: 14px;
   }
+}
+
+/* Edit Transcript Button */
+.edit-transcript-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.edit-transcript-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.edit-transcript-button:active {
+  transform: translateY(0);
 }
 
 /* Dark mode support removed to prevent automatic theme switching */
