@@ -1,553 +1,189 @@
 {
-  "medicines": [
-    "diabetes"
-  ],
+  "medicines": [],
   "cache": {
-    "indicate": {
-      "term": "indicate",
-      "is_correct": false,
+    "left arm": {
+      "term": "left arm",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "right side": {
+      "term": "right side",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "vision": {
+      "term": "vision",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "confusion": {
+      "term": "confusion",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "blood pressure": {
+      "term": "blood pressure",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "atrial fibrillation": {
+      "term": "atrial fibrillation",
+      "is_correct": true,
       "suggestions": [
-        "diabetes"
+        "trial fibrillation"
       ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 12,
-      "end_pos": 20
+      "confidence": 0.8,
+      "source": "textblob"
     },
-    "cholesterol": {
-      "term": "cholesterol",
-      "is_correct": false,
+    "blood thinners": {
+      "term": "blood thinners",
+      "is_correct": true,
       "suggestions": [
-        "cholestrol"
+        "blood thinner"
       ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 21,
-      "end_pos": 32
-    },
-    "pain": {
-      "term": "pain",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 13,
-      "end_pos": 17
-    },
-    "troponin": {
-      "term": "troponin",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 30,
-      "end_pos": 38
-    },
-    "cholestrol": {
-      "term": "cholestrol",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 22,
-      "end_pos": 32
-    },
-    "rate": {
-      "term": "rate",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 55,
-      "end_pos": 59
-    },
-    "radiate": {
-      "term": "radiate",
-      "is_correct": false,
-      "suggestions": [
-        "diabetes"
-      ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 542,
-      "end_pos": 549
-    },
-    "500mg": {
-      "term": "500mg",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 980,
-      "end_pos": 985
-    },
-    "20mg": {
-      "term": "20mg",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1012,
-      "end_pos": 1016
-    },
-    "10mg": {
-      "term": "10mg",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1044,
-      "end_pos": 1048
-    },
-    "nitroglycerin": {
-      "term": "nitroglycerin",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "50mcg": {
-      "term": "50mcg",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1560,
-      "end_pos": 1565
-    },
-    "sertraline": {
-      "term": "Sertraline",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1590,
-      "end_pos": 1600
+      "confidence": 0.8,
+      "source": "textblob"
     },
     "warfarin": {
       "term": "Warfarin",
-      "is_correct": false,
+      "is_correct": true,
       "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1158,
-      "end_pos": 1166
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "hip replacement": {
+      "term": "hip replacement",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
     "5mg": {
       "term": "5mg",
-      "is_correct": false,
-      "suggestions": [
-        "my"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 1167,
-      "end_pos": 1170
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "10mg": {
+      "term": "10mg",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
     "metoprolol": {
       "term": "Metoprolol",
-      "is_correct": false,
-      "suggestions": [
-        "omeprazole"
-      ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 1205,
-      "end_pos": 1215
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
     "25mg": {
       "term": "25mg",
-      "is_correct": false,
+      "is_correct": true,
       "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1216,
-      "end_pos": 1220
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
-    "penicillin": {
-      "term": "penicillin",
-      "is_correct": false,
+    "heart rate": {
+      "term": "heart rate",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "temperature": {
+      "term": "temperature",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "respiratory rate": {
+      "term": "respiratory rate",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "left-sided weakness": {
+      "term": "left-sided weakness",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "slurred speech": {
+      "term": "slurred speech",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "left facial droop": {
+      "term": "left facial droop",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "acute ischemic stroke": {
+      "term": "acute ischemic stroke",
+      "is_correct": true,
       "suggestions": [
-        "amoxicillin"
+        "acute ischaemic stroke"
       ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 1267,
-      "end_pos": 1277
+      "confidence": 0.8,
+      "source": "textblob"
     },
-    "brain": {
-      "term": "brain",
-      "is_correct": false,
+    "thrombolytic therapy": {
+      "term": "thrombolytic therapy",
+      "is_correct": true,
       "suggestions": [
-        "migraine"
+        "thrombotic therapy"
       ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 2023,
-      "end_pos": 2028
+      "confidence": 0.8,
+      "source": "textblob"
     },
-    "neurology": {
-      "term": "neurology",
-      "is_correct": false,
+    "blood work": {
+      "term": "blood work",
+      "is_correct": true,
       "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 39,
-      "end_pos": 48
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
-    "properly": {
-      "term": "properly",
-      "is_correct": false,
+    "coagulation studies": {
+      "term": "coagulation studies",
+      "is_correct": true,
       "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 359,
-      "end_pos": 367
+      "confidence": 0.8,
+      "source": "llm_identified"
     },
-    "problems": {
-      "term": "problems",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 639,
-      "end_pos": 647
-    },
-    "pressure": {
-      "term": "pressure",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1068,
-      "end_pos": 1076
-    },
-    "previous": {
-      "term": "previous",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1284,
-      "end_pos": 1292
-    },
-    "neurological": {
-      "term": "neurological",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "immediate": {
-      "term": "immediate",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 2073,
-      "end_pos": 2082
-    },
-    "asperin": {
-      "term": "asperin",
-      "is_correct": false,
+    "paroxysmal atrial fibrillation": {
+      "term": "Paroxysmal atrial fibrillation",
+      "is_correct": true,
       "suggestions": [
-        "aspirin"
+        "Paroxysmal trial fibrillation"
       ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 2049,
-      "end_pos": 2056
+      "confidence": 0.8,
+      "source": "textblob"
     },
-    "werfarin": {
-      "term": "Werfarin",
-      "is_correct": false,
+    "stroke": {
+      "term": "stroke",
+      "is_correct": true,
       "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1160,
-      "end_pos": 1168
-    },
-    "metoprolool": {
-      "term": "Metoprolool",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1208,
-      "end_pos": 1219
-    },
-    "warfen": {
-      "term": "warfen",
-      "is_correct": false,
-      "suggestions": [
-        "Warfarin"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 11,
-      "end_pos": 17
-    },
-    "paninclin": {
-      "term": "paninclin",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 19,
-      "end_pos": 28
-    },
-    "ibroufen": {
-      "term": "ibroufen",
-      "is_correct": false,
-      "suggestions": [
-        "ibuprofen"
-      ],
-      "confidence": 0.7,
-      "source": null
-    },
-    "infection": {
-      "term": "infection",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 50,
-      "end_pos": 59
-    },
-    "provided": {
-      "term": "provided",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "paracetamol": {
-      "term": "paracetamol",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "prescribed": {
-      "term": "prescribed",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 10,
-      "end_pos": 20
-    },
-    "blood": {
-      "term": "blood",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 18,
-      "end_pos": 23
-    },
-    "mellitus": {
-      "term": "mellitus",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 22,
-      "end_pos": 30
-    },
-    "medication": {
-      "term": "medication",
-      "is_correct": false,
-      "suggestions": [
-        "meditation"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 21,
-      "end_pos": 31
-    },
-    "symptoms": {
-      "term": "symptoms",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 36,
-      "end_pos": 44
-    },
-    "polyuria": {
-      "term": "polyuria",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 48,
-      "end_pos": 56
-    },
-    "polydipsia": {
-      "term": "polydipsia",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 61,
-      "end_pos": 71
-    },
-    "hba1c": {
-      "term": "HbA1c",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 228,
-      "end_pos": 233
-    },
-    "urination": {
-      "term": "urination",
-      "is_correct": false,
-      "suggestions": [
-        "privation"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 316,
-      "end_pos": 325
-    },
-    "medications": {
-      "term": "medications",
-      "is_correct": false,
-      "suggestions": [
-        "meditations"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 744,
-      "end_pos": 755
-    },
-    "medicine": {
-      "term": "medicine",
-      "is_correct": false,
-      "suggestions": [
-        "migraine"
-      ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 826,
-      "end_pos": 834
-    },
-    "doses": {
-      "term": "doses",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 870,
-      "end_pos": 875
-    },
-    "routine": {
-      "term": "routine",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 983,
-      "end_pos": 990
-    },
-    "treatment": {
-      "term": "treatment",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 1250,
-      "end_pos": 1259
-    },
-    "preventing": {
-      "term": "preventing",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "good morning": {
-      "term": "Good morning",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 8,
-      "end_pos": 20,
-      "category": "general"
-    },
-    "khan": {
-      "term": "Khan",
-      "is_correct": false,
-      "suggestions": [
-        "Than"
-      ],
-      "confidence": 0.7,
-      "source": "textblob",
-      "start_pos": 26,
-      "end_pos": 30,
-      "category": "general"
-    },
-    "one month": {
-      "term": "one month",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 22,
-      "end_pos": 31,
-      "category": "general"
-    },
-    "last week": {
-      "term": "last week",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 876,
-      "end_pos": 885,
-      "category": "general"
-    },
-    "a month": {
-      "term": "a month",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
-    },
-    "blood sugar": {
-      "term": "blood sugar",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null,
-      "start_pos": 212,
-      "end_pos": 223,
-      "category": "test"
-    },
-    "diabetes mellitus": {
-      "term": "diabetes mellitus",
-      "is_correct": false,
-      "suggestions": [
-        "diabetes"
-      ],
-      "confidence": 0.7,
-      "source": null,
-      "start_pos": 13,
-      "end_pos": 30,
-      "category": "condition"
-    },
-    "hyperglycemia": {
-      "term": "hyperglycemia",
-      "is_correct": false,
-      "suggestions": [],
-      "confidence": 0.3,
-      "source": null
+      "confidence": 0.8,
+      "source": "llm_identified"
     }
   },
   "classification_cache": {},
-  "last_updated": "2025-08-05T11:02:56.904589"
+  "last_updated": "2025-08-05T14:30:11.321680"
 }

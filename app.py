@@ -1109,6 +1109,45 @@ def get_medical_nlp_status():
         print(f"Error getting medical NLP status: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/enable-llm-only-mode', methods=['POST'])
+def enable_llm_only_mode():
+    """Enable LLM-only mode (disable SNOMED API)"""
+    try:
+        medical_spell_checker.enable_llm_only_mode()
+        return jsonify({
+            'message': 'LLM-only mode enabled',
+            'llm_only_mode': True
+        })
+    except Exception as e:
+        print(f"Error enabling LLM-only mode: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/disable-llm-only-mode', methods=['POST'])
+def disable_llm_only_mode():
+    """Disable LLM-only mode (re-enable SNOMED API)"""
+    try:
+        medical_spell_checker.disable_llm_only_mode()
+        return jsonify({
+            'message': 'LLM-only mode disabled',
+            'llm_only_mode': False
+        })
+    except Exception as e:
+        print(f"Error disabling LLM-only mode: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/reset-snomed-circuit-breaker', methods=['POST'])
+def reset_snomed_circuit_breaker():
+    """Reset the SNOMED API circuit breaker"""
+    try:
+        medical_spell_checker.reset_snomed_circuit_breaker()
+        return jsonify({
+            'message': 'SNOMED API circuit breaker reset',
+            'circuit_breaker_reset': True
+        })
+    except Exception as e:
+        print(f"Error resetting SNOMED circuit breaker: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/validate-medical-term', methods=['POST'])
 def validate_medical_term():
     """Validate a single medical term"""
