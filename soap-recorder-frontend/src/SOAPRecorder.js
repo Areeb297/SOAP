@@ -184,6 +184,15 @@ export default function SOAPRecorder() {
   }
 
   const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit, language }) => {
+    // State to manage individual field edit modes
+    const [fieldEditModes, setFieldEditModes] = useState({});
+
+    const handleFieldEditModeChange = (fieldKey, isFieldEditing) => {
+      setFieldEditModes(prev => ({
+        ...prev,
+        [`${sectionKey}_${fieldKey}`]: isFieldEditing
+      }));
+    };
     const renderValue = (key, value) => {
       if (!value || value === '') return null;
       
@@ -357,11 +366,12 @@ export default function SOAPRecorder() {
                     {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                   </div>
                   <div className="text-gray-800 w-full flex justify-center">
-                    {isEditing ? (
+                    {isEditing || fieldEditModes[`${sectionKey}_${key}`] ? (
                       <SpellCheckedSOAPField
                         value={editedSOAPNote[sectionKey]?.[key] || value}
                         onChange={(newValue) => onEdit(sectionKey, key, newValue)}
                         isEditing={true}
+                        onEditModeChange={(isFieldEditing) => handleFieldEditModeChange(key, isFieldEditing)}
                         language={language}
                         placeholder={`Enter ${key.replace(/_/g, ' ')}`}
                         className="w-full max-w-md"
@@ -373,6 +383,7 @@ export default function SOAPRecorder() {
                           value={String(value)}
                           onChange={(newValue) => onEdit(sectionKey, key, newValue)}
                           isEditing={false}
+                          onEditModeChange={(isFieldEditing) => handleFieldEditModeChange(key, isFieldEditing)}
                           language={language}
                           className="w-full max-w-md"
                         />

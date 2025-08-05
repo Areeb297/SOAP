@@ -11,9 +11,11 @@ from .medical_dictionary import MedicalDictionary
 from .snomed_api import SnomedAPI
 from .dynamic_medicine_list import DynamicMedicineList
 from .medical_nlp import MedicalNLP
+from .database_cache import get_database_cache
 import openai
 from openai import OpenAI
 import os
+import time
 
 class MedicalSpellChecker:
     def __init__(self):
@@ -23,6 +25,9 @@ class MedicalSpellChecker:
         
         # Initialize Medical NLP (replaces LLM for better performance)
         self.medical_nlp = MedicalNLP()
+        
+        # Initialize database cache
+        self.db_cache = get_database_cache()
         
         # Initialize OpenAI client for LLM-based classification (fallback only)
         try:
@@ -35,6 +40,33 @@ class MedicalSpellChecker:
         # Configuration flags
         self.use_snomed_api = True  # Can be disabled for LLM-only mode
         self.llm_only_mode = False  # Flag to bypass SNOMED entirely
+        
+        # Enhanced drug name correction mappings for common misspellings
+        self.drug_corrections = {
+            'wolfrin': 'warfarin',
+            'walfarin': 'warfarin', 
+            'warfrin': 'warfarin',
+            'metformim': 'metformin',
+            'metformine': 'metformin',
+            'insuline': 'insulin',
+            'insolin': 'insulin',
+            'lisanopril': 'lisinopril',
+            'lisinoprill': 'lisinopril',
+            'atorvastain': 'atorvastatin',
+            'atorvastatine': 'atorvastatin',
+            'aspirine': 'aspirin',
+            'amoxicilin': 'amoxicillin',
+            'penicillin': 'penicillin',
+            'penicillim': 'penicillin',
+            'amlodipene': 'amlodipine',
+            'omeprazol': 'omeprazole',
+            'sertralene': 'sertraline',
+            'furosemaide': 'furosemide',
+            'simvastain': 'simvastatin',
+            'hydrochlorothiazide': 'hydrochlorothiazide',
+            'prednisone': 'prednisone',
+            'prednisolone': 'prednisolone'
+        }
         
         # Enhanced medical term patterns for faster detection
         self.medical_patterns = [
@@ -266,6 +298,104 @@ class MedicalSpellChecker:
             'no-one', 'nobody', 'somebody', 'anybody', 'everybody'
         }
     
+    def get_drug_correction(self, term: str) -> str:
+        """
+        Get drug name correction for common misspellings
+        
+        Args:
+            term: The potentially misspelled drug name
+            
+        Returns:
+            Corrected drug name if found, empty string otherwise
+        """
+        term_lower = term.lower().strip()
+        
+        # Direct lookup first
+        if term_lower in self.drug_corrections:
+            return self.drug_corrections[term_lower]
+        
+        # Phonetic/fuzzy matching for drug names
+        from fuzzywuzzy import fuzz
+        
+        best_match = ""
+        best_score = 0
+        
+        for misspelling, correct_drug in self.drug_corrections.items():
+            # Check similarity score
+            similarity = fuzz.ratio(term_lower, misspelling)
+            if similarity > best_score and similarity >= 80:  # High threshold for drug names
+                best_score = similarity
+                best_match = correct_drug
+        
+        return best_match
+    
+    def _parse_llm_response_to_terms(self, text: str, llm_response: Dict) -> List[Tuple[str, int, int, str, Dict]]:
+        """
+        Parse cached LLM response back to term tuples
+        
+        Args:
+            text: Original text
+            llm_response: Cached LLM response
+            
+        Returns:
+            List of term tuples
+        """
+        medical_terms = []
+        text_lower = text.lower()
+        
+        try:
+            llm_terms = llm_response.get("medical_terms", [])
+            
+            for term_data in llm_terms:
+                term = term_data.get("term", "")
+                category = term_data.get("category", "medical")
+                needs_correction = term_data.get("needs_correction", False)
+                suggested_correction = term_data.get("suggested_correction", "")
+                
+                if not term:
+                    continue
+                    
+                # Find all occurrences of this term in the text
+                term_lower = term.lower()
+                start_pos = 0
+                
+                while True:
+                    pos = text_lower.find(term_lower, start_pos)
+                    if pos == -1:
+                        break
+                    
+                    # Check if it's a whole word
+                    if (pos == 0 or not text[pos-1].isalnum()) and \
+                       (pos + len(term) == len(text) or not text[pos + len(term)].isalnum()):
+                        end_pos = pos + len(term)
+                        term_info = {
+                            'term': text[pos:end_pos],
+                            'start': pos,
+                            'end': end_pos,
+                            'category': category,
+                            'needs_correction': needs_correction,
+                            'suggested_correction': suggested_correction
+                        }
+                        medical_terms.append((text[pos:end_pos], pos, end_pos, category, term_info))
+                    
+                    start_pos = pos + 1
+            
+            # Remove duplicates and sort
+            seen = set()
+            unique_terms = []
+            for term_tuple in medical_terms:
+                key = (term_tuple[0], term_tuple[1], term_tuple[2])
+                if key not in seen:
+                    seen.add(key)
+                    unique_terms.append(term_tuple)
+            
+            unique_terms.sort(key=lambda x: x[1])
+            return unique_terms
+            
+        except Exception as e:
+            print(f"Error parsing cached LLM response: {e}")
+            return []
+    
     def is_medical_term_llm(self, term: str) -> bool:
         """
         Use LLM to determine if a term is medical-related
@@ -288,16 +418,26 @@ class MedicalSpellChecker:
             return self._llm_cache[term_lower]
         
         try:
-            prompt = f"""Is the word "{term}" a medical term? This includes:
-- Medications/drugs (e.g., aspirin, metformin)
-- Medical conditions/diseases (e.g., diabetes, hypertension) 
-- Medical procedures (e.g., surgery, biopsy)
-- Body parts/anatomy (e.g., heart, lung)
-- Medical equipment/devices
-- Medical symptoms (e.g., nausea, fatigue)
-- Medical specialties (e.g., cardiology)
+            prompt = f"""Is the word "{term}" a medical term or a likely misspelling of a medical term? This includes:
 
-Answer only "yes" or "no"."""
+MEDICAL TERMS:
+- Medications/drugs (e.g., aspirin, metformin, warfarin, insulin, lisinopril)
+- Medical conditions/diseases (e.g., diabetes, hypertension, pneumonia) 
+- Medical procedures (e.g., surgery, biopsy, CT scan, MRI)
+- Body parts/anatomy (e.g., heart, lung, liver, kidney)
+- Medical equipment/devices (e.g., stethoscope, syringe)
+- Medical symptoms (e.g., nausea, fatigue, headache)
+- Medical specialties (e.g., cardiology, neurology)
+- Medical tests (e.g., HbA1c, CBC, blood sugar)
+
+LIKELY MEDICAL MISSPELLINGS:
+- Drug name variations (e.g., "wolfrin" → "warfarin", "metformim" → "metformin")
+- Common medical typos (e.g., "diabetic" variations, "hypertenion" → "hypertension")
+- Phonetic drug spellings (sound-alike drug names)
+- Missing letters in drug names
+- Swapped letters in medical terms
+
+Answer only "yes" if it's a medical term OR a likely medical misspelling, "no" otherwise."""
 
             response = self.llm_client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -317,7 +457,7 @@ Answer only "yes" or "no"."""
             print(f"LLM classification error for term '{term}': {e}")
             return False
     
-    def identify_medical_terms_llm(self, text: str) -> List[Tuple[str, int, int, str]]:
+    def identify_medical_terms_llm(self, text: str) -> List[Tuple[str, int, int, str, Dict]]:
         """
         Use LLM to identify ONLY actual medical terms in text
         
@@ -325,25 +465,56 @@ Answer only "yes" or "no"."""
             text: The text to analyze
             
         Returns:
-            List of tuples (term, start_pos, end_pos, category)
+            List of tuples (term, start_pos, end_pos, category, term_info)
         """
         if not self.use_llm or not self.llm_client:
             print("LLM not available, using NLP fallback")
             return self.identify_medical_terms_nlp(text)
         
+        # Check LLM processing cache first
+        if self.db_cache and self.db_cache.is_available:
+            cached_result = self.db_cache.get_llm_cache(text)
+            if cached_result:
+                print(f"✅ LLM cache hit for text (length: {len(text)} chars)")
+                self.db_cache.log_usage_stats(
+                    endpoint='llm', operation='identify_terms', cache_hit=True,
+                    processing_time_ms=0
+                )
+                # Parse cached response back to expected format
+                try:
+                    llm_response = cached_result['llm_response']
+                    if isinstance(llm_response, str):
+                        import json
+                        llm_response = json.loads(llm_response)
+                    
+                    return self._parse_llm_response_to_terms(text, llm_response)
+                except Exception as e:
+                    print(f"Error parsing cached LLM response: {e}")
+                    # Fall through to fresh LLM call
+        
         print(f"Using LLM to identify medical terms in text (length: {len(text)} chars)")
+        start_time = time.time()
         try:
-            prompt = f"""Analyze this medical transcript and identify ONLY the actual medical terms. 
+            prompt = f"""Analyze this medical transcript and identify medical terms AND potential medical misspellings that need correction.
 
-Include ONLY:
+INCLUDE BOTH:
+
+1. CORRECT MEDICAL TERMS:
 - Medical conditions/diseases (diabetes, mellitus, hyperglycemia, hypertension, pneumonia, asthma)
-- Medications/drugs (metformin, aspirin, insulin, lisinopril, atorvastatin)
+- Medications/drugs (metformin, aspirin, insulin, lisinopril, atorvastatin, warfarin)
 - Medical procedures (surgery, biopsy, X-ray, MRI, CT scan, echocardiogram)
 - Laboratory tests (HbA1c, A1C, CBC, blood sugar, glucose, cholesterol, creatinine)  
 - Body parts/anatomy (heart, liver, kidney, abdomen, chest)
 - Medical symptoms when specific (chest pain, shortness of breath, nausea, headache)
 - Dosages with medical context (500mg, twice daily when referring to medication)
 - Medical terminology components (mellitus in "diabetes mellitus", hyperglycemic, hypoglycemic)
+
+2. MEDICAL MISSPELLINGS (mark as needing correction):
+- Drug name misspellings (wolfrin→warfarin, metformim→metformin, insuline→insulin)
+- Condition misspellings (diabetic variations, hypertenion→hypertension)
+- Test name errors (HbA1c variations, glocose→glucose)
+- Anatomy misspellings (hart→heart, kidny→kidney)
+- Procedure typos (sergery→surgery, biobsy→biopsy)
 
 EXCLUDE:
 - Common words, greetings, names (Good morning, Khan, Dr. Smith, patient names)
@@ -352,12 +523,12 @@ EXCLUDE:
 - Non-medical descriptors (tired, okay, fine, better, worse, little, much)
 - Articles and prepositions (the, a, an, in, on, at, with, for)
 
-IMPORTANT: Include diabetes-related terms like "diabetes", "mellitus", "hyperglycemia", "blood sugar", "glucose", "HbA1c", "A1C".
+CRITICAL: Pay special attention to drug names that sound similar but are misspelled (like "wolfrin" which should be "warfarin").
 
 Text: "{text}"
 
 Format your response as JSON with this exact structure:
-{{"medical_terms": [{{"term": "diabetes", "category": "condition"}}, {{"term": "mellitus", "category": "condition"}}, {{"term": "HbA1c", "category": "test"}}]}}
+{{"medical_terms": [{{"term": "diabetes", "category": "condition", "needs_correction": false}}, {{"term": "wolfrin", "category": "medication", "needs_correction": true, "suggested_correction": "warfarin"}}]}}
 
 Return only the JSON, no other text."""
 
@@ -396,6 +567,8 @@ Return only the JSON, no other text."""
             for term_data in llm_terms:
                 term = term_data.get("term", "")
                 category = term_data.get("category", "medical")
+                needs_correction = term_data.get("needs_correction", False)
+                suggested_correction = term_data.get("suggested_correction", "")
                 
                 if not term:
                     continue
@@ -413,23 +586,69 @@ Return only the JSON, no other text."""
                     if (pos == 0 or not text[pos-1].isalnum()) and \
                        (pos + len(term) == len(text) or not text[pos + len(term)].isalnum()):
                         end_pos = pos + len(term)
-                        medical_terms.append((text[pos:end_pos], pos, end_pos, category))
+                        # Create enhanced tuple with correction info
+                        term_info = {
+                            'term': text[pos:end_pos],
+                            'start': pos,
+                            'end': end_pos,
+                            'category': category,
+                            'needs_correction': needs_correction,
+                            'suggested_correction': suggested_correction
+                        }
+                        medical_terms.append((text[pos:end_pos], pos, end_pos, category, term_info))
                     
                     start_pos = pos + 1
             
             # Sort by position and remove duplicates
-            medical_terms = list(set(medical_terms))  # Remove duplicates
+            # Note: Can't use set() with dictionaries, so filter manually
+            seen = set()
+            unique_terms = []
+            for term_tuple in medical_terms:
+                key = (term_tuple[0], term_tuple[1], term_tuple[2])  # term, start, end
+                if key not in seen:
+                    seen.add(key)
+                    unique_terms.append(term_tuple)
+            
+            medical_terms = unique_terms
             medical_terms.sort(key=lambda x: x[1])  # Sort by start position
             
             print(f"LLM identified {len(medical_terms)} medical terms: {[term[0] for term in medical_terms]}")
+            
+            # Cache the LLM response for future use
+            processing_time_ms = int((time.time() - start_time) * 1000)
+            if self.db_cache and self.db_cache.is_available:
+                try:
+                    self.db_cache.set_llm_cache(
+                        text_input=text,
+                        llm_response=data,
+                        medical_terms_found=len(medical_terms),
+                        processing_time_ms=processing_time_ms
+                    )
+                    self.db_cache.log_usage_stats(
+                        endpoint='llm', operation='identify_terms', cache_hit=False,
+                        processing_time_ms=processing_time_ms
+                    )
+                except Exception as cache_error:
+                    print(f"Error caching LLM response: {cache_error}")
+            
             return medical_terms
             
         except Exception as e:
             print(f"LLM medical term identification error: {e}")
             print("Falling back to NLP method due to LLM error")
+            
+            # Log error
+            processing_time_ms = int((time.time() - start_time) * 1000)
+            if self.db_cache and self.db_cache.is_available:
+                self.db_cache.log_usage_stats(
+                    endpoint='llm', operation='identify_terms', cache_hit=False,
+                    processing_time_ms=processing_time_ms, error_occurred=True,
+                    error_message=str(e)
+                )
+            
             return self.identify_medical_terms_nlp(text)
     
-    def identify_medical_terms_nlp(self, text: str) -> List[Tuple[str, int, int, str]]:
+    def identify_medical_terms_nlp(self, text: str) -> List[Tuple[str, int, int, str, Dict]]:
         """
         Fallback: Identify potential medical terms using NLP (when LLM unavailable)
         
@@ -437,7 +656,7 @@ Return only the JSON, no other text."""
             text: The text to analyze
             
         Returns:
-            List of tuples (term, start_pos, end_pos, category)
+            List of tuples (term, start_pos, end_pos, category, term_info)
         """
         medical_terms = []
         
@@ -465,7 +684,16 @@ Return only the JSON, no other text."""
                         len(entity_text) > 2 and  # Skip very short terms
                         not entity_lower.startswith(('mr', 'mrs', 'ms', 'dr')) and  # Skip titles
                         entity_text.replace(' ', '').isalpha()):  # Skip numbers-only terms
-                        medical_terms.append((entity_text, start, end, category))
+                        # Create empty term_info for NLP-identified terms
+                        term_info = {
+                            'term': entity_text,
+                            'start': start,
+                            'end': end,
+                            'category': category,
+                            'needs_correction': False,
+                            'suggested_correction': ''
+                        }
+                        medical_terms.append((entity_text, start, end, category, term_info))
                         print(f"NLP fallback identified: {entity_text} ({category})")
             except Exception as e:
                 print(f"Medical NLP error: {e}")
@@ -540,13 +768,14 @@ Return only the JSON, no other text."""
                 "source": str(result.get("source", ""))
             }
 
-    def check_spelling(self, term: str, llm_identified: bool = False) -> Dict[str, any]:
+    def check_spelling(self, term: str, llm_identified: bool = False, term_info: Dict = None) -> Dict[str, any]:
         """
         Check if a medical term is spelled correctly
         
         Args:
             term: The term to check
             llm_identified: If True, term was identified by LLM as medical (higher confidence it's correct)
+            term_info: Enhanced term information from LLM (includes correction suggestions)
             
         Returns:
             Dictionary with spell check results
@@ -556,12 +785,66 @@ Return only the JSON, no other text."""
             print(f"⚠️  Warning: llm_identified is not boolean: {type(llm_identified)}, converting to bool")
             llm_identified = bool(llm_identified)
         
+        # Handle enhanced term info from LLM
+        needs_correction = False
+        suggested_correction = ""
+        if term_info:
+            needs_correction = term_info.get('needs_correction', False)
+            suggested_correction = term_info.get('suggested_correction', "")
+        
+        # Check database cache first
+        if self.db_cache and self.db_cache.is_available:
+            cached_result = self.db_cache.get_medical_term_cache(term)
+            if cached_result:
+                print(f"✅ Medical term cache hit for: {term}")
+                # Convert database result back to expected format
+                result = {
+                    "term": cached_result['term_text'],
+                    "is_correct": cached_result['is_correct'],
+                    "suggestions": [],  # We'll get suggestions from spell cache if needed
+                    "confidence": float(cached_result['confidence_score']),
+                    "source": cached_result['source'],
+                    "needs_correction": cached_result['needs_correction'],
+                    "category": cached_result['category']
+                }
+                return result
+        
+        # Check for drug name corrections first
+        drug_correction = self.get_drug_correction(term)
+        if drug_correction and drug_correction.lower() != term.lower():
+            # Found a drug name correction
+            result = {
+                "term": term,
+                "is_correct": False,
+                "suggestions": [drug_correction],
+                "confidence": 0.95,  # High confidence for drug corrections
+                "source": "drug_correction",
+                "needs_correction": True,
+                "category": "medication"
+            }
+            
+            # Cache the result
+            if self.db_cache and self.db_cache.is_available:
+                try:
+                    self.db_cache.set_medical_term_cache(
+                        term=term, is_medical=True, is_correct=False,
+                        category="medication", confidence_score=0.95,
+                        llm_identified=False, snomed_validated=False,
+                        needs_correction=True, source="drug_correction"
+                    )
+                except Exception as e:
+                    print(f"Error caching drug correction result: {e}")
+            
+            return result
+        
         result = {
             "term": term,
-            "is_correct": bool(llm_identified),  # Ensure it's always boolean
-            "suggestions": [],
-            "confidence": 0.8 if llm_identified else 0.0,  # Higher confidence for LLM terms
-            "source": "llm_identified" if llm_identified else None
+            "is_correct": bool(llm_identified and not needs_correction),  # Not correct if needs correction
+            "suggestions": [suggested_correction] if suggested_correction else [],
+            "confidence": 0.9 if suggested_correction else (0.8 if llm_identified else 0.0),
+            "source": "llm_corrected" if needs_correction else ("llm_identified" if llm_identified else None),
+            "needs_correction": needs_correction,
+            "category": term_info.get('category', 'medical') if term_info else 'medical'
         }
         
         # Check our dynamic medicine list (confirmed correct)
@@ -693,13 +976,30 @@ Return only the JSON, no other text."""
         else:
             result["confidence"] = 0.7 if result["suggestions"] else 0.3
         
-        # Cache the sanitized result
+        # Cache the sanitized result in old system
         sanitized_result = self._sanitize_result_for_caching(result)
         self.dynamic_list.cache_snomed_result(term, sanitized_result)
         
+        # Also cache in database for better performance
+        if self.db_cache and self.db_cache.is_available:
+            try:
+                self.db_cache.set_medical_term_cache(
+                    term=term, 
+                    is_medical=True,  # If we're spell checking it, it's medical
+                    is_correct=result["is_correct"],
+                    category=result.get("category", "medical"),
+                    confidence_score=result["confidence"],
+                    llm_identified=llm_identified,
+                    snomed_validated=bool(result.get("source") == "snomed_api"),
+                    needs_correction=result.get("needs_correction", not result["is_correct"]),
+                    source=result["source"]
+                )
+            except Exception as e:
+                print(f"Error caching spell check result: {e}")
+        
         return result
     
-    def identify_medical_terms(self, text: str) -> List[Tuple[str, int, int, str]]:
+    def identify_medical_terms(self, text: str) -> List[Tuple[str, int, int, str, Dict]]:
         """
         Main method: Identify medical terms using LLM-first approach
         
@@ -707,16 +1007,16 @@ Return only the JSON, no other text."""
             text: The text to analyze
             
         Returns:
-            List of tuples (term, start_pos, end_pos, category)
+            List of tuples (term, start_pos, end_pos, category, term_info)
         """
         return self.identify_medical_terms_llm(text)
     
-    def _batch_check_terms(self, terms_batch: List[Tuple[str, int, int, str]], llm_identified: bool = False) -> List[Dict]:
+    def _batch_check_terms(self, terms_batch: List[Tuple[str, int, int, str, Dict]], llm_identified: bool = False) -> List[Dict]:
         """
         Check a batch of terms efficiently with optimized processing
         
         Args:
-            terms_batch: List of (term, start, end, category) tuples
+            terms_batch: List of (term, start, end, category, term_info) tuples
             llm_identified: Whether terms were identified by LLM
             
         Returns:
@@ -727,13 +1027,14 @@ Return only the JSON, no other text."""
         
         # Group identical terms to avoid duplicate processing
         term_groups = {}
-        for term, start, end, category in terms_batch:
+        for term, start, end, category, term_info in terms_batch:
             term_key = term.lower().strip()
             if term_key not in term_groups:
                 term_groups[term_key] = {
                     'original_term': term,
                     'positions': [],
-                    'category': category
+                    'category': category,
+                    'term_info': term_info
                 }
             term_groups[term_key]['positions'].append((start, end))
         
@@ -742,9 +1043,14 @@ Return only the JSON, no other text."""
             original_term = group_data['original_term']
             positions = group_data['positions']
             category = group_data['category']
+            term_info = group_data['term_info']
             
-            # Check spelling once per unique term
-            spell_result = self.check_spelling(original_term, llm_identified=llm_identified)
+            # Check spelling once per unique term with enhanced term info
+            spell_result = self.check_spelling(
+                original_term, 
+                llm_identified=llm_identified, 
+                term_info=term_info
+            )
             
             # Create results for each occurrence
             for start, end in positions:
@@ -798,7 +1104,7 @@ Return only the JSON, no other text."""
                 all_results.extend(batch_results)
                 
                 # Track unique terms from this batch
-                for term, _, _, _ in batch:
+                for term, _, _, _, _ in batch:
                     all_unique_terms.add(term.lower().strip())
                     
             except Exception as e:
