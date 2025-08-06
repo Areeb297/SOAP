@@ -852,3 +852,392 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3bb14cd5",
+    "visit_date": "2025-08-05",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest near the heart.",
+      "past_medical_history": "No history of heart disease, diabetes, or hypertension. No previous surgeries.",
+      "family_history": "Father had a heart attack at age 60 and is deceased. Mother has diabetes.",
+      "social_history": "Single, no children, smokes 2-3 cigarettes a day, exercises 2-3 days a week, consumes around 2,000 calories per day.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not performed yet."
+    },
+    "assessment": {
+      "diagnosis": "Chest pain possibly related to cardiac issues.",
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "ECG",
+        "Echocardiogram"
+      ],
+      "patient_education": "Instructed on the importance of monitoring symptoms and when to seek immediate medical attention.",
+      "follow_up_instructions": "Consult senior physician for further evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f3dabde8",
+    "visit_date": "2025-08-05",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest near the heart.",
+      "past_medical_history": "No history of heart disease, diabetes, or hypertension. He takes Wolfrin and Ibuprofen.",
+      "family_history": "Father had a heart attack at age 60 and is deceased. Mother has diabetes.",
+      "social_history": "Ziad smokes 2 to 3 cigarettes a day, does not drink alcohol, and exercises 2 to 3 days a week. He consumes around 2,000 calories per day.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest pain likely due to cardiac issues, further evaluation needed.",
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "ECG",
+        "Echocardiogram"
+      ],
+      "patient_education": "Ziad was informed about the need for further evaluation and tests to assess his heart health.",
+      "follow_up_instructions": "Consultation with senior physician for further assessment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "9d4c8904",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest near the heart.",
+      "family_history": "Father had a heart attack at age 60 and is deceased. Mother has diabetes.",
+      "social_history": "Ziad is single, does not have children, smokes 2-3 cigarettes a day, exercises 2-3 times a week, and consumes around 2000 calories per day.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "ECG",
+        "Echocardiogram"
+      ],
+      "patient_education": "Instructed patient on the importance of monitoring symptoms and when to seek immediate care.",
+      "follow_up_instructions": "Consult with senior physician for further evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "2a6a499a",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest near the heart.",
+      "past_medical_history": "No history of heart disease, diabetes, or hypertension. No previous surgeries.",
+      "family_history": "The patient's father had a heart attack at 60 years old and is deceased. The patient's mother has diabetes.",
+      "social_history": "The patient is single, does not have children, smokes 2 to 3 cigarettes a day, exercises 2 to 3 days a week, and consumes around 2000 calories per day.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest pain possibly related to cardiac issues.",
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "Signal averaged ECG recording",
+        "Echocardiogram"
+      ],
+      "patient_education": "The patient was informed about the tests being ordered and the plan for pain relief.",
+      "follow_up_instructions": "Consult senior physician for further evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "2332a9d8",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest, near the heart.",
+      "past_medical_history": "No history of heart disease, diabetes, or hypertension. He takes Wolfrin and Ibuprofen.",
+      "family_history": "Father had a heart attack at 60 years old and is deceased. Mother has diabetes.",
+      "social_history": "Ziad smokes 2 to 3 cigarettes a day, does not drink alcohol, and exercises 2 to 3 days a week. He consumes around 2,000 calories per day.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "Not specified",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      }
+    },
+    "assessment": {
+      "diagnosis": "Chest pain likely related to cardiac issues.",
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "ECG",
+        "Echocardiogram"
+      ],
+      "patient_education": "Ziad was informed about the need for further assessment and the importance of monitoring his symptoms.",
+      "follow_up_instructions": "Consultation with a senior physician for further evaluation."
+    }
+  }
+}

@@ -9,6 +9,8 @@ import time
 import os
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
+from .database_cache import get_database_cache
+from .performance_monitor import get_performance_monitor
 
 class SnomedAPI:
     def __init__(self):
@@ -42,10 +44,16 @@ class SnomedAPI:
         
         # Circuit breaker pattern to prevent cascading failures
         self.circuit_breaker_failures = 0
-        self.circuit_breaker_threshold = 5  # Open circuit after 5 consecutive failures
+        self.circuit_breaker_threshold = 2  # Open circuit after 2 consecutive failures
         self.circuit_breaker_timeout = 60  # Keep circuit open for 60 seconds
         self.circuit_breaker_opened_at = None
         self.circuit_breaker_state = "closed"  # closed, open, half-open
+        
+        # Initialize database cache
+        self.db_cache = get_database_cache()
+
+        # Initialize performance monitor
+        self.performance_monitor = get_performance_monitor()
     
     def _get_cache_key(self, term: str, operation: str = "search") -> str:
         """Generate cache key for term and operation"""
@@ -180,10 +188,31 @@ class SnomedAPI:
         Returns:
             List of concept dictionaries
         """
-        # Check cache first
+        # Check database cache first
+        if self.db_cache and self.db_cache.is_available:
+            cached_result = self.db_cache.get_snomed_cache(term)
+            if cached_result:
+                print(f"✅ SNOMED database cache hit for: {term}")
+                self.performance_monitor.log_cache_hit('snomed', 'search')
+                self.db_cache.log_usage_stats(
+                    endpoint='snomed', operation='search', cache_hit=True,
+                    processing_time_ms=0
+                )
+                # Parse cached response
+                try:
+                    api_response = cached_result['api_response']
+                    if isinstance(api_response, str):
+                        api_response = json.loads(api_response)
+                    return self._parse_haiapi_response(api_response, limit)
+                except Exception as e:
+                    print(f"Error parsing cached SNOMED response: {e}")
+                    # Fall through to API call
+        
+        # Check in-memory cache as fallback
         cache_key = self._get_cache_key(term, f"search_{limit}")
         cached_result = self._get_cache(cache_key)
         if cached_result is not None:
+            self.performance_monitor.log_cache_hit('snomed', 'search')
             return cached_result
         
         # Check circuit breaker before making API calls
@@ -192,7 +221,9 @@ class SnomedAPI:
             self._set_cache(cache_key, [])
             return []
         
+        self.performance_monitor.log_cache_miss('snomed', 'search')
         # Try API call with retry logic
+        start_time = time.time()
         for attempt in range(self.retry_attempts + 1):
             try:
                 headers = {
@@ -209,20 +240,42 @@ class SnomedAPI:
                 
                 if response.status_code == 200:
                     data = response.json()
+                    processing_time_ms = int((time.time() - start_time) * 1000)
+                    self.performance_monitor.log_response_time('snomed', 'search', processing_time_ms)
+                    
                     # Parse the response from the new API format
                     result = self._parse_haiapi_response(data, limit)
-                    # Cache successful result
+                    
+                    # Cache successful result in memory
                     self._set_cache(cache_key, result)
+                    
+                    # Cache in database for persistence
+                    if self.db_cache and self.db_cache.is_available:
+                        try:
+                            self.db_cache.set_snomed_cache(
+                                search_term=term,
+                                api_response=data,
+                                concept_count=len(result),
+                                is_valid=True,
+                                response_time_ms=processing_time_ms
+                            )
+                            self.db_cache.log_usage_stats(
+                                endpoint='snomed', operation='search', cache_hit=False,
+                                processing_time_ms=processing_time_ms,
+                                response_size_bytes=len(json.dumps(data))
+                            )
+                        except Exception as cache_error:
+                            print(f"Error caching SNOMED response: {cache_error}")
+                    
                     # Record success for circuit breaker
                     self._record_success()
                     return result
-                elif response.status_code == 429:
-                    print(f"SNOMED API rate limited for term '{term}' (attempt {attempt + 1})")
+                elif response.status_code == 500:
+                    print(f"SNOMED API server error for term '{term}' (attempt {attempt + 1})")
+                    self._record_failure() # Record failure for 500 errors
                     if attempt < self.retry_attempts:
-                        time.sleep(self.retry_delay * (attempt + 1))  # Exponential backoff
+                        time.sleep(self.retry_delay * (attempt + 1))
                         continue
-                    # Cache empty result for rate limits
-                    self._set_cache(cache_key, [])
                     return []
                 else:
                     print(f"SNOMED API error: {response.status_code} for term '{term}' - {response.text}")
@@ -254,6 +307,16 @@ class SnomedAPI:
         
         # Record failure if all attempts exhausted
         self._record_failure()
+        
+        # Log failed API call
+        processing_time_ms = int((time.time() - start_time) * 1000)
+        if self.db_cache and self.db_cache.is_available:
+            self.db_cache.log_usage_stats(
+                endpoint='snomed', operation='search', cache_hit=False,
+                processing_time_ms=processing_time_ms, error_occurred=True,
+                error_message="All API attempts failed"
+            )
+        
         return []
     
     def validate_term(self, term: str) -> bool:

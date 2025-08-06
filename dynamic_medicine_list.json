@@ -182,8 +182,188 @@
       "suggestions": [],
       "confidence": 0.8,
       "source": "llm_identified"
+    },
+    "ischemic stroke": {
+      "term": "ischemic stroke",
+      "is_correct": true,
+      "suggestions": [
+        "ischaemic stroke"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "brain": {
+      "term": "brain",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "penicillin": {
+      "term": "Penicillin",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "medication"
+    },
+    "weakness": {
+      "term": "Weakness",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "monitoring": {
+      "term": "monitoring",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "procedure"
+    },
+    "numbness": {
+      "term": "numbness",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "rehabilitation": {
+      "term": "rehabilitation",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "procedure"
+    },
+    "facial droop": {
+      "term": "facial droop",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "pain": {
+      "term": "pain",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "heart": {
+      "term": "heart",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "anatomy"
+    },
+    "chest pain": {
+      "term": "Chest pain",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "weight loss": {
+      "term": "weight loss",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "symptom"
+    },
+    "disease": {
+      "term": "disease",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "condition"
+    },
+    "cardiac": {
+      "term": "cardiac",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "anatomy"
+    },
+    "panadol": {
+      "term": "Panadol",
+      "is_correct": true,
+      "suggestions": [
+        "Paradol"
+      ],
+      "confidence": 0.8,
+      "source": "textblob",
+      "needs_correction": false,
+      "category": "medication"
+    },
+    "surgeries": {
+      "term": "surgeries",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "procedure"
+    },
+    "cardiac disorder": {
+      "term": "Cardiac disorder",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "condition"
+    },
+    "allergy": {
+      "term": "allergy",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "textblob",
+      "needs_correction": false,
+      "category": "condition"
+    },
+    "insulin": {
+      "term": "insulin",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "textblob",
+      "needs_correction": false,
+      "category": "medication"
+    },
+    "surgery": {
+      "term": "surgery",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified",
+      "needs_correction": false,
+      "category": "procedure"
     }
   },
   "classification_cache": {},
-  "last_updated": "2025-08-05T14:30:11.321680"
+  "last_updated": "2025-08-05T15:40:50.885688"
 }
