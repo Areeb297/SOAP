@@ -183,15 +183,20 @@ export default function SOAPRecorder() {
     return cleaned;
   }
 
-  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit, language }) => {
+  const SOAPSection = ({ title, data, sectionKey, isEditing, onEdit, language, onMainEditModeChange }) => {
     // State to manage individual field edit modes
     const [fieldEditModes, setFieldEditModes] = useState({});
 
-    const handleFieldEditModeChange = (fieldKey, isFieldEditing) => {
+    const handleFieldEditModeChange = (fieldKey, isFieldEditing, metadata = {}) => {
       setFieldEditModes(prev => ({
         ...prev,
         [`${sectionKey}_${fieldKey}`]: isFieldEditing
       }));
+
+      // If this is triggered by a suggestion click, activate main SOAP edit mode
+      if (isFieldEditing && metadata.triggeredBySuggestion && onMainEditModeChange) {
+        onMainEditModeChange(true);
+      }
     };
     const renderValue = (key, value) => {
       if (!value || value === '') return null;
@@ -371,7 +376,7 @@ export default function SOAPRecorder() {
                         value={editedSOAPNote[sectionKey]?.[key] || value}
                         onChange={(newValue) => onEdit(sectionKey, key, newValue)}
                         isEditing={true}
-                        onEditModeChange={(isFieldEditing) => handleFieldEditModeChange(key, isFieldEditing)}
+                        onEditModeChange={(isFieldEditing, metadata) => handleFieldEditModeChange(key, isFieldEditing, metadata)}
                         language={language}
                         placeholder={`Enter ${key.replace(/_/g, ' ')}`}
                         className="w-full max-w-md"
@@ -383,7 +388,7 @@ export default function SOAPRecorder() {
                           value={String(value)}
                           onChange={(newValue) => onEdit(sectionKey, key, newValue)}
                           isEditing={false}
-                          onEditModeChange={(isFieldEditing) => handleFieldEditModeChange(key, isFieldEditing)}
+                          onEditModeChange={(isFieldEditing, metadata) => handleFieldEditModeChange(key, isFieldEditing, metadata)}
                           language={language}
                           className="w-full max-w-md"
                         />
@@ -426,6 +431,17 @@ export default function SOAPRecorder() {
     setSoapNote(editedSOAPNote);
     setIsEditingSOAP(false);
     window.soapNoteForDownload = editedSOAPNote;
+  };
+
+  // Handle main SOAP edit mode activation (triggered by suggestion clicks)
+  const handleMainEditModeChange = (shouldEdit) => {
+    if (shouldEdit) {
+      setIsEditingSOAP(true);
+      // Ensure editedSOAPNote is initialized with current SOAP note data
+      if (!editedSOAPNote) {
+        setEditedSOAPNote(soapNote);
+      }
+    }
   };
 
   // Helper function to format nested values for text output
@@ -982,6 +998,7 @@ export default function SOAPRecorder() {
                     sectionKey="subjective"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    onMainEditModeChange={handleMainEditModeChange}
                     language={language}
                   />
                   {/* OBJECTIVE Section */}
@@ -991,6 +1008,7 @@ export default function SOAPRecorder() {
                     sectionKey="objective"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    onMainEditModeChange={handleMainEditModeChange}
                     language={language}
                   />
                   {/* ASSESSMENT Section */}
@@ -1000,6 +1018,7 @@ export default function SOAPRecorder() {
                     sectionKey="assessment"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    onMainEditModeChange={handleMainEditModeChange}
                     language={language}
                   />
                   {/* PLAN Section */}
@@ -1009,6 +1028,7 @@ export default function SOAPRecorder() {
                     sectionKey="plan"
                     isEditing={isEditingSOAP}
                     onEdit={handleSOAPEdit}
+                    onMainEditModeChange={handleMainEditModeChange}
                     language={language}
                   />
                 </div>

@@ -36,9 +36,9 @@ const SpellCheckedSOAPField = ({
     }
     setIsLocalEditing(true);
     
-    // Notify parent component about edit mode change
+    // Notify parent component about edit mode change - pass metadata indicating this was a suggestion click
     if (onEditModeChange) {
-      onEditModeChange(true);
+      onEditModeChange(true, { triggeredBySuggestion: true });
     }
     
     // Focus and set cursor position after text is updated
