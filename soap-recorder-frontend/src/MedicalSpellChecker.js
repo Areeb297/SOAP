@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './MedicalSpellChecker.css';
 
-const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect }) => {
+const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect, checkNow = false }) => {
   const [medicalTerms, setMedicalTerms] = useState([]);
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
@@ -18,6 +18,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const textAreaRef = useRef(null);
   const suggestionsRef = useRef(null);
   const checkTimeoutRef = useRef(null);
+  const [lastCheckedKey, setLastCheckedKey] = useState(null);
   
   // Dynamic backend URL
   const BACKEND_URL =
@@ -47,37 +48,34 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const [uniqueTermCount, setUniqueTermCount] = useState(0);
   const [totalOccurrences, setTotalOccurrences] = useState(0);
 
-  // Check medical terms with debouncing and caching
+  // Explicit spell-check only when invoked (no auto/debounce)
   const checkMedicalTerms = useCallback(async (textToCheck) => {
-    if (!enabled || !textToCheck) {
+    if (!enabled) return;
+
+    const normalized = typeof textToCheck === 'string' ? textToCheck : String(textToCheck || '');
+    const trimmed = normalized.trim();
+    if (!trimmed) {
       setMedicalTerms([]);
       setUniqueTermCount(0);
       setTotalOccurrences(0);
       return;
     }
 
-    // Fix .trim() error by ensuring textToCheck is a string
-    if (typeof textToCheck !== 'string') {
-      textToCheck = String(textToCheck || '');
-    }
+    const cacheKey = trimmed.toLowerCase();
 
-    if (!textToCheck.trim()) {
-      setMedicalTerms([]);
-      setUniqueTermCount(0);
-      setTotalOccurrences(0);
+    // Do not re-check the exact same content unless checkNow toggles again
+    if (lastCheckedKey === cacheKey && (medicalTerms?.length ?? 0) > 0) {
       return;
     }
 
-    // Create cache key based on text content
-    const cacheKey = textToCheck.trim().toLowerCase();
-    
-    // Check cache first
+    // Serve from cache
     if (termCache.has(cacheKey)) {
       const cachedResult = termCache.get(cacheKey);
       setMedicalTerms(cachedResult.results || cachedResult);
       setUniqueTermCount(cachedResult.unique_count || 0);
       setTotalOccurrences(cachedResult.total_occurrences || (cachedResult.results || cachedResult).length);
       setCacheStats(prev => ({ ...prev, hits: prev.hits + 1 }));
+      setLastCheckedKey(cacheKey);
       return;
     }
 
@@ -85,10 +83,8 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     try {
       const response = await fetch(`${BACKEND_URL}/check-medical-terms`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: textToCheck }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: normalized }),
       });
 
       if (response.ok) {
@@ -96,49 +92,42 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
         const results = data.results || [];
         const uniqueCount = data.unique_count || 0;
         const totalOccurs = data.total_occurrences || results.length;
-        
-        // Cache the full response data
+
         setTermCache(prev => {
           const newCache = new Map(prev);
           newCache.set(cacheKey, data);
-          
-          // Limit cache size to prevent memory issues
           if (newCache.size > 100) {
             const firstKey = newCache.keys().next().value;
             newCache.delete(firstKey);
           }
-          
           return newCache;
         });
-        
+
         setCacheStats(prev => ({ ...prev, misses: prev.misses + 1 }));
         setMedicalTerms(results);
         setUniqueTermCount(uniqueCount);
         setTotalOccurrences(totalOccurs);
+        setLastCheckedKey(cacheKey);
       }
     } catch (error) {
       console.error('Error checking medical terms:', error);
     } finally {
       setIsChecking(false);
     }
-  }, [enabled, BACKEND_URL, termCache]);
+  }, [enabled, BACKEND_URL, termCache, lastCheckedKey, medicalTerms]);
 
-  // Debounced text checking
+  // Explicit trigger: run only when parent toggles checkNow
   useEffect(() => {
-    if (checkTimeoutRef.current) {
-      clearTimeout(checkTimeoutRef.current);
-    }
-
-    checkTimeoutRef.current = setTimeout(() => {
-      checkMedicalTerms(text);
-    }, 500); // Wait 500ms after user stops typing
-
-    return () => {
+    if (!enabled) return;
+    if (checkNow) {
+      // Ensure no pending timers execute
       if (checkTimeoutRef.current) {
         clearTimeout(checkTimeoutRef.current);
+        checkTimeoutRef.current = null;
       }
-    };
-  }, [text, checkMedicalTerms]);
+      checkMedicalTerms(text);
+    }
+  }, [checkNow, enabled, text, checkMedicalTerms]);
 
   // Handle term click
   const handleTermClick = async (term, event) => {
@@ -212,24 +201,33 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const handleSuggestionSelect = (suggestion) => {
     if (selectedTerm) {
       const { start, end } = selectedTerm;
-      
+
       // Calculate the actual positions in the current text
       const beforeText = text.substring(0, start);
       const afterText = text.substring(end);
-      
+
       // Extract the actual value from suggestion object or use as string
       const replacementText = typeof suggestion === 'object' ? suggestion.value : suggestion;
-      
+
       const newText = beforeText + replacementText + afterText;
-      
-      // If parent component has onSuggestionSelect callback, use it to enter edit mode
+
+      // Replace text upstream (no auto re-check)
       if (onSuggestionSelect) {
         onSuggestionSelect(newText, { start, end: start + replacementText.length });
       } else if (onTextChange) {
         onTextChange(newText);
       }
+
+      // Immediately clear any stale highlights that overlap the replaced range
+      // so the inserted text renders as plain text until the next explicit check.
+      setMedicalTerms(prev =>
+        Array.isArray(prev)
+          ? prev.filter(t => (t.end <= start) || (t.start >= end))
+          : []
+      );
     }
 
+    // Close UI and reset state
     setShowSuggestions(false);
     setSelectedTerm(null);
     setShowingAlternatives(false); // Reset alternatives state
@@ -273,19 +271,29 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
   // Get CSS class based on term category and correctness
   const getTermClassName = (term) => {
-    // Determine if term is medical based on multiple criteria
-    const isMedical = term.isCorrect || 
-                     term.source === 'llm_identified' || 
-                     term.source === 'llm_identified_snomed_timeout' ||
-                     term.source === 'spacy_nlp' ||
-                     term.source === 'local_dictionary';
-    
-    const baseClass = isMedical ? 'medical-term-correct' : 'medical-term-incorrect';
+    // Normalize backend fields (snake_case and camelCase)
+    const isCorrect = term.is_correct ?? term.isCorrect ?? false;
+    const needsCorrection = term.needs_correction ?? term.needsCorrection ?? false;
+    const source = (term.source || '').toString().toLowerCase();
+
+    // Treat any "needs_correction" term as incorrect (red underline)
+    // Otherwise, consider correct only if explicitly validated
+    const validatedSources = new Set([
+      'dynamic_list',
+      'local_dictionary',
+      'snomed_ct',
+      'llm_identified_snomed_timeout',
+      'llm_corrected'
+    ]);
+    const isValidated = Boolean(isCorrect) || validatedSources.has(source);
+
+    const baseClass =
+      needsCorrection || !isValidated
+        ? 'medical-term-incorrect' // red underline
+        : 'medical-term-correct';  // blue underline
+
     const category = term.category || 'general';
-    
-    // Add category-specific classes
     const categoryClass = `medical-category-${category.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
-    
     return `${baseClass} ${categoryClass}`;
   };
 

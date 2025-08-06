@@ -775,7 +775,7 @@ def generate_soap():
                 )
             else:
                 response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": SOAP_SYSTEM_PROMPT},
                         {"role": "user", "content": f"Create a SOAP note from this doctor-patient conversation:\n\n{transcript}"}

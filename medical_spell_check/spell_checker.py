@@ -65,7 +65,13 @@ class MedicalSpellChecker:
             'simvastain': 'simvastatin',
             'hydrochlorothiazide': 'hydrochlorothiazide',
             'prednisone': 'prednisone',
-            'prednisolone': 'prednisolone'
+            'prednisolone': 'prednisolone',
+            # Added to ensure "ibrofin" and close variants map to ibuprofen
+            'ibrofin': 'ibuprofen',
+            'iboprufen': 'ibuprofen',
+            'iboprufen': 'ibuprofen',
+            'ibuprofine': 'ibuprofen',
+            'ibrufen': 'ibuprofen'
         }
         
         # Enhanced medical term patterns for faster detection
@@ -817,7 +823,7 @@ Return only the JSON, no other text."""
                 "term": term,
                 "is_correct": False,
                 "suggestions": [drug_correction],
-                "confidence": 0.95,  # High confidence for drug corrections
+                "confidence": 0.97,  # High confidence for curated drug corrections
                 "source": "drug_correction",
                 "needs_correction": True,
                 "category": "medication"
@@ -828,7 +834,7 @@ Return only the JSON, no other text."""
                 try:
                     self.db_cache.set_medical_term_cache(
                         term=term, is_medical=True, is_correct=False,
-                        category="medication", confidence_score=0.95,
+                        category="medication", confidence_score=0.97,
                         llm_identified=False, snomed_validated=False,
                         needs_correction=True, source="drug_correction"
                     )
@@ -923,8 +929,18 @@ Return only the JSON, no other text."""
         # Combine and rank suggestions
         all_suggestions = []
         
+        # Add curated drug correction as top suggestion when available
+        if not result.get("suggestions"):
+            curated = self.get_drug_correction(term)
+            if curated and curated.lower() != term.lower():
+                all_suggestions.append({
+                    "term": curated,
+                    "score": 100,  # force top ranking for curated correction
+                    "source": "drug_correction"
+                })
+        
         # Add local suggestions with higher priority
-        for sugg in local_suggestions[:3]:
+        for sugg in local_suggestions[:5]:
             all_suggestions.append({
                 "term": sugg,
                 "score": fuzz.ratio(term.lower(), sugg.lower()),
@@ -933,7 +949,7 @@ Return only the JSON, no other text."""
         
         # Add SNOMED suggestions (only if available)
         if not self.llm_only_mode:
-            for sugg in snomed_suggestions[:3]:
+            for sugg in snomed_suggestions[:5]:
                 if not any(s["term"].lower() == sugg.lower() for s in all_suggestions):
                     all_suggestions.append({
                         "term": sugg,
@@ -944,11 +960,16 @@ Return only the JSON, no other text."""
         # Sort by score and filter out low-quality suggestions
         all_suggestions.sort(key=lambda x: x["score"], reverse=True)
         
-        # Only include suggestions with reasonable similarity (score > 60)
-        good_suggestions = [s["term"] for s in all_suggestions if s["score"] > 60]
+        # Only include suggestions with reasonable similarity (score > 55)
+        good_suggestions = [s["term"] for s in all_suggestions if s["score"] > 55]
         
         # Extract just the terms for the result
         result["suggestions"] = good_suggestions[:5]
+
+        # If we now have strong suggestions, mark as needs_correction
+        if result["suggestions"] and not result.get("needs_correction", False):
+            result["needs_correction"] = True
+            result["is_correct"] = False
         
         # Try general spell checking as fallback
         if not result["suggestions"]:

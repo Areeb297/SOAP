@@ -1241,3 +1241,925 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "12da24d0",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of harming myself for the past week.",
+      "past_medical_history": "Hypothyroidism, previous hospitalization for major depression 2 years ago.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Current"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Mental status exam reveals depression with poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "History of depression",
+        "Previous psychiatric hospitalization",
+        "Family history of mental illness",
+        "Substance use (alcohol and marijuana)"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "To be determined",
+          "frequency": "To be determined",
+          "duration": "During hospitalization",
+          "route": "To be determined"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work to check thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "patient_education": "Remove any means of self-harm from your environment and have someone stay with you when you're discharged.",
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "8605a47c",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of harming myself for the past week.",
+      "past_medical_history": "Hypothyroidism, previous hospitalization for depression 2 years ago.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Current"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Mental status exam shows James appears depressed with poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "History of depression",
+        "Previous psychiatric hospitalization",
+        "Family history of mental illness",
+        "Substance use (alcohol and marijuana)"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "To be determined",
+          "frequency": "To be determined",
+          "duration": "Ongoing",
+          "route": "To be determined"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work to check thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "fac47949",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of harming himself for the past week.",
+      "past_medical_history": "Hypothyroidism, previous hospitalization for major depression 2 years ago.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Mental status exam shows depression with poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "History of depression",
+        "Previous psychiatric hospitalization",
+        "Family history of mental illness",
+        "Substance use (alcohol and marijuana)"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "To be determined",
+          "frequency": "To be determined",
+          "duration": "To be determined",
+          "route": "To be determined"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work to check thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "de5a201c",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, previous hip replacement surgery 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "unknown"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam revealed left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if experiencing any worsening symptoms. Information about stroke rehabilitation was provided.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjustments to blood thinners will be made as necessary."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f6259b02",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of harming himself for the past week.",
+      "past_medical_history": "Hypothyroidism, previous hospitalization for depression 2 years ago.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Sertraline",
+          "dosage": "not specified",
+          "frequency": "stopped 2 weeks ago",
+          "route": "oral",
+          "duration": "stopped"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Mental status exam reveals depression with poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "History of depression",
+        "Previous psychiatric hospitalization",
+        "Family history of mental illness",
+        "Substance use (alcohol and marijuana)"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "To be determined",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work to check thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "patient_education": "Remove any means of self-harm from the environment and have someone stay with him when discharged.",
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f380cd43",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Robert Wilson",
+    "patient_age": "58",
+    "subjective": {
+      "past_medical_history": "Type 2 diabetes, not taking medication regularly. Previous hernia repair 5 years ago.",
+      "family_history": "Both mother and father had diabetes.",
+      "social_history": "Occupation is truck driver, sitting most of the day. Drinks 2-3 beers on weekends, no smoking.",
+      "medications": [
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "not taken for about a week"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "99.2°F",
+        "blood_pressure": "145/95",
+        "heart_rate": "110",
+        "respiratory_rate": "24",
+        "oxygen_saturation": "94%"
+      },
+      "physical_exam": "Patient appears dehydrated."
+    },
+    "assessment": {
+      "diagnosis": "Diabetes mellitus ketoacidosis",
+      "risk_factors": [
+        "Type 2 diabetes",
+        "Inconsistent medication adherence",
+        "Family history of diabetes",
+        "Sedentary occupation"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "IV fluids",
+          "dosage": "N/A",
+          "frequency": "Continuous",
+          "duration": "Until stabilization",
+          "route": "IV"
+        },
+        {
+          "name": "Insulin",
+          "dosage": "N/A",
+          "frequency": "As needed based on blood sugar levels",
+          "duration": "Until stabilization",
+          "route": "IV"
+        },
+        {
+          "name": "Electrolyte replacement",
+          "dosage": "N/A",
+          "frequency": "As needed",
+          "duration": "Until stabilization",
+          "route": "IV"
+        }
+      ],
+      "procedures_or_tests": [
+        "Complete metabolic panel",
+        "Blood gas analysis",
+        "Urinalysis",
+        "Check ketone levels"
+      ],
+      "patient_education": "Importance of taking diabetes medication regularly and monitoring blood sugar daily. Arrangements for diabetes education.",
+      "follow_up_instructions": "Stay in the hospital for at least 24-48 hours until blood sugar stabilizes and ketones clear."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "dabf561a",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Robert Wilson",
+    "patient_age": "58",
+    "subjective": {
+      "past_medical_history": "Type 2 diabetes, not taking medication regularly. Previous hernia repair 5 years ago.",
+      "family_history": "Both mother and father had diabetes.",
+      "social_history": "Occupation is truck driver, sitting most of the day. Drinks 2-3 beers on weekends, no smoking.",
+      "medications": [
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "not taken for about a week"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "99.2°F",
+        "blood_pressure": "145/95",
+        "heart_rate": "110",
+        "respiratory_rate": "24",
+        "oxygen_saturation": "94%"
+      },
+      "physical_exam": "Patient appears dehydrated."
+    },
+    "assessment": {
+      "diagnosis": "Diabetic ketoacidosis",
+      "risk_factors": [
+        "Type 2 diabetes",
+        "Inconsistent medication adherence",
+        "Dehydration"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "IV fluids",
+          "dosage": "N/A",
+          "frequency": "Continuous",
+          "duration": "Until stabilization",
+          "route": "IV"
+        },
+        {
+          "name": "Insulin",
+          "dosage": "N/A",
+          "frequency": "As needed based on blood sugar",
+          "duration": "Until stabilization",
+          "route": "IV"
+        },
+        {
+          "name": "Electrolyte replacement",
+          "dosage": "N/A",
+          "frequency": "As needed",
+          "duration": "Until stabilization",
+          "route": "IV"
+        }
+      ],
+      "procedures_or_tests": [
+        "Complete metabolic panel",
+        "Blood gas analysis",
+        "Urinalysis",
+        "Check ketone levels"
+      ],
+      "patient_education": "Importance of taking diabetes medication regularly and monitoring blood sugar daily. Arranging for diabetes education.",
+      "follow_up_instructions": "Stay in the hospital for at least 24-48 hours until blood sugar stabilizes and ketones clear."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "fc6dad6c",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, previous hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "unknown"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if experiencing any worsening symptoms. Importance of stroke rehabilitation.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation; adjust blood thinners as needed."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "23823fa6",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, previous hip replacement surgery 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "ongoing"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of head",
+        "MRI",
+        "blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if experiencing any worsening symptoms. Importance of monitoring and rehabilitation was discussed.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjust blood thinners as necessary."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "486fbe14",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "Hypertension, atrial fibrillation, previous hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "ongoing"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "Hypertension",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if experiencing any worsening symptoms. Education on stroke rehabilitation provided.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjustments to blood thinners will be made as necessary."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "c1c0d945",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, and previous hip replacement surgery 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago and has 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam reveals left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if experiencing any worsening symptoms. Importance of monitoring and rehabilitation.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjust blood thinners as needed."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "dd5eb863",
+    "visit_date": "2025-08-06",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, and previous hip replacement surgery 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Call 911 immediately if you experience any worsening symptoms. Importance of monitoring and rehabilitation emphasized.",
+      "follow_up_instructions": "Stay in the hospital for monitoring and rehabilitation. Adjust blood thinners as necessary."
+    }
+  }
+}

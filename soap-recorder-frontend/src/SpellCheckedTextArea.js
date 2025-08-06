@@ -10,7 +10,8 @@ const SpellCheckedTextArea = ({
   disabled = false,
   language = 'en',
   enableSpellCheck = true,
-  rows = 4
+  rows = 4,
+  checkNow = false // explicit trigger from parent
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localValue, setLocalValue] = useState(value);
@@ -49,18 +50,11 @@ const SpellCheckedTextArea = ({
   };
 
   const handleSuggestionSelect = (newText, position) => {
-    // When a suggestion is selected, enter edit mode and update text
+    // Task [6]: Replace in-place silently without reopening the editor or forcing a re-check
     setLocalValue(newText);
     onChange(newText);
-    setIsEditing(true);
-    
-    // Focus and set cursor position after text is updated
-    setTimeout(() => {
-      if (textAreaRef.current) {
-        textAreaRef.current.focus();
-        textAreaRef.current.setSelectionRange(position.end, position.end);
-      }
-    }, 0);
+    // Do NOT set isEditing(true); stay in view mode to avoid reopening the full editor
+    // Do NOT refocus textarea or change selection here
   };
 
   return (
@@ -97,6 +91,7 @@ const SpellCheckedTextArea = ({
               onSuggestionSelect={handleSuggestionSelect}
               enabled={enableSpellCheck && !disabled}
               language={language}
+              checkNow={checkNow}
             />
           ) : (
             <div className="placeholder-text" onClick={!disabled ? handleEditClick : undefined}>

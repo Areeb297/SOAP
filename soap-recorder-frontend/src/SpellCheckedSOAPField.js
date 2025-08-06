@@ -7,7 +7,8 @@ const SpellCheckedSOAPField = ({
   isEditing = false,
   onEditModeChange,
   language = 'en',
-  className = ''
+  className = '',
+  checkNow = false // explicit trigger from parent (SOAPRecorder)
 }) => {
   const [localValue, setLocalValue] = useState(value || '');
   const [isLocalEditing, setIsLocalEditing] = useState(isEditing);
@@ -82,6 +83,7 @@ const SpellCheckedSOAPField = ({
         onSuggestionSelect={handleSuggestionSelect}
         enabled={true}
         language={language}
+        checkNow={checkNow}
       />
     </div>
   );
