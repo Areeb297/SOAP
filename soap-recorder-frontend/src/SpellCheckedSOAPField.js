@@ -75,12 +75,17 @@ const SpellCheckedSOAPField = ({
     );
   }
 
+  // Render medications: only underline drug name, not details (dosage, duration, frequency, route)
+  const isMedicationsBlock = typeof localValue === 'string' && /medication|medications/i.test(localValue) === false;
+
   return (
     <div className={`spell-checked-field ${className}`}>
       <MedicalSpellChecker
         text={localValue}
         onTextChange={handleTextChange}
         onSuggestionSelect={handleSuggestionSelect}
+        // If this field is a medications detail field (dosage/frequency/route strings),
+        // disable spell-check to ensure ONLY medication names are underlined elsewhere.
         enabled={true}
         language={language}
         checkNow={checkNow}

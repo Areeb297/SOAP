@@ -211,20 +211,18 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
       const newText = beforeText + replacementText + afterText;
 
-      // Replace text upstream (no auto re-check)
+      // Replace text upstream (STRICT: no auto re-check, no auto re-highlight)
       if (onSuggestionSelect) {
         onSuggestionSelect(newText, { start, end: start + replacementText.length });
       } else if (onTextChange) {
         onTextChange(newText);
       }
 
-      // Immediately clear any stale highlights that overlap the replaced range
-      // so the inserted text renders as plain text until the next explicit check.
-      setMedicalTerms(prev =>
-        Array.isArray(prev)
-          ? prev.filter(t => (t.end <= start) || (t.start >= end))
-          : []
-      );
+      // Immediately clear ALL highlights to ensure plain black text until user triggers spell-check.
+      setMedicalTerms([]);
+
+      // Also reset cache key marker so future explicit checks are allowed on same content
+      setLastCheckedKey(null);
     }
 
     // Close UI and reset state

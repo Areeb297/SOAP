@@ -222,20 +222,14 @@ export default function SOAPRecorder() {
                   <div key={idx} className="space-y-2 bg-white rounded-lg p-3 shadow-sm border border-gray-200 flex flex-col items-center">
                     {nameEntry && (
                       <div className="text-base font-bold text-blue-900 mb-2 text-center w-full max-w-md">
-                        {/* Run spell-check on the medication name just like other fields */}
+                        {/* Spell-check ONLY the medication name */}
                         <SpellCheckedSOAPField
                           value={String(nameEntry[1])}
                           onChange={(newValue) => {
-                            // update only the 'name' of this medication card
                             const updated = value.map((item, i) =>
                               i === idx ? { ...item, [nameEntry[0]]: newValue } : item
                             );
-                            // persist change into edited SOAP if currently editing, else into base note
-                            if (isEditing) {
-                              onEdit(sectionKey, key, updated);
-                            } else {
-                              onEdit(sectionKey, key, updated);
-                            }
+                            onEdit(sectionKey, key, updated);
                           }}
                           isEditing={false}
                           onEditModeChange={() => {}}
@@ -252,20 +246,8 @@ export default function SOAPRecorder() {
                             {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                           </span>
                           <div className="text-gray-700 w-56 text-left pl-2">
-                            <SpellCheckedSOAPField
-                              value={String(subValue)}
-                              onChange={(newValue) => {
-                                const updated = value.map((item, i) =>
-                                  i === idx ? { ...item, [subKey]: newValue } : item
-                                );
-                                onEdit(sectionKey, key, updated);
-                              }}
-                              isEditing={false}
-                              onEditModeChange={() => {}}
-                              language={language}
-                              className="w-full"
-                              checkNow={checkSoapNow}
-                            />
+                            {/* DO NOT spell-check medication details (dosage, duration, frequency, route) */}
+                            <span className="text-gray-800">{String(subValue)}</span>
                           </div>
                         </div>
                       ))}

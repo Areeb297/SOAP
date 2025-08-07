@@ -8,23 +8,51 @@ from fuzzywuzzy import fuzz, process
 import re
 from typing import List, Dict, Tuple, Optional
 from .medical_dictionary import MedicalDictionary
-from .snomed_api import SnomedAPI
 from .dynamic_medicine_list import DynamicMedicineList
 from .medical_nlp import MedicalNLP
 from .database_cache import get_database_cache
+from .langextract_adapter import LangExtractAdapter
+from .medical_extractor import map_label_to_category, ExtractedEntity
 import openai
 from openai import OpenAI
 import os
 import time
 
 class MedicalSpellChecker:
+    @staticmethod
+    def _trim_span_to_text(text: str, start: int, end: int) -> Tuple[int, int]:
+        """
+        Trim leading/trailing whitespace from [start, end) span. Return (-1, -1) if empty/invalid.
+        """
+        if start is None or end is None:
+            return -1, -1
+        n = len(text)
+        start = max(0, min(start, n))
+        end = max(0, min(end, n))
+        while start < end and text[start].isspace():
+            start += 1
+        while end > start and text[end - 1].isspace():
+            end -= 1
+        if start >= end:
+            return -1, -1
+        return start, end
+
     def __init__(self):
         self.medical_dict = MedicalDictionary()
-        self.snomed_api = SnomedAPI()
+        # SNOMED removed
+        self.snomed_api = None
         self.dynamic_list = DynamicMedicineList()
         
         # Initialize Medical NLP (replaces LLM for better performance)
         self.medical_nlp = MedicalNLP()
+
+        # Initialize LangExtract adapter (optional, feature-gated via env)
+        try:
+            self.langextract_enabled = os.getenv("ENABLE_LANGEXTRACT", "false").lower() in ("1", "true", "yes", "on")
+            self.langextract = LangExtractAdapter()
+        except Exception as _e:
+            self.langextract_enabled = False
+            self.langextract = None
         
         # Initialize database cache
         self.db_cache = get_database_cache()
@@ -38,8 +66,8 @@ class MedicalSpellChecker:
             self.use_llm = False
         
         # Configuration flags
-        self.use_snomed_api = True  # Can be disabled for LLM-only mode
-        self.llm_only_mode = False  # Flag to bypass SNOMED entirely
+        self.use_snomed_api = False  # SNOMED fully removed
+        self.llm_only_mode = True    # Default to LLM-only mode
         
         # Enhanced drug name correction mappings for common misspellings
         self.drug_corrections = {
@@ -75,15 +103,14 @@ class MedicalSpellChecker:
         }
         
         # Enhanced medical term patterns for faster detection
+        # NOTE: We deliberately EXCLUDE dosage/route/frequency units from detection to avoid underlining them.
         self.medical_patterns = [
             # Medications (common drug suffixes)
             r'\b\w+(?:in|ol|ide|ate|ine|one|pam|lol|pril|tidine|zole|mycin|illin|profen|fen|dine)\b',
             # Medical conditions (common condition suffixes)
             r'\b\w+(?:itis|osis|emia|oma|pathy|algia|emia|osis|oma|cele|rrhagia|rrhea)\b',
-            # Common medical abbreviations
-            r'\b(?:BP|HR|RR|O2|CT|MRI|ECG|EKG|CBC|BMP|CMP|PT|INR|CXR|EKG|IV|PO|PRN|QID|TID|BID|QD)\b',
-            # Dosage patterns
-            r'\b\d+\s*(?:mg|mcg|g|ml|cc|units?|IU|mEq|mmol)\b',
+            # Common medical abbreviations (keep imaging/tests, but not units)
+            r'\b(?:BP|HR|RR|O2|CT|MRI|ECG|EKG|CBC|BMP|CMP|PT|INR|CXR|IV|PO|PRN|QID|TID|BID|QD)\b',
             # Common medical prefixes
             r'\b(?:cardio|neuro|gastro|hepato|nephro|pulmo|dermo|endo|exo|hyper|hypo|anti|pro|pre|post)\w*\b',
             # Specific medical terms
@@ -97,6 +124,15 @@ class MedicalSpellChecker:
         
         # Comprehensive skip words - common English words that are not medical terms
         self.skip_words = {
+            # Dosage/route/frequency units and words to suppress highlighting in SOAP medications
+            'mg','mcg','g','gram','grams','ml','cc','units','unit','iu','meq','mmol',
+            'tablet','tablets','tab','tabs','cap','caps','capsule','capsules',
+            'syrup','suspension','amp','ampoule','vial','patch','injection','inj',
+            'bid','tid','qid','qd','qhs','qod','prn','stat','od','bd','tds','q8h','q12h','q6h',
+            'daily','weekly','monthly','hourly','once','twice','thrice',
+            'route','oral','po','iv','im','sc','subcutaneous','intravenous','intramuscular',
+            'dosage','dose','doses','duration','frequency',
+            
             # Articles, conjunctions, prepositions
             'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
             'of', 'with', 'by', 'from', 'into', 'through', 'during', 'before', 'after',
@@ -875,56 +911,24 @@ Return only the JSON, no other text."""
                 result["source"] = "local_dictionary"
             return result
         
-        # Check cached SNOMED results first
-        cached_result = self.dynamic_list.get_cached_snomed_result(term)
-        if cached_result:
-            result.update(cached_result)
-            return result
+        # SNOMED cache disabled (left in place if dynamic list used it for other terms)
+        # cached_result = self.dynamic_list.get_cached_snomed_result(term)
+        # if cached_result:
+        #     result.update(cached_result)
+        #     return result
         
-        # Check with SNOMED CT (with timeout and error handling) - only if not in LLM-only mode
-        if self.use_snomed_api and not self.llm_only_mode:
-            try:
-                if self.snomed_api.validate_term(term):
-                    result["is_correct"] = True
-                    result["confidence"] = 0.95
-                    result["source"] = "snomed_ct"
-                    # Cache the sanitized result
-                    sanitized_result = self._sanitize_result_for_caching(result)
-                    self.dynamic_list.cache_snomed_result(term, sanitized_result)
-                    return result
-            except Exception as e:
-                print(f"SNOMED API error for term '{term}': {e}")
-                # Check if we should switch to LLM-only mode due to persistent failures
-                if hasattr(self.snomed_api, 'circuit_breaker_state') and self.snomed_api.circuit_breaker_state == "open":
-                    print("SNOMED API circuit breaker is open - temporarily switching to LLM-only mode")
-                    self.llm_only_mode = True
-                
-                # If LLM identified this term and SNOMED fails, keep it as correct
-                if llm_identified:
-                    print(f"Keeping LLM-identified term '{term}' as correct despite SNOMED timeout")
-                    result["is_correct"] = True
-                    result["confidence"] = 0.8
-                    result["source"] = "llm_identified_snomed_timeout"
-                    return result
-        elif self.llm_only_mode:
-            print(f"LLM-only mode: Skipping SNOMED check for term '{term}'")
-            # In LLM-only mode, trust LLM identification more
-            if llm_identified:
-                result["is_correct"] = True
-                result["confidence"] = 0.85
-                result["source"] = "llm_only_mode"
-                return result
+        # SNOMED removed; operate in LLM-only mode
+        if llm_identified:
+            result["is_correct"] = True
+            result["confidence"] = max(result.get("confidence", 0.0), 0.85)
+            result["source"] = "llm_only_mode"
+            # do not early-return; allow suggestions logic below to run and possibly flag needs_correction if strong
         
         # Get suggestions from local dictionary
         local_suggestions = self.medical_dict.get_suggestions(term)
         
-        # Get suggestions from SNOMED (with error handling) - only if not in LLM-only mode
+        # SNOMED suggestions removed
         snomed_suggestions = []
-        if self.use_snomed_api and not self.llm_only_mode:
-            try:
-                snomed_suggestions = self.snomed_api.get_suggestions(term, max_suggestions=3)
-            except Exception as e:
-                print(f"SNOMED suggestions error for term '{term}': {e}")
         
         # Combine and rank suggestions
         all_suggestions = []
@@ -947,15 +951,7 @@ Return only the JSON, no other text."""
                 "source": "local"
             })
         
-        # Add SNOMED suggestions (only if available)
-        if not self.llm_only_mode:
-            for sugg in snomed_suggestions[:5]:
-                if not any(s["term"].lower() == sugg.lower() for s in all_suggestions):
-                    all_suggestions.append({
-                        "term": sugg,
-                        "score": fuzz.ratio(term.lower(), sugg.lower()),
-                        "source": "snomed"
-                    })
+        # SNOMED suggestions removed (none added)
         
         # Sort by score and filter out low-quality suggestions
         all_suggestions.sort(key=lambda x: x["score"], reverse=True)
@@ -997,9 +993,9 @@ Return only the JSON, no other text."""
         else:
             result["confidence"] = 0.7 if result["suggestions"] else 0.3
         
-        # Cache the sanitized result in old system
+        # Cache the sanitized result (without SNOMED)
         sanitized_result = self._sanitize_result_for_caching(result)
-        self.dynamic_list.cache_snomed_result(term, sanitized_result)
+        # self.dynamic_list.cache_snomed_result(term, sanitized_result)  # disable SNOMED-specific cache
         
         # Also cache in database for better performance
         if self.db_cache and self.db_cache.is_available:
@@ -1011,7 +1007,7 @@ Return only the JSON, no other text."""
                     category=result.get("category", "medical"),
                     confidence_score=result["confidence"],
                     llm_identified=llm_identified,
-                    snomed_validated=bool(result.get("source") == "snomed_api"),
+                    snomed_validated=False,
                     needs_correction=result.get("needs_correction", not result["is_correct"]),
                     source=result["source"]
                 )
@@ -1022,15 +1018,56 @@ Return only the JSON, no other text."""
     
     def identify_medical_terms(self, text: str) -> List[Tuple[str, int, int, str, Dict]]:
         """
-        Main method: Identify medical terms using LLM-first approach
-        
-        Args:
-            text: The text to analyze
-            
-        Returns:
-            List of tuples (term, start_pos, end_pos, category, term_info)
+        Main method: Identify medical terms using (in order):
+        1) LangExtract (if enabled and available)
+        2) LLM-first approach (current default)
+        3) NLP fallback
         """
-        return self.identify_medical_terms_llm(text)
+        # 1) Try LangExtract for grounded entities with offsets
+        if getattr(self, "langextract_enabled", False) and getattr(self, "langextract", None) and self.langextract.is_available():
+            try:
+                # Cache by text hash to avoid repeated calls within same process
+                if not hasattr(self, "_langextract_cache"):
+                    self._langextract_cache = {}
+                key = f"{hash(text)}::{getattr(self.langextract, 'model_id', 'default')}"
+                entities: List[ExtractedEntity]
+                if key in self._langextract_cache:
+                    entities = self._langextract_cache[key]
+                else:
+                    entities = self.langextract.extract_entities(text)
+                    self._langextract_cache[key] = entities
+
+                # Map to expected return type
+                results: List[Tuple[str, int, int, str, Dict]] = []
+                for ent in entities:
+                    category = map_label_to_category(ent.label)
+                    s, e = self._trim_span_to_text(text, ent.start, ent.end)
+                    if s == -1:
+                        continue
+                    term_text = text[s:e]
+                    term_info = {
+                        "term": term_text,
+                        "start": s,
+                        "end": e,
+                        "category": category,
+                        "needs_correction": False,       # extraction doesn't imply misspelling
+                        "suggested_correction": "",
+                        "attributes": ent.attributes or {},
+                        "source": "langextract"
+                    }
+                    results.append((term_text, s, e, category, term_info))
+                # If LangExtract produced any entities, strictly return them; else fall through to LLM
+                if results:
+                    return results
+            except Exception as e:
+                print(f"LangExtract identify_medical_terms error (fallback to LLM): {e}")
+
+        # 2) LLM-first approach
+        try:
+            return self.identify_medical_terms_llm(text)
+        except Exception as e:
+            print(f"identify_medical_terms_llm failed, using NLP fallback: {e}")
+            return self.identify_medical_terms_nlp(text)
     
     def _batch_check_terms(self, terms_batch: List[Tuple[str, int, int, str, Dict]], llm_identified: bool = False) -> List[Dict]:
         """
@@ -1172,17 +1209,10 @@ Return only the JSON, no other text."""
         self.llm_only_mode = False
         print("Disabled LLM-only mode - SNOMED API re-enabled")
     
+    # SNOMED removed: method kept as no-op for backward compatibility if referenced elsewhere
     def reset_snomed_circuit_breaker(self):
-        """Reset the SNOMED API circuit breaker"""
-        if hasattr(self.snomed_api, 'circuit_breaker_state'):
-            self.snomed_api.circuit_breaker_state = "closed"
-            self.snomed_api.circuit_breaker_failures = 0
-            self.snomed_api.circuit_breaker_opened_at = None
-            print("SNOMED API circuit breaker reset")
-            # Re-enable SNOMED API if it was disabled
-            if self.llm_only_mode:
-                self.llm_only_mode = False
-                print("Re-enabled SNOMED API after circuit breaker reset")
+        """SNOMED removed - no-op"""
+        return
     
     def correct_text(self, text: str, interactive: bool = False) -> str:
         """

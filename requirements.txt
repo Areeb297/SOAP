@@ -28,6 +28,9 @@ python-Levenshtein==0.25.1  # For better fuzzy matching performance - eliminates
 spacy>=3.7.0
 scispacy>=0.5.4
 
+# LangExtract (Google) - structured information extraction with grounded offsets
+langextract>=0.1.0
+
 # spaCy models (install after pip install)
 # REQUIRED: Basic English model
 # python -m spacy download en_core_web_sm

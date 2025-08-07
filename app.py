@@ -743,7 +743,7 @@ def transcribe_audio():
 
 @app.route('/generate-soap', methods=['POST'])
 def generate_soap():
-    """Generate SOAP note from transcript using OpenAI"""
+    """Generate SOAP note from transcript using LangExtract-first, with OpenAI fallback"""
     try:
         data = request.json
         transcript = data.get('transcript', '')
@@ -752,13 +752,16 @@ def generate_soap():
         if not transcript:
             return jsonify({'error': 'No transcript provided'}), 400
 
-        if not client.api_key:
-            return jsonify({'error': 'OpenAI API key not configured'}), 500
-
         print("Generating SOAP note...")
         print(f"Transcript length: {len(transcript)} characters")
         print(f"Transcript content: {transcript}")
         print(f"Language: {language}")
+
+        # LangExtract path removed per rollback request; proceed directly to OpenAI pipeline
+
+        # 3) Fallback to existing OpenAI pipeline (Arabic or English)
+        if not client.api_key:
+            return jsonify({'error': 'OpenAI API key not configured and LangExtract unavailable'}), 500
 
         try:
             if language == 'ar':

@@ -2163,3 +2163,624 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "2937828f",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "unknown"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam reveals left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Immediate",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "Magnetic resonance imaging",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Educated on the importance of calling 911 immediately if symptoms worsen. Discussed stroke rehabilitation.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms safety. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "eb21d713",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking clearly.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, consumes 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "ongoing"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "ongoing"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Immediate",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Educated on the importance of calling 911 immediately if symptoms worsen. Discussed stroke rehabilitation.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital admission for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "09c5c206",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "cfecf2d7",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "7fb55f90",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "250aa75d",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "055ec301",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3234e71e",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3a674c0c",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b83cd0a4",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "168fe269",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "before",
+    "patient_age": "70",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "6a17e58d",
+    "visit_date": "2025-08-07",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking.",
+      "past_medical_history": "High blood pressure, atrial fibrillation. Hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "unknown"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Left-sided weakness, slurred speech, left facial droop observed during neurological exam."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Immediate",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Education on the importance of calling 911 immediately if symptoms worsen.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
