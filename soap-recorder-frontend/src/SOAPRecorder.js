@@ -25,6 +25,8 @@ export default function SOAPRecorder() {
   // Explicit spell-check triggers
   const [checkTranscriptNow, setCheckTranscriptNow] = useState(false);
   const [checkSoapNow, setCheckSoapNow] = useState(false);
+  const [checkTranscriptVersion, setCheckTranscriptVersion] = useState(0);
+  const [checkSoapVersion, setCheckSoapVersion] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedTranscript, setEditedTranscript] = useState('');
   const [language, setLanguage] = useState('en'); // 'en' or 'ar' 
@@ -216,6 +218,7 @@ export default function SOAPRecorder() {
                           language={language}
                           className="w-full"
                           checkNow={checkSoapNow}
+                          checkVersion={checkSoapVersion}
                         />
                       </div>
                     )}
@@ -383,6 +386,7 @@ export default function SOAPRecorder() {
                         placeholder={`Enter ${key.replace(/_/g, ' ')}`}
                         className="w-full max-w-md"
                         checkNow={checkSoapNow}
+                        checkVersion={checkSoapVersion}
                       />
                     ) : (
                       // Only use SpellCheckedSOAPField for string values, not objects or arrays
@@ -395,6 +399,7 @@ export default function SOAPRecorder() {
                           language={language}
                           className="w-full max-w-md"
                           checkNow={checkSoapNow}
+                          checkVersion={checkSoapVersion}
                         />
                       ) : (
                         // For objects and arrays, use regular rendering
@@ -816,7 +821,7 @@ export default function SOAPRecorder() {
               <div className="w-full mb-4">
                 <div className="flex justify-end mb-2">
                   <button
-                    onClick={() => setCheckTranscriptNow(v => !v)}
+                    onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
                     className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
                     title="Run spell check for transcript"
                   >
@@ -834,6 +839,7 @@ export default function SOAPRecorder() {
                   enableSpellCheck={true}
                   rows={10}
                   checkNow={checkTranscriptNow}
+                  checkVersion={checkTranscriptVersion}
                 />
               </div>
               <div className="flex gap-4">
@@ -864,7 +870,7 @@ export default function SOAPRecorder() {
             
             <div className="flex justify-end mb-2">
               <button
-                onClick={() => setCheckTranscriptNow(v => !v)}
+                onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
                 className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
                 title="Run spell check for transcript"
               >
@@ -879,6 +885,7 @@ export default function SOAPRecorder() {
               enableSpellCheck={true}
               rows={8}
               checkNow={checkTranscriptNow}
+              checkVersion={checkTranscriptVersion}
             />
             
             <button
@@ -908,7 +915,13 @@ export default function SOAPRecorder() {
               <h2 className="text-2xl font-bold text-gray-800 text-center">SOAP Note</h2>
               <div className="absolute right-0 -top-10 flex gap-2">
                 <button
-                  onClick={() => setCheckSoapNow(v => !v)}
+                  onClick={() => {
+                    // Exit edit mode to allow highlights/suggestions to render
+                    setIsEditingSOAP(false);
+                    // Explicitly trigger spell check (edge-triggered in MedicalSpellChecker)
+                    setCheckSoapVersion(v => v + 1);
+                    setCheckSoapNow(v => !v);
+                  }}
                   className="px-3 py-1 text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded-md"
                   title="Run spell check for SOAP note"
                 >
@@ -983,6 +996,8 @@ export default function SOAPRecorder() {
               {!soapNote.raw_response && (
                 <button
                   onClick={() => {
+                    // Ensure spell-check is off while editing; prevent auto-runs on remount
+                    setCheckSoapNow(false);
                     if (isEditingSOAP) {
                       saveSOAPEdits();
                     } else {

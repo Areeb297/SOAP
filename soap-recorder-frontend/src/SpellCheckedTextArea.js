@@ -11,7 +11,8 @@ const SpellCheckedTextArea = ({
   language = 'en',
   enableSpellCheck = true,
   rows = 4,
-  checkNow = false // explicit trigger from parent
+  checkNow = false, // explicit trigger from parent
+  checkVersion = 0 // numeric trigger to force a check every click
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localValue, setLocalValue] = useState(value);
@@ -92,6 +93,7 @@ const SpellCheckedTextArea = ({
               enabled={enableSpellCheck && !disabled}
               language={language}
               checkNow={checkNow}
+              checkVersion={checkVersion}
             />
           ) : (
             <div className="placeholder-text" onClick={!disabled ? handleEditClick : undefined}>

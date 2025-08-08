@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './MedicalSpellChecker.css';
 
-const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect, checkNow = false }) => {
+const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect, checkNow = false, checkVersion = 0 }) => {
   const [medicalTerms, setMedicalTerms] = useState([]);
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
@@ -18,6 +18,9 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const textAreaRef = useRef(null);
   const suggestionsRef = useRef(null);
   const checkTimeoutRef = useRef(null);
+  const lastProcessedCheckNowRef = useRef(false);
+  // Track numeric trigger; initialize from current prop to avoid auto-run on remounts
+  const lastProcessedVersionRef = useRef(checkVersion);
   const [lastCheckedKey, setLastCheckedKey] = useState(null);
   
   // Dynamic backend URL
@@ -27,22 +30,51 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
       ? 'http://localhost:5001'
       : 'https://soap-598q.onrender.com');
 
-  // Fetch NLP status on component mount
+  // Fetch NLP status only when legend is opened (cached globally to avoid repeated requests)
   useEffect(() => {
+    if (!showLegend) return;
+
     const fetchNlpStatus = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/medical-nlp-status`);
-        if (response.ok) {
-          const status = await response.json();
-          setNlpStatus(status);
+        // If another component already fetched status, reuse it
+        if (window.__medicalNlpStatusCache) {
+          setNlpStatus(window.__medicalNlpStatusCache);
+          return;
         }
+
+        // If a request is already in-flight (StrictMode double-invoke, multiple components), await it
+        if (window.__medicalNlpStatusPromise) {
+          try {
+            window.__medicalNlpStatusPromise
+              .then((status) => {
+                if (status) setNlpStatus(status);
+              })
+              .catch(() => {});
+          } catch (_) {}
+          return;
+        }
+
+        // Create a shared in-flight promise to avoid duplicate fetches
+        window.__medicalNlpStatusPromise = fetch(`${BACKEND_URL}/medical-nlp-status`)
+          .then((response) => {
+            if (!response.ok) throw new Error('Failed to fetch NLP status');
+            return response.json();
+          })
+          .then((status) => {
+            try { window.__medicalNlpStatusCache = status; } catch (_) {}
+            setNlpStatus(status);
+            return status;
+          })
+          .finally(() => {
+            try { delete window.__medicalNlpStatusPromise; } catch (_) {}
+          });
       } catch (error) {
         console.error('Error fetching NLP status:', error);
       }
     };
-    
+
     fetchNlpStatus();
-  }, [BACKEND_URL]);
+  }, [BACKEND_URL, showLegend]);
 
   // State for unique term counts
   const [uniqueTermCount, setUniqueTermCount] = useState(0);
@@ -63,10 +95,8 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
     const cacheKey = trimmed.toLowerCase();
 
-    // Do not re-check the exact same content unless checkNow toggles again
-    if (lastCheckedKey === cacheKey && (medicalTerms?.length ?? 0) > 0) {
-      return;
-    }
+    // Always allow re-check on explicit button press; serve from cache fast if available
+    // (No early return here so every click triggers a resolve from cache or API)
 
     // Serve from cache
     if (termCache.has(cacheKey)) {
@@ -116,10 +146,37 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     }
   }, [enabled, BACKEND_URL, termCache, lastCheckedKey, medicalTerms]);
 
-  // Explicit trigger: run only when parent toggles checkNow
+
+  // Explicit trigger: run when parent toggles checkNow to true (works even across remounts)
   useEffect(() => {
     if (!enabled) return;
-    if (checkNow) {
+
+    // Only respond on rising edge of checkNow
+    if (checkNow && !lastProcessedCheckNowRef.current) {
+      lastProcessedCheckNowRef.current = true;
+
+      // Ensure no pending timers execute
+      if (checkTimeoutRef.current) {
+        clearTimeout(checkTimeoutRef.current);
+        checkTimeoutRef.current = null;
+      }
+      checkMedicalTerms(text);
+      return;
+    }
+
+    // Reset when checkNow goes false so the next true will run again
+    if (!checkNow && lastProcessedCheckNowRef.current) {
+      lastProcessedCheckNowRef.current = false;
+    }
+  }, [checkNow, enabled, text, checkMedicalTerms]);
+
+  // Numeric trigger: every increment must run a check in every instance (never skipped)
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (typeof checkVersion === 'number' && checkVersion !== lastProcessedVersionRef.current) {
+      lastProcessedVersionRef.current = checkVersion;
+
       // Ensure no pending timers execute
       if (checkTimeoutRef.current) {
         clearTimeout(checkTimeoutRef.current);
@@ -127,15 +184,13 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
       }
       checkMedicalTerms(text);
     }
-  }, [checkNow, enabled, text, checkMedicalTerms]);
+  }, [checkVersion, enabled, text, checkMedicalTerms]);
 
   // Handle term click
   const handleTermClick = async (term, event) => {
     event.preventDefault();
     event.stopPropagation();
     
-    console.log('Medical term clicked, preventing edit mode trigger');
-
     const rect = event.target.getBoundingClientRect();
     const containerRect = textAreaRef.current.parentElement.getBoundingClientRect();
 
@@ -153,82 +208,120 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     
     // Fetch database suggestions
     try {
-      console.log(`Fetching database suggestions for term: "${term.term}"`);
       const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(term.term)}`);
-      console.log(`Database response status: ${response.status}`);
-      
       if (response.ok) {
         const data = await response.json();
-        console.log('Database response data:', data);
-        
         const dbSuggestions = data.results || [];
-        console.log(`Database suggestions found: ${dbSuggestions.length}`);
-        console.log('Database suggestions:', dbSuggestions);
-        
-        // Add database suggestions with source information
         const formattedDbSuggestions = dbSuggestions.map(result => ({
           value: result.value,
           typeName: result.typeName,
           source: 'database'
         }));
-        
-        console.log('Formatted database suggestions:', formattedDbSuggestions);
-        
-        // Combine suggestions: spell-check first, then database
+        // Combine: spell-check first, then database
         allSuggestions = [
           ...allSuggestions.map(s => ({ value: s, source: 'spellcheck' })),
           ...formattedDbSuggestions
         ];
-        
-        console.log('All combined suggestions:', allSuggestions);
       } else {
-        console.error(`Database request failed with status: ${response.status}`);
+        // Fallback: only spell-check suggestions
+        allSuggestions = allSuggestions.map(s => ({ value: s, source: 'spellcheck' }));
       }
     } catch (error) {
       console.error('Error fetching database suggestions:', error);
-      // Continue with just spell-check suggestions if database fails
       allSuggestions = allSuggestions.map(s => ({ value: s, source: 'spellcheck' }));
     }
     
-    console.log('Setting suggestions state:', allSuggestions);
-    console.log('Current showSuggestions state before:', showSuggestions);
     setSuggestions(allSuggestions);
     setShowSuggestions(true);
-    console.log('Set showSuggestions to true');
   };
 
-  // Handle suggestion selection
+  // Handle suggestion selection (live update without full re-check)
   const handleSuggestionSelect = (suggestion) => {
     if (selectedTerm) {
       const { start, end } = selectedTerm;
 
       // Calculate the actual positions in the current text
-      const beforeText = text.substring(0, start);
-      const afterText = text.substring(end);
+      const textStr = typeof text === 'string' ? text : String(text || '');
+      const beforeText = textStr.substring(0, start);
+      const afterText = textStr.substring(end);
 
       // Extract the actual value from suggestion object or use as string
       const replacementText = typeof suggestion === 'object' ? suggestion.value : suggestion;
 
       const newText = beforeText + replacementText + afterText;
 
-      // Replace text upstream (STRICT: no auto re-check, no auto re-highlight)
+      // Replace text upstream (STRICT: no auto re-check)
       if (onSuggestionSelect) {
         onSuggestionSelect(newText, { start, end: start + replacementText.length });
       } else if (onTextChange) {
         onTextChange(newText);
       }
 
-      // Immediately clear ALL highlights to ensure plain black text until user triggers spell-check.
-      setMedicalTerms([]);
+      // Locally update highlights:
+      // - Mark the fixed term as "correct" (blue underline) OR remove it
+      // - Shift positions for all terms after the replaced span
+      const oldLen = end - start;
+      const newLen = replacementText.length;
+      const delta = newLen - oldLen;
 
-      // Also reset cache key marker so future explicit checks are allowed on same content
-      setLastCheckedKey(null);
+      const newTerms = [];
+      for (let i = 0; i < medicalTerms.length; i++) {
+        const t = medicalTerms[i];
+        // Skip the originally selected term; add corrected version
+        if (t.start === selectedTerm.start && t.end === selectedTerm.end && t.term === selectedTerm.term) {
+          // Option A: mark as correct (blue underline) to reflect correction visually
+          newTerms.push({
+            ...t,
+            term: replacementText,
+            start: start,
+            end: start + newLen,
+            is_correct: true,
+            isCorrect: true,
+            needs_correction: false,
+            needsCorrection: false,
+            source: 'llm_corrected'
+          });
+          continue;
+        }
+
+        // Terms entirely before the replaced span remain the same
+        if (t.end <= start) {
+          newTerms.push({ ...t });
+          continue;
+        }
+
+        // Terms entirely after the replaced span: shift by delta
+        if (t.start >= end) {
+          newTerms.push({
+            ...t,
+            start: t.start + delta,
+            end: t.end + delta
+          });
+          continue;
+        }
+
+        // Overlapping terms (rare): drop them to avoid misalignment; they'll be recalculated on next manual check
+        // Alternatively, we could attempt smarter merging, but keep it simple and safe here.
+      }
+
+      setMedicalTerms(newTerms);
+
+      // Close UI and reset state; do NOT clear all highlights
+      setShowSuggestions(false);
+      setSelectedTerm(null);
+      setShowingAlternatives(false);
+      // Keep lastCheckedKey; next manual button press can re-validate full text if needed
+    } else {
+      // Fallback if no selected term (shouldn't happen)
+      if (typeof suggestion === 'object') {
+        if (onTextChange) onTextChange(suggestion.value);
+      } else if (onTextChange) {
+        onTextChange(suggestion);
+      }
+      setShowSuggestions(false);
+      setSelectedTerm(null);
+      setShowingAlternatives(false);
     }
-
-    // Close UI and reset state
-    setShowSuggestions(false);
-    setSelectedTerm(null);
-    setShowingAlternatives(false); // Reset alternatives state
   };
 
   // Handle confirmation for correct terms
@@ -446,9 +539,6 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     );
   };
 
-  // Debug logging for render
-  console.log('MedicalSpellChecker render - showSuggestions:', showSuggestions, 'suggestions:', suggestions, 'selectedTerm:', selectedTerm, 'showingAlternatives:', showingAlternatives);
-
   return (
     <div className="medical-spell-checker" ref={textAreaRef}>
       {isChecking && (
@@ -486,9 +576,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
       </div>
       
       {(() => {
-        console.log('Rendering check - showSuggestions:', showSuggestions, 'suggestions.length:', suggestions.length, 'suggestions:', suggestions);
         const shouldShow = showSuggestions && (suggestions.length > 0 || selectedTerm);
-        console.log('Should show dropdown:', shouldShow);
         return shouldShow;
       })() && (
         <div 
@@ -501,10 +589,10 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
           }}
         >
           <div className="suggestions-header">
-            {selectedTerm.isCorrect && !showingAlternatives ? 'Confirm Medical Term' : 'Spelling Suggestions'}
+            {selectedTerm?.isCorrect && !showingAlternatives ? 'Confirm Medical Term' : 'Spelling Suggestions'}
           </div>
           <div className="suggestions-list">
-            {selectedTerm.isCorrect && !showingAlternatives ? (
+            {selectedTerm?.isCorrect && !showingAlternatives ? (
               <div className="suggestion-item confirm-item">
                 <div>Are you sure this is the correct medical term?</div>
                 <div className="confirm-buttons">
@@ -519,36 +607,23 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
                     onClick={async (event) => {
                       event.preventDefault();
                       event.stopPropagation();
-                      console.log('User clicked "No, show alternatives"');
                       setShowingAlternatives(true); // Set state to show alternatives
                       setSuggestions([{ value: 'Loading suggestions...', source: 'loading' }]);
                       
-                      // Fetch database suggestions using same logic as handleTermClick
+                      // Fetch database suggestions as alternatives
                       let allSuggestions = [];
                       
                       try {
-                        console.log(`Fetching alternatives for term: "${selectedTerm.term}"`);
                         const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(selectedTerm.term)}`);
-                        console.log(`Alternative suggestions response status: ${response.status}`);
-                        
                         if (response.ok) {
                           const data = await response.json();
-                          console.log('Alternative suggestions data:', data);
-                          
                           const dbSuggestions = data.results || [];
-                          console.log(`Alternative database suggestions found: ${dbSuggestions.length}`);
-                          
-                          // Format database suggestions
                           allSuggestions = dbSuggestions.map(result => ({
                             value: result.value,
                             typeName: result.typeName,
                             source: 'database'
                           }));
-                          
-                          console.log('Formatted alternative suggestions:', allSuggestions);
-                          console.log('About to set alternative suggestions state');
                         } else {
-                          console.error(`Alternative suggestions request failed: ${response.status}`);
                           allSuggestions = [{ value: 'No alternatives found', source: 'error' }];
                         }
                       } catch (error) {
@@ -557,9 +632,6 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
                       }
                       
                       setSuggestions(allSuggestions);
-                      console.log('Set alternative suggestions:', allSuggestions);
-                      console.log('showSuggestions state should remain true');
-                      // Force re-render by ensuring showSuggestions stays true
                       setShowSuggestions(true);
                     }}
                   >

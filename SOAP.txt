@@ -3846,3 +3846,449 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f382e772",
+    "visit_date": "2025-08-08",
+    "provider_name": "Dr. Andrew",
+    "patient_name": "Steven Clark",
+    "patient_age": "62",
+    "subjective": {
+      "chief_complaint": "Chest pain since last night.",
+      "history_of_present_illness": "Steven Clark, a 62-year-old male from Chicago, presents with chest pain that started around 9 PM last night and has not subsided. The pain is described as a tight, crushing feeling in the center of the chest, radiating to the left arm. He experiences shortness of breath even when lying down, along with sweating and nausea earlier today.",
+      "past_medical_history": "High cholesterol and high blood pressure for years.",
+      "family_history": "Father had a heart attack at 60.",
+      "social_history": "Quit smoking last year, occasionally drinks beer.",
+      "medications": [
+        {
+          "name": "Atorvastatin",
+          "dosage": "20mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Amlodipine",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "No allergies mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.7°F",
+        "blood_pressure": "160/100",
+        "heart_rate": "105",
+        "respiratory_rate": "20",
+        "oxygen_saturation": "95%"
+      },
+      "physical_exam": "ECG shows ST elevation."
+    },
+    "assessment": {
+      "diagnosis": "Acute coronary syndrome",
+      "risk_factors": [
+        "High cholesterol",
+        "High blood pressure",
+        "Family history of heart attack"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "immediately",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Nitroglycerin",
+          "dosage": "Not specified",
+          "frequency": "immediately",
+          "duration": "Not specified",
+          "route": "sublingual"
+        }
+      ],
+      "procedures_or_tests": [
+        "Cardiac monitoring"
+      ],
+      "patient_education": "Discussed the importance of monitoring and medication adherence.",
+      "follow_up_instructions": "Admit for cardiac monitoring."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "748687d5",
+    "visit_date": "2025-08-08",
+    "provider_name": "Dr. Rachel",
+    "patient_name": "Emily Torres",
+    "patient_age": "25",
+    "subjective": {
+      "chief_complaint": "Trouble breathing, inhaler not helping",
+      "history_of_present_illness": "Emily Torres reports having trouble breathing for the past 12 hours after being around cats, to which she is allergic. She experiences wheezing and coughing, which worsen when lying down. Her inhaler has not provided much relief.",
+      "past_medical_history": "Asthma since childhood",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Albuterol",
+          "dosage": "As needed",
+          "frequency": "As needed",
+          "route": "inhalation",
+          "duration": "Since childhood"
+        }
+      ],
+      "allergies": [
+        "Cats",
+        "dust",
+        "pollen"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.5°F",
+        "blood_pressure": "120/80",
+        "heart_rate": "100",
+        "respiratory_rate": "26",
+        "oxygen_saturation": "93%"
+      },
+      "physical_exam": "Wheezing heard on auscultation"
+    },
+    "assessment": {
+      "diagnosis": "Asthma exacerbation",
+      "risk_factors": [
+        "Allergy to cats",
+        "History of asthma"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Nebulized bronchodilators and corticosteroids",
+          "dosage": "As per protocol",
+          "frequency": "As needed",
+          "duration": "Immediate treatment",
+          "route": "inhalation"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Advised to avoid exposure to allergens such as cats. Instructed on proper use of inhaler and signs of worsening asthma.",
+      "follow_up_instructions": "Follow up with primary care physician or asthma specialist if symptoms persist or worsen."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "ea8c362f",
+    "visit_date": "2025-08-08",
+    "provider_name": "Dr. Rachel",
+    "patient_name": "Emily Torres",
+    "patient_age": "25",
+    "subjective": {
+      "chief_complaint": "Trouble breathing, inhaler not helping.",
+      "history_of_present_illness": "Emily Torres, a 25-year-old female, reports having trouble breathing for the past 12 hours after being around cats, to which she is allergic. She experiences wheezing and cough, which worsen when lying down. Her usual Albuterol inhaler is not providing relief.",
+      "past_medical_history": "Asthma since childhood.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Albuterol",
+          "dosage": "As needed",
+          "frequency": "As needed",
+          "route": "inhalation",
+          "duration": "Since childhood"
+        }
+      ],
+      "allergies": [
+        "Cats",
+        "Dust",
+        "Pollen"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.5°F",
+        "blood_pressure": "120/80",
+        "heart_rate": "100",
+        "respiratory_rate": "26",
+        "oxygen_saturation": "93%"
+      },
+      "physical_exam": "Wheezing heard on auscultation."
+    },
+    "assessment": {
+      "diagnosis": "Asthma exacerbation",
+      "risk_factors": [
+        "Asthma",
+        "Allergy to cats"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Nebulized bronchodilators",
+          "dosage": "As per protocol",
+          "frequency": "As needed",
+          "duration": "Immediate treatment",
+          "route": "inhalation"
+        },
+        {
+          "name": "Corticosteroids",
+          "dosage": "As per protocol",
+          "frequency": "As needed",
+          "duration": "Immediate treatment",
+          "route": "inhalation"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Advised to avoid exposure to allergens such as cats. Educated on proper use of inhaler and signs of asthma exacerbation.",
+      "follow_up_instructions": "Follow up with primary care physician if symptoms persist or worsen. Seek immediate medical attention if breathing difficulty increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b036ac85",
+    "visit_date": "2025-08-08",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Robert Wilson",
+    "patient_age": "58",
+    "subjective": {
+      "chief_complaint": "Feeling very weak and dizzy for the past few days, unable to get out of bed today.",
+      "history_of_present_illness": "Robert Wilson, a 58-year-old male from Seattle, presents with weakness and dizziness starting 3 days ago, worsening each day. He reports excessive thirst, frequent urination, a 10-pound weight loss over the last month, lack of appetite, nausea, and vomiting (twice yesterday, once today). He also experiences abdominal cramping and shortness of breath, especially when walking. He feels warm but hasn't checked his temperature.",
+      "past_medical_history": "Diabetes type 2, not taking medication regularly. Hernia repair 5 years ago.",
+      "family_history": "Both mother and father had diabetes.",
+      "social_history": "Truck driver, drinks 2-3 beers on weekends, no smoking.",
+      "medications": [
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "Not taken for about a week"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "99.2°F",
+        "blood_pressure": "145/95",
+        "heart_rate": "110",
+        "respiratory_rate": "24",
+        "oxygen_saturation": "94%"
+      },
+      "physical_exam": "Patient appears dehydrated. Blood sugar is very high at 450 mg/dL."
+    },
+    "assessment": {
+      "diagnosis": "Diabetic ketoacidosis",
+      "risk_factors": [
+        "Diabetes type 2",
+        "Family history of diabetes",
+        "Sedentary occupation"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Insulin",
+          "dosage": "As per protocol",
+          "frequency": "Continuous",
+          "duration": "Until blood sugar stabilizes",
+          "route": "IV"
+        },
+        {
+          "name": "Electrolyte replacement",
+          "dosage": "As per protocol",
+          "frequency": "Continuous",
+          "duration": "Until stabilization",
+          "route": "IV"
+        }
+      ],
+      "procedures_or_tests": [
+        "Complete metabolic panel",
+        "Blood gas analysis",
+        "Urinalysis",
+        "Ketone level check"
+      ],
+      "patient_education": "Importance of taking diabetes medication regularly and monitoring blood sugar daily. Arranged for diabetes education.",
+      "follow_up_instructions": "Hospital stay for 24-48 hours until blood sugar stabilizes and ketones clear. Monitor blood sugar closely."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "10110a96",
+    "visit_date": "2025-08-08",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of self-harm for the past week.",
+      "history_of_present_illness": "James Anderson, a 34-year-old male from Portland, presents with worsening thoughts of self-harm over the past week. He reports researching methods online and having a plan, although he has not made any attempts. He came close to attempting last night but called a friend instead. He experiences poor sleep, lack of energy, and loss of interest in activities for the past 3 months, with significant worsening in recent weeks. He has lost 15 pounds due to lack of appetite and experiences constant anxiety and panic attacks. He denies hallucinations or delusions.",
+      "past_medical_history": "Hypothyroidism, previously hospitalized for depression 2 years ago.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "social_history": "Software engineer on medical leave for the past month. Drinks 2-3 beers daily and smokes marijuana occasionally.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Sertraline",
+          "dosage": "unknown",
+          "frequency": "unknown",
+          "route": "oral",
+          "duration": "stopped 2 weeks ago"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "not mentioned"
+      },
+      "physical_exam": "Mental status exam shows depressed appearance, poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "Previous hospitalization for depression",
+        "Family history of bipolar disorder and depression",
+        "Alcohol use",
+        "Marijuana use",
+        "Hypothyroidism"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "unknown",
+          "frequency": "unknown",
+          "duration": "unknown",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work for thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "patient_education": "Remove any means of self-harm from the environment and have someone stay with you when discharged.",
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "ca4d966d",
+    "visit_date": "2025-08-09",
+    "provider_name": "Dr. Lisa",
+    "patient_name": "James Anderson",
+    "patient_age": "34",
+    "subjective": {
+      "chief_complaint": "Thoughts of self-harm for the past week.",
+      "history_of_present_illness": "James Anderson, a 34-year-old from Portland, presents with worsening thoughts of self-harm over the past week. He reports researching methods online and having a plan, although he has not made any attempts. He nearly attempted last night but called a friend instead. He has been experiencing poor sleep, low energy, and anhedonia for about 3 months, with significant worsening in recent weeks. He has lost 15 pounds due to lack of appetite and experiences constant anxiety with several panic attacks in the last month. No hallucinations or delusions reported.",
+      "past_medical_history": "Hospitalized for depression 2 years ago. Diagnosed with hypothyroidism.",
+      "family_history": "Mother has bipolar disorder, sister has depression.",
+      "social_history": "Software engineer on medical leave for the past month. Consumes 2-3 beers daily and smokes marijuana occasionally.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "50mcg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Sertraline",
+          "dosage": "unknown",
+          "frequency": "unknown",
+          "route": "oral",
+          "duration": "stopped 2 weeks ago"
+        }
+      ],
+      "allergies": [
+        "No known allergies"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.6°F",
+        "blood_pressure": "130/85",
+        "heart_rate": "88",
+        "respiratory_rate": "16",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Mental status exam reveals depressed appearance, poor eye contact, slowed speech, and hopeless affect."
+    },
+    "assessment": {
+      "diagnosis": "Severe major depression with suicidal ideation and plan.",
+      "risk_factors": [
+        "Family history of mental illness",
+        "Substance use",
+        "Previous hospitalization for depression",
+        "Hypothyroidism"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Antidepressant medication",
+          "dosage": "unknown",
+          "frequency": "unknown",
+          "duration": "unknown",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "Blood work to check thyroid levels",
+        "Drug screen",
+        "Psychiatric evaluation"
+      ],
+      "patient_education": "Importance of removing means of self-harm from the environment and having someone stay with him upon discharge.",
+      "follow_up_instructions": "Inpatient psychiatric hospitalization for at least 72 hours for safety monitoring and medication adjustment."
+    }
+  }
+}
