@@ -78,7 +78,7 @@ class LangExtractAdapter:
                 }
             },
             {
-                "input": "Hello, I'm Dr. Sarah from the emergency department. Can I get your name and age?\n\nI'm Robert Wilson, 58 years old, from Seattle.\n\n... [omitted for brevity in code: weakness, dizziness 3 days, polydipsia, polyuria, weight loss, nausea/vomiting, abdominal cramping, SOB; T2DM non-adherence; metformin 1000mg bid not taken 1 week; vitals BP 145/95 HR 110 T 99.2 RR 24 SpO2 94%; glucose 450; orders CMP, blood gas, UA, ketones; Dx DKA; start IV fluids, insulin, electrolytes; admit 24-48h; education]",
+                "input": "Hello, I'm Dr. Sarah from the emergency department. Can I get your name and age?\n\nI'm Robert Wilson, 58 years old, from Seattle.\n\nWhat brings you to the ER today, Robert?\n\nI've been feeling very weak and dizzy for the past few days, and today I couldn't even get out of bed.\n\nWhen did these symptoms start?\n\nAbout 3 days ago, but they've been getting worse each day.\n\nAny other symptoms?\n\nI'm very thirsty all the time, urinating a lot, and I've lost about 10 pounds in the last month.\n\nHave you been eating normally?\n\nNo, I've had no appetite lately, and when I do eat, I feel nauseous.\n\nAny vomiting?\n\nYes, I vomited twice yesterday and once this morning.\n\nAny abdominal pain?\n\nYes, I have some cramping in my stomach.\n\nAny fever?\n\nI feel warm, but I haven't checked my temperature.\n\nAny shortness of breath?\n\nYes, especially when I try to walk around.\n\nHave you had similar symptoms before?\n\nNo, this is completely new to me.\n\nAny medical conditions?\n\nI have diabetes type 2, but I haven't been taking my medication regularly.\n\nWhat medications do you take?\n\nMetformin 1000mg twice daily, but I haven't taken it for about a week.\n\nAny allergies?\n\nNo known allergies.\n\nAny previous surgeries?\n\nI had a hernia repair 5 years ago.\n\nFamily history of diabetes?\n\nYes, my mother and father both had diabetes.\n\nDo you smoke or drink alcohol?\n\nI drink 2-3 beers on weekends, no smoking.\n\nWhat's your occupation?\n\nI'm a truck driver, so I'm sitting most of the day.\n\nLet me check your vital signs. Your blood pressure is 145/95, heart rate 110, temperature 99.2°F, respiratory rate 24, and oxygen saturation 94%.\n\nI can see you're dehydrated and your blood sugar is very high at 450 mg/dL.\n\nI'll order a complete metabolic panel, blood gas analysis, and urinalysis. We'll also need to check your ketone levels.\n\nBased on your symptoms and lab results, you have diabetic ketoacidosis, which is a serious complication of diabetes.\n\nI'll start you on IV fluids, insulin, and electrolyte replacement. We'll need to monitor your blood sugar closely.\n\nYou'll need to stay in the hospital for at least 24-48 hours until your blood sugar stabilizes and your ketones clear.\n\nIt's crucial to take your diabetes medication regularly and monitor your blood sugar daily. We'll arrange for diabetes education.",
                 "output": {
                     "subjective": {
                         "chief_complaint": "Weakness and dizziness for several days.",
@@ -106,7 +106,7 @@ class LangExtractAdapter:
                 }
             },
             {
-                "input": "Hello, I'm Dr. Lisa from the psychiatric emergency department. ... [omitted: SI with plan, insomnia, anergia, anhedonia 3 months, 15 lb loss, panic attacks, anxiety; h/o depression; hypothyroidism; levothyroxine 50mcg daily; sertraline stopped 2 weeks ago; vitals 130/85, 88, 98.6°F, 16; MSE depressed, poor eye contact, slowed speech, hopeless affect; orders thyroid panel, drug screen; Dx severe MDD with SI; plan AD and inpatient 72h; safety instructions]",
+                "input": "Hello, I'm Dr. Lisa from the psychiatric emergency department. Can I get your name and age?\n\nI'm James Anderson, 34 years old, from Portland.\n\nWhat brings you to the psychiatric emergency today, James?\n\nI've been having thoughts of harming myself for the past week, and I don't think I can keep myself safe anymore.\n\nWhen did these thoughts start?\n\nAbout a week ago, but they've been getting worse each day.\n\nCan you tell me more about these thoughts?\n\nI keep thinking about ending my life. I've been researching methods online and I have a plan.\n\nHave you made any attempts recently?\n\nNo, but I came very close last night. I had the means ready but I called a friend instead.\n\nWhat made you decide to come in today?\n\nI realized I need help. I can't control these thoughts anymore and I'm scared.\n\nAny other symptoms?\n\nI haven't been sleeping well for months, I have no energy, and I've lost interest in everything I used to enjoy.\n\nHow long have you been feeling this way?\n\nAbout 3 months, but it's been getting much worse in the last few weeks.\n\nAny changes in your appetite?\n\nI've lost about 15 pounds because I have no appetite.\n\nAny anxiety or panic attacks?\n\nYes, I have constant anxiety and I've had several panic attacks in the last month.\n\nAny hallucinations or delusions?\n\nNo, I know these thoughts are my own, but I can't stop them.\n\nHave you had similar problems before?\n\nYes, I was hospitalized for depression 2 years ago.\n\nAny medical conditions?\n\nI have hypothyroidism and I take medication for it.\n\nWhat medications do you take?\n\nLevothyroxine 50mcg daily, and I was taking Sertraline but I stopped it 2 weeks ago.\n\nAny allergies?\n\nNo known allergies.\n\nAny previous psychiatric hospitalizations?\n\nYes, one hospitalization 2 years ago for major depression.\n\nFamily history of mental illness?\n\nYes, my mother has bipolar disorder and my sister has depression.\n\nDo you use any substances?\n\nI drink 2-3 beers daily, and I smoke marijuana occasionally.\n\nWhat's your occupation?\n\nI'm a software engineer, but I've been on medical leave for the past month.\n\nLet me check your vital signs. Your blood pressure is 130/85, heart rate 88, temperature 98.6°F, respiratory rate 16.\n\nI'll perform a mental status exam. You appear depressed with poor eye contact, slowed speech, and hopeless affect.\n\nI'll order blood work to check your thyroid levels and drug screen. We'll also need a psychiatric evaluation.\n\nBased on your symptoms and risk assessment, you have severe major depression with suicidal ideation and plan.\n\nI'll start you on antidepressant medication and arrange for inpatient psychiatric hospitalization for safety.\n\nYou'll need to stay in the hospital for at least 72 hours for safety monitoring and medication adjustment.\n\nIt's important to remove any means of self-harm from your environment and have someone stay with you when you're discharged.",
                 "output": {
                     "subjective": {
                         "chief_complaint": "Thoughts of self-harm and inability to remain safe.",
@@ -309,41 +309,135 @@ class LangExtractAdapter:
             "- Keep the output a single JSON object with only these top-level keys."
         )
         
-        # Build examples if provided; filter None
-        examples = [e for e in (few_shots or []) if e is not None]
+        # Inline few-shot examples into the prompt to avoid relying on langextract ExampleData types
+        prompt_full = soap_prompt
+        try:
+            if few_shots:
+                parts = []
+                for ex in few_shots[:3]:
+                    if not isinstance(ex, dict):
+                        continue
+                    ex_in = ex.get("input", "")
+                    ex_out = ex.get("output", {})
+                    if not ex_in or not isinstance(ex_out, (dict, str)):
+                        continue
+                    import json as _json
+                    if isinstance(ex_out, dict):
+                        ex_out_str = _json.dumps(ex_out, ensure_ascii=False)
+                    else:
+                        ex_out_str = str(ex_out)
+                    parts.append(f"Example:\nTranscript:\n{ex_in}\nJSON:\n{ex_out_str}")
+                if parts:
+                    prompt_full = soap_prompt + "\n\nFollow these examples exactly (structure and field names):\n" + "\n\n---\n\n".join(parts)
+        except Exception:
+            # If anything goes wrong with examples, proceed with base prompt
+            prompt_full = soap_prompt
         
         try:
-            result = lx.extract(
+            # Build few-shot examples as ExampleData with a single "json" extraction containing the expected SOAP JSON.
+            examples_lx = []
+            try:
+                import json as _json
+                if few_shots and hasattr(lx, "data") and hasattr(lx.data, "ExampleData") and hasattr(lx.data, "Extraction"):
+                    for ex in (few_shots or [])[:3]:
+                        if not isinstance(ex, dict):
+                            continue
+                        ex_in = ex.get("input", "")
+                        ex_out = ex.get("output", {})
+                        if not ex_in or not isinstance(ex_out, (dict, str)):
+                            continue
+                        ex_out_str = _json.dumps(ex_out, ensure_ascii=False) if isinstance(ex_out, dict) else str(ex_out)
+                        examples_lx.append(
+                            lx.data.ExampleData(
+                                text=ex_in,
+                                extractions=[
+                                    lx.data.Extraction(extraction_class="json", extraction_text=ex_out_str)
+                                ],
+                            )
+                        )
+            except Exception:
+                # If example construction fails, proceed without examples (some versions allow this)
+                examples_lx = []
+
+            # Build kwargs compatibly across langextract versions (schemas may not exist)
+            extract_kwargs = dict(
                 text_or_documents=transcript,
-                prompt_description=soap_prompt,
-                examples=examples,
+                prompt_description=prompt_full,
                 model_id=self.model_id,
                 api_key=self.api_key,
-                # Ask for single JSON object
-                response_schema=lx.schemas.JsonSchemaObject(  # type: ignore
-                    keys=[
-                        lx.schemas.JsonSchemaKey("subjective", optional=True),
-                        lx.schemas.JsonSchemaKey("objective", optional=True),
-                        lx.schemas.JsonSchemaKey("assessment", optional=True),
-                        lx.schemas.JsonSchemaKey("plan", optional=True),
-                    ]
-                ),
             )
+            # Attach examples if we have any (some versions require at least one ExampleData)
+            if examples_lx:
+                extract_kwargs["examples"] = examples_lx
+
+            try:
+                # Only attach response_schema if the installed version exposes schemas
+                if hasattr(lx, "schemas") and hasattr(lx.schemas, "JsonSchemaObject"):
+                    extract_kwargs["response_schema"] = lx.schemas.JsonSchemaObject(  # type: ignore
+                        keys=[
+                            lx.schemas.JsonSchemaKey("subjective", optional=True),
+                            lx.schemas.JsonSchemaKey("objective", optional=True),
+                            lx.schemas.JsonSchemaKey("assessment", optional=True),
+                            lx.schemas.JsonSchemaKey("plan", optional=True),
+                        ]
+                    )
+            except Exception:
+                # If schema attachment fails, continue without it
+                pass
+
+            result = lx.extract(**extract_kwargs)
         except Exception as e:
             print(f"LangExtractAdapter.extract_soap error: {e}")
             return {"subjective": {}, "objective": {}, "assessment": {}, "plan": {}}
         
-        # Best-effort: result.content may contain parsed JSON depending on library version
+        # If some versions return a plain dict already
+        try:
+            if isinstance(result, dict):
+                # If it already looks like our sections, return it
+                if any(k in result for k in ("subjective", "objective", "assessment", "plan")):
+                    return result
+                # Or unwrap a nested 'content' if present
+                possible_dict_content = result.get("content")
+                if isinstance(possible_dict_content, dict):
+                    return possible_dict_content
+        except Exception:
+            pass
+
+        # Try multiple locations for JSON/string content depending on library version
         content = getattr(result, "content", None)
         if isinstance(content, dict):
-            # Return as-is; the caller will normalize/hydrate
             return content
         
-        # If library returns string, attempt json parsing
+        # Some versions may expose a plain string under 'content' or 'text' or 'output_text'
+        possible_texts = [
+            content,
+            getattr(result, "text", None),
+            getattr(result, "output_text", None),
+            getattr(result, "raw_content", None),
+        ]
         try:
             import json as _json
-            if isinstance(content, str) and content.strip().startswith("{"):
-                return _json.loads(content)
+            for txt in possible_texts:
+                if isinstance(txt, str) and txt.strip().startswith("{"):
+                    return _json.loads(txt)
+        except Exception:
+            pass
+
+        # Also try to parse from an 'extractions' list if returned (look for a json-like extraction_text)
+        try:
+            exts = getattr(result, "extractions", None)
+            if exts:
+                for ext in exts:
+                    cls = str(getattr(ext, "extraction_class", "") or "").lower()
+                    txt = getattr(ext, "extraction_text", None)
+                    if isinstance(txt, str) and ("{" in txt and "}" in txt):
+                        try:
+                            import json as _json
+                            parsed = _json.loads(txt)
+                            if isinstance(parsed, dict) and any(k in parsed for k in ("subjective", "objective", "assessment", "plan")):
+                                return parsed
+                        except Exception:
+                            continue
         except Exception:
             pass
         

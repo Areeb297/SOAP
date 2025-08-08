@@ -137,51 +137,31 @@ export default function SOAPRecorder() {
     }
   };
 
-  // Helper: Remove unmentioned fields/sections (same logic as backend)
+  // Helper: Preserve everything mentioned; only strip truly empty values
   function cleanSOAPNote(note) {
     if (!note || typeof note !== 'object') return note;
-    const isUnmentioned = (val) => {
-      if (!val) return true;
-      if (typeof val === 'string') {
-        const valLower = val.trim().toLowerCase();
-        const phrases = [
-          'not mentioned', 'not discussed', 'not addressed',
-          'no known', 'no current', 'pending clinical examination',
-          'vital signs not available', 'no medications prescribed currently',
-          'no known allergies', 'no current medications', 'not available currently',
-          'not specified', 'not available', 'none', 'n/a', 'na',
-          'لم يذكر', 'لم يتم التطرق', 'لا يتناول أدوية حالياً',
-          'لا يوجد تاريخ مرضي مزمن', 'بانتظار الفحص السريري',
-          'العلامات الحيوية غير متوفرة حالياً', 'لم يتم وصف أدوية حالياً',
-          'لم يتم التطرق لهذه النقاط أثناء اللقاء', 'غير متوفرة حالياً',
-          'غير محدد', 'غير متوفر', 'لا يوجد', 'غير متاح', 'غير معروف',
-          'غير مذكور', 'غير محدد في المحادثة', 'لم يتم ذكره',
-          'غير متوفر حالياً', 'غير محدد في المحادثة', 'غير متوفر في المحادثة'
-        ];
-        return phrases.some(p => valLower.includes(p));
-      }
-      if (Array.isArray(val)) {
-        // Remove empty/unmentioned items
-        const filtered = val.filter(item => !isUnmentioned(item));
-        return filtered.length === 0;
-      }
-      if (typeof val === 'object') {
-        // Recursively clean
-        const sub = cleanSOAPNote(val);
-        return !sub || Object.keys(sub).length === 0;
-      }
-      return false;
-    };
     const cleaned = {};
     for (const [k, v] of Object.entries(note)) {
-      if (v == null) continue;
-      if (Array.isArray(v)) {
-        const filtered = v.filter(item => !isUnmentioned(item));
-        if (filtered.length > 0) cleaned[k] = filtered;
-      } else if (typeof v === 'object' && v !== null) {
+      if (v === null || v === undefined) continue;
+      if (typeof v === 'string' || typeof v === 'number') {
+        const s = String(v);
+        if (s.trim().length > 0) cleaned[k] = s;
+      } else if (Array.isArray(v)) {
+        // Keep arrays; drop only null/empty-string items
+        const filtered = v.filter(item => {
+          if (item === null || item === undefined) return false;
+          if (typeof item === 'string') return item.trim().length > 0;
+          if (typeof item === 'object') {
+            const sub = cleanSOAPNote(item);
+            return sub && Object.keys(sub).length > 0;
+          }
+          return true;
+        });
+        cleaned[k] = filtered;
+      } else if (typeof v === 'object') {
         const sub = cleanSOAPNote(v);
-        if (sub && Object.keys(sub).length > 0) cleaned[k] = sub;
-      } else if (!isUnmentioned(v)) {
+        cleaned[k] = sub;
+      } else {
         cleaned[k] = v;
       }
     }

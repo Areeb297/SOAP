@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import subprocess
 from medical_spell_check import MedicalSpellChecker
+from medical_spell_check.soap_section_extractor import extract_english_soap_sections, is_soap_complete, normalize_soap_sections
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -757,7 +758,41 @@ def generate_soap():
         print(f"Transcript content: {transcript}")
         print(f"Language: {language}")
 
-        # LangExtract path removed per rollback request; proceed directly to OpenAI pipeline
+        # Try LangExtract (English) first for structured SOAP sections; fallback to OpenAI if incomplete/unavailable
+        if language != 'ar':
+            try:
+                sections = extract_english_soap_sections(transcript)
+                if is_soap_complete(sections):
+                    metadata = generate_soap_note_metadata(transcript, language)
+                    soap_note = {
+                        'soap_note': {
+                            'patient_id': metadata['patient_id'],
+                            'visit_date': metadata['visit_date'],
+                            'provider_name': metadata['provider_name'],
+                            'patient_name': metadata['patient_name'],
+                            'patient_age': metadata['patient_age'],
+                            'subjective': sections.get('subjective', {}),
+                            'objective': sections.get('objective', {}),
+                            'assessment': sections.get('assessment', {}),
+                            'plan': sections.get('plan', {}),
+                        }
+                    }
+                    with open('SOAP_note.json', 'w', encoding='utf-8') as f:
+                        json.dump(soap_note, f, indent=2, ensure_ascii=False)
+                    with open('SOAP.txt', 'a', encoding='utf-8') as f:
+                        f.write("\n\n" + "="*50 + "\n")
+                        f.write("SOAP NOTE\n")
+                        f.write("="*50 + "\n")
+                        f.write(json.dumps(soap_note, indent=2, ensure_ascii=False))
+                    print("SOAP note generated via LangExtract and saved successfully")
+                    return jsonify({
+                        'soapNote': soap_note,
+                        'message': 'SOAP note generated via LangExtract'
+                    })
+                else:
+                    print("LangExtract returned incomplete sections; falling back to OpenAI.")
+            except Exception as e:
+                print(f"LangExtract pipeline error, falling back to OpenAI: {e}")
 
         # 3) Fallback to existing OpenAI pipeline (Arabic or English)
         if not client.api_key:
@@ -828,55 +863,32 @@ def generate_soap():
                 }
             print("Successfully parsed JSON from OpenAI response")
 
-            # === POST-PROCESSING: Remove unmentioned fields/sections ===
-            def is_unmentioned(val):
-                if not isinstance(val, str):
-                    return False
-                val_lower = val.strip().lower()
-                # English phrases
-                unmentioned_phrases = [
-                    'not mentioned', 'not discussed', 'not addressed',
-                    'no known', 'no current', 'pending clinical examination',
-                    'vital signs not available', 'no medications prescribed currently',
-                    'no known allergies', 'no current medications', 'not available currently',
-                    'not specified', 'not available', 'none', 'n/a', 'na'
-                ]
-                # Arabic phrases
-                unmentioned_phrases += [
-                    'لم يذكر', 'لم يتم التطرق', 'لا يتناول أدوية حالياً',
-                    'لا يوجد تاريخ مرضي مزمن', 'بانتظار الفحص السريري',
-                    'العلامات الحيوية غير متوفرة حالياً', 'لم يتم وصف أدوية حالياً',
-                    'لم يتم التطرق لهذه النقاط أثناء اللقاء', 'غير متوفرة حالياً',
-                    'غير محدد', 'غير متوفر', 'لا يوجد', 'غير متاح', 'غير معروف',
-                    'غير مذكور', 'غير محدد في المحادثة', 'لم يتم ذكره',
-                    'غير متوفر حالياً', 'غير محدد في المحادثة', 'غير متوفر في المحادثة'
-                ]
-                return any(phrase in val_lower for phrase in unmentioned_phrases)
-
-            def clean_section(section):
-                if not isinstance(section, dict):
-                    return section
-                cleaned = {k: v for k, v in section.items() if v and not is_unmentioned(v)}
-                return cleaned if cleaned else None
-
-            # Clean each main section
-            soap_note = soap_note.get('soap_note', soap_note)
-            for main_section in ["subjective", "objective", "assessment", "plan"]:
-                if main_section in soap_note:
-                    cleaned = clean_section(soap_note[main_section])
-                    if cleaned:
-                        soap_note[main_section] = cleaned
-                    else:
-                        # For objective section, always keep it even if empty
-                        if main_section == "objective":
-                            soap_note[main_section] = {}
-                        else:
-                            del soap_note[main_section]
-                else:
-                    # Always ensure objective section exists
-                    if main_section == "objective":
-                        soap_note[main_section] = {}
-            # === END POST-PROCESSING ===
+            # === NORMALIZE SECTIONS (do not drop any mentioned content) ===
+            # Ensure the canonical structure and arrays exist; keep all non-empty values
+            inner = soap_note.get('soap_note', soap_note)
+            try:
+                if language != 'ar':
+                    normalized = normalize_soap_sections({
+                        "subjective": inner.get("subjective", {}) or {},
+                        "objective": inner.get("objective", {}) or {},
+                        "assessment": inner.get("assessment", {}) or {},
+                        "plan": inner.get("plan", {}) or {},
+                    })
+                    inner["subjective"] = normalized.get("subjective", {})
+                    inner["objective"] = normalized.get("objective", {})
+                    inner["assessment"] = normalized.get("assessment", {})
+                    inner["plan"] = normalized.get("plan", {})
+            except Exception as _norm_err:
+                print(f"Normalization warning: {_norm_err}")
+            # Always ensure objective key exists
+            if "objective" not in inner or inner["objective"] is None:
+                inner["objective"] = {}
+            # Put back into wrapper
+            if 'soap_note' in soap_note:
+                soap_note['soap_note'] = inner
+            else:
+                soap_note = {'soap_note': inner}
+            # === END NORMALIZE ===
 
             # Wrap the response in the expected structure if needed
             if 'soap_note' not in soap_note:
