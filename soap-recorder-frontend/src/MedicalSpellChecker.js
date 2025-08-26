@@ -400,6 +400,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
       const newTerms = [];
       const newConfusionMatches = [];
+      let termProcessed = false;
 
       // Update medical terms
       for (let i = 0; i < medicalTerms.length; i++) {
@@ -414,6 +415,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
             needsCorrection: false,
             source: 'user_corrected'
           });
+          termProcessed = true;
           continue;
         }
         newTerms.push({ ...t });
@@ -423,18 +425,21 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
       for (let i = 0; i < confusionMatches.length; i++) {
         const c = confusionMatches[i];
         if (c.start === selectedTerm.start && c.end === selectedTerm.end && c.term === selectedTerm.term) {
-          // Mark as ignored/reviewed (green) - add to medical terms instead
-          newTerms.push({
-            term: term,
-            start: start,
-            end: end,
-            is_correct: true,
-            isCorrect: true,
-            needs_correction: false,
-            needsCorrection: false,
-            source: 'user_corrected',
-            category: 'corrected'
-          });
+          // Only add to medical terms if not already processed above
+          if (!termProcessed) {
+            newTerms.push({
+              term: term,
+              start: start,
+              end: end,
+              is_correct: true,
+              isCorrect: true,
+              needs_correction: false,
+              needsCorrection: false,
+              source: 'user_corrected',
+              category: 'corrected'
+            });
+          }
+          // Don't add to newConfusionMatches (remove it)
           continue;
         }
         newConfusionMatches.push({ ...c });
