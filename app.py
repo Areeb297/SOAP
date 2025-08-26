@@ -6,12 +6,12 @@ import openai
 import os
 import tempfile
 import json
+import re
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 import subprocess
 from medical_spell_check import MedicalSpellChecker
-from medical_spell_check.soap_section_extractor import extract_english_soap_sections, is_soap_complete, normalize_soap_sections
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -110,6 +110,7 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
    - Any other demographic information
    - If patient name is mentioned as "Patient: [Name]" or "The patient [Name]", extract only the name part
    - If no patient name is explicitly mentioned, you can infer it from context (e.g., the person speaking who is not the doctor)
+   - If no name is mentioned at all, use "Not mentioned" instead of "Unknown"
 
 2. PROVIDER IDENTIFICATION: Extract and include:
    - Doctor's name (Dr. [Name] or د. [Name])
@@ -150,7 +151,10 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
    - Smoking/alcohol use
    - Living situation
    - Lifestyle factors
+   - Recent activities (hiking, travel, outdoor activities, etc.)
+   - Stress factors (mentioned in relation to symptoms like cold sores)
    - Any other social information
+   - IMPORTANT: Include recent activities that may be relevant to current symptoms (e.g., "went hiking last weekend")
 
 8. MEDICATIONS: Include ALL mentioned:
    - Current medications (name, dosage, frequency, route)
@@ -191,10 +195,11 @@ CRITICAL INSTRUCTIONS - CAPTURE EVERYTHING MENTIONED:
     - Any other risk factors
 
 14. MEDICATIONS PRESCRIBED: Include ALL mentioned:
-    - New medications ordered
-    - Dosage, frequency, route
-    - Duration of treatment
+    - New medications ordered (ceftriaxone, pentoxifylline, gabapentin enacarbil, doxycycline, valacyclovir, etc.)
+    - Dosage, frequency, route (if specified, otherwise leave blank)
+    - Duration of treatment (if specified, otherwise leave blank)
     - Any medication changes
+    - IMPORTANT: If a medication is mentioned by the doctor as being prescribed, it MUST be included even if dosage details are not provided
 
 15. PROCEDURES/TESTS: Include ALL mentioned:
     - Laboratory tests
@@ -554,8 +559,8 @@ def generate_soap_note_metadata(transcript, language):
             provider_name = "د. غير محدد"
     
     # Extract patient name and age
-    patient_name = "Unknown" if language == "en" else "غير محدد"
-    patient_age = "Unknown" if language == "en" else "غير محدد"
+    patient_name = "Not mentioned" if language == "en" else "غير محدد"
+    patient_age = "Not mentioned" if language == "en" else "غير محدد"
     
     if language == "en":
         # Extract English patient name - improved patterns
@@ -583,11 +588,11 @@ def generate_soap_note_metadata(transcript, language):
                 extracted_name = match.group(1).strip()
                 # Remove common titles if they appear at the start
                 extracted_name = re.sub(r'^(Dr\.?|Mr\.?|Mrs\.?|Ms\.?)\s+', '', extracted_name)
-                # Validate it's a reasonable name (not common words or greetings)
-                invalid_names = ['the', 'and', 'with', 'this', 'that', 'here', 'there', 'dr', 'doctor', 
-                               'good', 'morning', 'afternoon', 'evening', 'hello', 'hi', 'hey', 'thank', 'you',
-                               'please', 'yes', 'no', 'okay', 'alright', 'sure', 'well', 'now', 'today']
-                if len(extracted_name) > 2 and extracted_name.lower() not in invalid_names:
+                # Simple validation - just check it's not obviously invalid
+                # Don't extract if it's clearly not a name
+                if (len(extracted_name) > 2 and 
+                    not extracted_name.lower() in ['not every day', 'every day', 'flare up', 'not great', 'not mentioned', 
+                                                  'the patient', 'patient', 'presents', 'complains', 'reports', 'symptoms']):
                     patient_name = extracted_name
                     print(f"Matched patient name '{patient_name}' with pattern: {pattern}")
                     break
@@ -744,7 +749,7 @@ def transcribe_audio():
 
 @app.route('/generate-soap', methods=['POST'])
 def generate_soap():
-    """Generate SOAP note from transcript using LangExtract-first, with OpenAI fallback"""
+    """Generate SOAP note from transcript using OpenAI"""
     try:
         data = request.json
         transcript = data.get('transcript', '')
@@ -753,50 +758,14 @@ def generate_soap():
         if not transcript:
             return jsonify({'error': 'No transcript provided'}), 400
 
-        print("Generating SOAP note...")
+        print("Generating SOAP note with OpenAI...")
         print(f"Transcript length: {len(transcript)} characters")
         print(f"Transcript content: {transcript}")
         print(f"Language: {language}")
 
-        # Try LangExtract (English) first for structured SOAP sections; fallback to OpenAI if incomplete/unavailable
-        if language != 'ar':
-            try:
-                sections = extract_english_soap_sections(transcript)
-                if is_soap_complete(sections):
-                    metadata = generate_soap_note_metadata(transcript, language)
-                    soap_note = {
-                        'soap_note': {
-                            'patient_id': metadata['patient_id'],
-                            'visit_date': metadata['visit_date'],
-                            'provider_name': metadata['provider_name'],
-                            'patient_name': metadata['patient_name'],
-                            'patient_age': metadata['patient_age'],
-                            'subjective': sections.get('subjective', {}),
-                            'objective': sections.get('objective', {}),
-                            'assessment': sections.get('assessment', {}),
-                            'plan': sections.get('plan', {}),
-                        }
-                    }
-                    with open('SOAP_note.json', 'w', encoding='utf-8') as f:
-                        json.dump(soap_note, f, indent=2, ensure_ascii=False)
-                    with open('SOAP.txt', 'a', encoding='utf-8') as f:
-                        f.write("\n\n" + "="*50 + "\n")
-                        f.write("SOAP NOTE\n")
-                        f.write("="*50 + "\n")
-                        f.write(json.dumps(soap_note, indent=2, ensure_ascii=False))
-                    print("SOAP note generated via LangExtract and saved successfully")
-                    return jsonify({
-                        'soapNote': soap_note,
-                        'message': 'SOAP note generated via LangExtract'
-                    })
-                else:
-                    print("LangExtract returned incomplete sections; falling back to OpenAI.")
-            except Exception as e:
-                print(f"LangExtract pipeline error, falling back to OpenAI: {e}")
-
-        # 3) Fallback to existing OpenAI pipeline (Arabic or English)
+        # Use OpenAI for SOAP generation (Arabic or English)
         if not client.api_key:
-            return jsonify({'error': 'OpenAI API key not configured and LangExtract unavailable'}), 500
+            return jsonify({'error': 'OpenAI API key not configured'}), 500
 
         try:
             if language == 'ar':
@@ -846,8 +815,13 @@ def generate_soap():
                 # Only update metadata fields if they were not properly extracted by AI
                 if soap_note['soap_note'].get('provider_name', '').lower() in ['unknown', 'غير محدد', 'not mentioned', 'dr. unknown']:
                     soap_note['soap_note']['provider_name'] = metadata['provider_name']
-                if soap_note['soap_note'].get('patient_name', '').lower() in ['unknown', 'غير محدد', 'dr', 'د', 'مرحبا', 'hello']:
+                
+                # Fix patient name - check for empty/blank names too
+                patient_name_from_ai = soap_note['soap_note'].get('patient_name', '').strip()
+                if (not patient_name_from_ai or 
+                    patient_name_from_ai.lower() in ['unknown', 'غير محدد', 'dr', 'د', 'مرحبا', 'hello', 'not mentioned']):
                     soap_note['soap_note']['patient_name'] = metadata['patient_name']
+                
                 if soap_note['soap_note'].get('patient_age', '').lower() in ['unknown', 'غير محدد']:
                     soap_note['soap_note']['patient_age'] = metadata['patient_age']
                 # Always update these
@@ -863,32 +837,22 @@ def generate_soap():
                 }
             print("Successfully parsed JSON from OpenAI response")
 
-            # === NORMALIZE SECTIONS (do not drop any mentioned content) ===
-            # Ensure the canonical structure and arrays exist; keep all non-empty values
+            # === SKIP NORMALIZATION FOR OPENAI CONTENT ===
+            # The normalize_soap_sections function is designed for LangExtract output
+            # and is causing content loss when applied to OpenAI's structured JSON
+            # OpenAI already provides properly structured content, so normalization is not needed
             inner = soap_note.get('soap_note', soap_note)
-            try:
-                if language != 'ar':
-                    normalized = normalize_soap_sections({
-                        "subjective": inner.get("subjective", {}) or {},
-                        "objective": inner.get("objective", {}) or {},
-                        "assessment": inner.get("assessment", {}) or {},
-                        "plan": inner.get("plan", {}) or {},
-                    })
-                    inner["subjective"] = normalized.get("subjective", {})
-                    inner["objective"] = normalized.get("objective", {})
-                    inner["assessment"] = normalized.get("assessment", {})
-                    inner["plan"] = normalized.get("plan", {})
-            except Exception as _norm_err:
-                print(f"Normalization warning: {_norm_err}")
-            # Always ensure objective key exists
+            
+            # Only ensure objective key exists (minimal safety check)
             if "objective" not in inner or inner["objective"] is None:
                 inner["objective"] = {}
+            
             # Put back into wrapper
             if 'soap_note' in soap_note:
                 soap_note['soap_note'] = inner
             else:
                 soap_note = {'soap_note': inner}
-            # === END NORMALIZE ===
+            # === END SKIP NORMALIZATION ===
 
             # Wrap the response in the expected structure if needed
             if 'soap_note' not in soap_note:
@@ -1195,6 +1159,287 @@ def validate_medical_term():
         
     except Exception as e:
         print(f"Error validating medical term: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/drug-confusion-scan', methods=['POST'])
+def drug_confusion_scan():
+    """
+    Scan input text for drug names from the 'top_50_worldwide_drugs_with_confusion' table
+    and return matches with 'Confused with' alternatives.
+
+    Request JSON:
+      { "text": "..." }
+
+    Response JSON:
+      {
+        "matches": [
+          {
+            "term": "Aspirin",
+            "start": 10,
+            "end": 17,
+            "alternatives": ["Acetaminophen", "Ibuprofen"]
+          },
+          ...
+        ],
+        "count": 2,
+        "source": "supabase_postgres"
+      }
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        text = data.get('text', '')
+        if not isinstance(text, str):
+            text = str(text or '')
+        if not text.strip():
+            return jsonify({"matches": [], "count": 0, "source": "supabase_postgres"})
+
+        # Get database URL from environment
+        database_url = os.getenv('DATABASE_URL')
+        if not database_url:
+            return jsonify({'error': 'Database not configured'}), 500
+
+        table_name = 'top_50_worldwide_drugs_with_confusion'
+
+        conn = psycopg2.connect(database_url)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        # Discover columns and fetch rows
+        col_sql = """
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = %s
+            ORDER BY ordinal_position
+        """
+        cursor.execute(col_sql, (table_name,))
+        cols_info = cursor.fetchall()
+        if not cols_info:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': f"Table '{table_name}' not found in public schema"}), 404
+
+        # Heuristic: detect drug name and confused_with columns
+        def is_text_type(dt):
+            return dt in ('character varying', 'text', 'character')
+
+        col_names = [c['column_name'] for c in cols_info]
+        text_cols = [c['column_name'] for c in cols_info if is_text_type(c['data_type'])]
+
+        # Candidate names (case-insensitive contains)
+        name_candidates = ['drug_name', 'drug', 'name', 'medicine', 'brand', 'generic']
+        confused_candidates = ['confused_with', 'confusedwith', 'confused', 'alternatives', 'alternative', 'alt', 'suggestions']
+
+        def pick_col(candidates, fallback=None):
+            # Prefer exact matches first
+            for n in text_cols:
+                if n.lower() in candidates:
+                    return n
+            # Then contains
+            for n in text_cols:
+                if any(cand in n.lower() for cand in candidates):
+                    return n
+            return fallback
+
+        drug_name_col = pick_col(name_candidates, text_cols[0] if text_cols else col_names[0])
+        confused_col = pick_col(confused_candidates, None)
+
+        # Build select only needed columns to reduce payload
+        if confused_col:
+            select_sql = f'SELECT "{drug_name_col}" AS drug_name, "{confused_col}" AS confused_with FROM "{table_name}"'
+        else:
+            select_sql = f'SELECT "{drug_name_col}" AS drug_name FROM "{table_name}"'
+
+        cursor.execute(select_sql)
+        rows = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        # Build mapping: drug_name -> [alternatives...]
+        mapping = {}
+        for r in rows:
+            dn = (r.get('drug_name') or '').strip()
+            if not dn:
+                continue
+            alts = []
+            cw = r.get('confused_with')
+            if isinstance(cw, str):
+                # Split by commas/semicolons/newlines
+                parts = [p.strip() for p in re.split(r'[;,\\n]+', cw) if p.strip()]
+                alts = parts
+            elif isinstance(cw, list):
+                alts = [str(x).strip() for x in cw if str(x).strip()]
+            # De-duplicate and remove self
+            alts = [a for a in dict.fromkeys(alts) if a.lower() != dn.lower()]
+            mapping[dn] = alts
+
+        if not mapping:
+            return jsonify({"matches": [], "count": 0, "source": "supabase_postgres"})
+
+        # Build regex for all drug names (case-insensitive), longest first to prefer longer matches
+        # Escape special regex chars in drug names
+        drug_names_sorted = sorted(mapping.keys(), key=lambda s: len(s), reverse=True)
+        # Many drug names are ASCII; use word boundaries where possible, but keep spaces/punct supported
+        # We'll use custom boundaries: (^|\\b|\\W)name(\\b|\\W|$) to reduce false positives
+        escaped = [re.escape(d) for d in drug_names_sorted]
+        pattern = r'(' + '|'.join(escaped) + r')'
+        try:
+            regex = re.compile(pattern, flags=re.IGNORECASE)
+        except Exception:
+            # Fallback: escape any that break the pattern by filtering too-short or pathological names
+            escaped = [re.escape(d) for d in drug_names_sorted if len(d) >= 2]
+            regex = re.compile(r'(' + '|'.join(escaped) + r')', flags=re.IGNORECASE)
+
+        matches = []
+        for m in regex.finditer(text):
+            matched_text = m.group(0)
+            start = m.start()
+            end = m.end()
+            # Find canonical key (case-insensitive)
+            key = next((k for k in mapping.keys() if k.lower() == matched_text.lower()), None)
+            if key is None:
+                # Try substring match in case of case/spacing differences
+                key = next((k for k in mapping.keys() if k.lower() == matched_text.strip().lower()), matched_text)
+            alternatives = mapping.get(key, [])
+            matches.append({
+                "term": matched_text,
+                "start": start,
+                "end": end,
+                "alternatives": alternatives
+            })
+
+        # Deduplicate overlapping identical matches
+        deduped = []
+        seen = set()
+        for item in matches:
+            sig = (item['start'], item['end'], item['term'].lower())
+            if sig in seen:
+                continue
+            seen.add(sig)
+            deduped.append(item)
+
+        return jsonify({
+            "matches": deduped,
+            "count": len(deduped),
+            "source": "supabase_postgres",
+            "table": table_name,
+            "drug_name_column": drug_name_col,
+            "confused_with_column": confused_col
+        })
+
+    except psycopg2.Error as db_error:
+        print(f"Database error in drug_confusion_scan: {str(db_error)}")
+        return jsonify({'error': 'Database query failed'}), 500
+    except Exception as e:
+        print(f"Error in drug_confusion_scan: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/top-50-worldwide-drugs-with-confusion', methods=['GET'])
+def fetch_top_50_worldwide_drugs_with_confusion():
+    """
+    Fetch rows from the Supabase Postgres table 'top_50_worldwide_drugs_with_confusion'.
+    - Optional query params:
+        q: search string to filter across all text columns (ILIKE)
+        limit: max rows to return (default 50, capped at 200)
+        offset: pagination offset (default 0)
+    """
+    try:
+        q = request.args.get('q', '').strip()
+        try:
+            limit = int(request.args.get('limit', 50))
+        except (TypeError, ValueError):
+            limit = 50
+        try:
+            offset = int(request.args.get('offset', 0))
+        except (TypeError, ValueError):
+            offset = 0
+
+        # Sanitize pagination
+        if limit < 1 or limit > 200:
+            limit = 50
+        if offset < 0:
+            offset = 0
+
+        # Get database URL from environment
+        database_url = os.getenv('DATABASE_URL')
+        if not database_url:
+            return jsonify({'error': 'Database not configured'}), 500
+
+        table_name = 'top_50_worldwide_drugs_with_confusion'
+
+        conn = psycopg2.connect(database_url)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        # Discover columns and data types for robust searching
+        col_sql = """
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = %s
+            ORDER BY ordinal_position
+        """
+        cursor.execute(col_sql, (table_name,))
+        cols_info = cursor.fetchall()
+        if not cols_info:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': f"Table '{table_name}' not found in public schema"}), 404
+
+        columns = [c['column_name'] for c in cols_info]
+        text_cols = [
+            c['column_name'] for c in cols_info
+            if c['data_type'] in ('character varying', 'text', 'character')
+        ]
+
+        # Build main select
+        base_sql = f'SELECT * FROM "{table_name}"'
+        params = []
+
+        if q and text_cols:
+            where_clause = " OR ".join([f'"{col}" ILIKE %s' for col in text_cols])
+            base_sql += f" WHERE ({where_clause})"
+            params.extend([f'%{q}%'] * len(text_cols))
+
+        base_sql += " LIMIT %s OFFSET %s"
+        params.extend([limit, offset])
+
+        cursor.execute(base_sql, params)
+        rows = cursor.fetchall()
+
+        response_payload = {
+            'table': table_name,
+            'query': q,
+            'limit': limit,
+            'offset': offset,
+            'count': len(rows),
+            'columns': columns,
+            'rows': rows,
+            'searched_columns': text_cols,
+            'source': 'supabase_postgres'
+        }
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(response_payload)
+
+    except psycopg2.Error as db_error:
+        try:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals():
+                conn.close()
+        except Exception:
+            pass
+        print(f"Database error in fetch_top_50_worldwide_drugs_with_confusion: {str(db_error)}")
+        return jsonify({'error': 'Database query failed'}), 500
+    except Exception as e:
+        try:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals():
+                conn.close()
+        except Exception:
+            pass
+        print(f"Error in fetch_top_50_worldwide_drugs_with_confusion: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

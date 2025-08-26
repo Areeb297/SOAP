@@ -4292,3 +4292,3721 @@ SOAP NOTE
     }
   }
 }
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "30a62267",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Coughing a lot and feeling short of breath, especially at night.",
+      "history_of_present_illness": "Patient reports increased coughing and shortness of breath, worse at night. Patient usually takes Advair, but mistakenly took Advicor twice last week. Experienced heart racing once.",
+      "past_medical_history": "Asthma/COPD, Sinusitis.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Advair",
+          "dosage": "",
+          "frequency": "usually",
+          "route": "inhaler",
+          "duration": "current"
+        },
+        {
+          "name": "Advicor",
+          "dosage": "",
+          "frequency": "twice",
+          "route": "",
+          "duration": "last week"
+        },
+        {
+          "name": "Amoxicillin",
+          "dosage": "",
+          "frequency": "",
+          "route": "",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Worsening respiratory symptoms due to medication confusion (Advair vs. Advicor) in a patient with asthma/COPD and sinusitis.",
+      "risk_factors": [
+        "Medication error/confusion"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "Clarification on Advair vs. Advicor (cholesterol medicine) and Amoxicillin vs. Ampicillin.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "5d0ee0b5",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Coughing a lot and feeling short of breath, especially at night.",
+      "history_of_present_illness": "Patient has been coughing a lot and feeling short of breath, especially at night. Patient mistakenly took Advicor (a cholesterol medicine) twice last week instead of Advair. Felt heart racing once.",
+      "past_medical_history": "Asthma/COPD, sinus infection.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Advair",
+          "dosage": "",
+          "frequency": "usually",
+          "route": "",
+          "duration": "current"
+        },
+        {
+          "name": "Advicor",
+          "dosage": "",
+          "frequency": "twice",
+          "route": "",
+          "duration": "last week"
+        },
+        {
+          "name": "Amoxicillin",
+          "dosage": "",
+          "frequency": "",
+          "route": "",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Medication error (Advair vs Advicor), suspected asthma/COPD exacerbation, sinus infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "Clarification that Advair is for asthma and COPD, while Advicor is a cholesterol medicine. Amoxicillin and Ampicillin are related but not the same.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b53a39e3",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Chest pain.",
+      "history_of_present_illness": "",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Chest pain, Diabetes, Hypertension.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Metformin",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Atenolol",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "6e186f94",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Coughing and shortness of breath, especially at night.",
+      "history_of_present_illness": "Patient reports coughing and shortness of breath, worse at night. Patient usually takes Advair for asthma/COPD but was mistakenly given Advicor (a cholesterol medicine) by the pharmacy and took it twice last week. Felt heart racing once after taking Advicor. Currently taking Amoxicillin for a sinus infection.",
+      "past_medical_history": "Asthma/COPD, sinus infection.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Advair",
+          "dosage": "",
+          "frequency": "",
+          "route": "inhaler",
+          "duration": "missed due to error"
+        },
+        {
+          "name": "Advicor",
+          "dosage": "",
+          "frequency": "twice",
+          "route": "oral",
+          "duration": "taken by mistake last week"
+        },
+        {
+          "name": "Amoxicillin",
+          "dosage": "",
+          "frequency": "",
+          "route": "oral",
+          "duration": "current for sinus infection"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Possible asthma/COPD exacerbation due to medication error (Advair vs. Advicor confusion).",
+      "risk_factors": [
+        "Medication confusion/error"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "Clarification on medication Advair (asthma/COPD inhaler) vs. Advicor (cholesterol medicine) and Amoxicillin vs. Ampicillin.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "a55c8bb5",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat. Patient also reports walking has been painful lately due to poor circulation in legs and has nerve pain.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "regularly"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Possible severe infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Cefazoli",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b245500d",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "worsen",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Tingling in feet; rash on back.",
+      "history_of_present_illness": "",
+      "past_medical_history": "Hypertension, acne.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "hydrochlorothiazide",
+          "dosage": "",
+          "frequency": "",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "doxycycline",
+          "dosage": "",
+          "frequency": "",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Bacterial skin infection, possibly cellulitis."
+    },
+    "assessment": {
+      "diagnosis": "Possible neuropathy; bacterial skin infection (cellulitis).",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "levofloxacin",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": "If the infection doesn’t respond to the antibiotics or your fever worsens, potential admission."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "be53257c",
+    "visit_date": "2025-08-25",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "going to ask you some personal questions",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Chest pain.",
+      "history_of_present_illness": "Patient woke up half an hour ago with chest pain, described as feeling like an elephant in his chest, localized near the heart. Also reports pain in the left hand. This is the first time he has experienced these symptoms.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Patient points to chest as location of pain."
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "72d629f9",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat. No cough.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Infectious process (likely severe)",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "e174a655",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Ziad",
+    "patient_age": "23",
+    "subjective": {
+      "chief_complaint": "Pain in the chest near the heart.",
+      "history_of_present_illness": "The patient, Ziad, a 23-year-old male, presented with chest pain that started half an hour ago while he was sleeping. The pain is described as a feeling of an elephant sitting on his chest and is rated 7 out of 10 in severity. The pain is located in the chest, near the heart, and is associated with nausea, slight sweating, and pain in the left hand. The pain worsens with talking and slightly with breathing. He took Panadol to relieve the pain slightly.",
+      "past_medical_history": "No history of heart disease, diabetes, hypertension, or cardiac disorder. No history of surgeries.",
+      "family_history": "Father had a heart attack at 60 years old and is deceased. Mother has diabetes.",
+      "social_history": "Not married, no children, not sexually active. Smokes 2 to 3 cigarettes a day. Exercises 2 to 3 times a week. Consumes around 2,000 calories per day. Recently traveled to Japan for two weeks.",
+      "medications": [
+        {
+          "name": "Wolfrin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Ibuprofen",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Panadol",
+          "dosage": "Not specified",
+          "frequency": "Once",
+          "route": "oral",
+          "duration": "Single dose"
+        }
+      ],
+      "allergies": [
+        "Insulin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Physical examination findings not detailed in the conversation."
+    },
+    "assessment": {
+      "diagnosis": "Chest pain, possible cardiac origin.",
+      "risk_factors": [
+        "Family history of heart disease",
+        "Smoking"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Painkillers",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "duration": "Not specified",
+          "route": "Not specified"
+        }
+      ],
+      "procedures_or_tests": [
+        "ECG",
+        "Echocardiogram"
+      ],
+      "patient_education": "Discussed the importance of monitoring symptoms and seeking immediate medical attention if symptoms worsen.",
+      "follow_up_instructions": "Consult with senior doctor for further evaluation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "13d4c5d8",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat. Walking has been painful lately due to poor circulation.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "97ec0946",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking clearly.",
+      "history_of_present_illness": "Patricia Johnson, a 67-year-old woman from Boston, reports waking up at 7 AM with weakness and numbness in her left arm and leg. She is experiencing a severe headache, described as a thunderclap, mostly on the right side of her head, and has trouble speaking clearly. She also reports blurry vision in her left eye, dizziness, unsteadiness, nausea without vomiting, and confusion with difficulty finding words. She has never experienced similar symptoms before.",
+      "past_medical_history": "High blood pressure, atrial fibrillation. Hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "unknown"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "unknown"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Left-sided weakness, slurred speech, left facial droop observed during neurological exam."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke",
+        "Age"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Immediate",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Importance of calling 911 immediately if symptoms worsen. Stroke rehabilitation arrangements.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "d6a37387",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for the past three days and a rash that’s spreading.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "regularly"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Likely severe infection; poor circulation; nerve pain.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "425eb3db",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Laura Mitchell",
+    "patient_name": "James Carter",
+    "patient_age": "61",
+    "subjective": {
+      "chief_complaint": "Painful rash on lower right leg and feeling feverish since yesterday.",
+      "history_of_present_illness": "The patient noticed a rash on his lower right leg two days ago. It started small but has become red, swollen, and hot. He also reports burning and tingling in his feet, especially at night, and feels generally tired and unwell. He had a fever of 100.8°F last night and chills in the early morning.",
+      "past_medical_history": "High blood pressure, type 2 diabetes. Previous similar skin infection on arm last year, cleared with antibiotics. Gallbladder removal 5 years ago.",
+      "family_history": "Not mentioned",
+      "social_history": "Retired electrician. Quit smoking 15 years ago, drinks occasionally on weekends.",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "25mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Atorvastatin",
+          "dosage": "20mg",
+          "frequency": "at night",
+          "route": "oral",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "100.9°F",
+        "blood_pressure": "145/85",
+        "heart_rate": "88",
+        "respiratory_rate": "17",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Inflamed area with surrounding erythema and mild drainage on lower right leg. Decreased sensation in both feet."
+    },
+    "assessment": {
+      "diagnosis": "Suspected bacterial skin infection with possible shingles or viral reactivation.",
+      "risk_factors": [
+        "High blood pressure",
+        "Type 2 diabetes",
+        "History of similar skin infection",
+        "Age 61"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "500mg",
+          "frequency": "once daily",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin",
+          "dosage": "300mg",
+          "frequency": "at night",
+          "duration": "Increase as tolerated",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "5-day course",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CBC",
+        "Blood glucose",
+        "Wound culture"
+      ],
+      "patient_education": "Discussed symptoms and treatment options. Explained the use of antibiotics, antivirals, and medications for nerve pain.",
+      "follow_up_instructions": "Follow up in 48 hours. Return immediately if redness spreads or fever increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "8d88e929",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat. Patient also reports painful walking due to poor circulation.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Severe infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "c14bf568",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Laura Mitchell",
+    "patient_name": "James Carter",
+    "patient_age": "61",
+    "subjective": {
+      "chief_complaint": "Painful rash on lower right leg and feeling feverish since yesterday.",
+      "history_of_present_illness": "The patient noticed a rash on his lower right leg two days ago. It started small but has become red, swollen, and hot. He reports feeling feverish since yesterday, with a fever of 100.8°F last night and chills in the early morning. He also experiences burning and tingling in his feet, especially at night, and feels generally tired and unwell.",
+      "past_medical_history": "High blood pressure, type 2 diabetes, gallbladder removal about 5 years ago.",
+      "family_history": "Not mentioned",
+      "social_history": "Retired electrician, quit smoking 15 years ago, drinks occasionally on weekends.",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "25mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "long-term"
+        },
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "long-term"
+        },
+        {
+          "name": "Atorvastatin",
+          "dosage": "20mg",
+          "frequency": "at night",
+          "route": "oral",
+          "duration": "long-term"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "100.9°F",
+        "blood_pressure": "145/85",
+        "heart_rate": "88",
+        "respiratory_rate": "17",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Inflamed area on lower right leg with surrounding erythema and mild drainage. Decreased sensation in both feet."
+    },
+    "assessment": {
+      "diagnosis": "Suspected bacterial skin infection, possible shingles or viral reactivation.",
+      "risk_factors": [
+        "High blood pressure",
+        "Type 2 diabetes",
+        "History of similar skin infection",
+        "Decreased sensation in feet"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "500mg",
+          "frequency": "once daily",
+          "duration": "as directed",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin",
+          "dosage": "300mg",
+          "frequency": "at night",
+          "duration": "as tolerated",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "as directed",
+          "frequency": "as directed",
+          "duration": "as directed",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "as directed",
+          "frequency": "as directed",
+          "duration": "5 days",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CBC",
+        "Blood glucose",
+        "Wound culture"
+      ],
+      "patient_education": "Discussed the possibility of bacterial infection and shingles. Explained medication regimen and potential side effects. Advised on signs of worsening infection.",
+      "follow_up_instructions": "Follow up in 48 hours. Return immediately if redness spreads or fever increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "dbb8e14d",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for the past three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, a bit of a sore throat. Walking painful due to poor circulation, and nerve pain.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "1e5f43e7",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat. No cough.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "49e064ac",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever and spreading rash.",
+      "history_of_present_illness": "Fever for the past three days, a spreading rash, and a bit of a sore throat. Patient also reports painful walking lately.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "50cbfa2d",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, and a bit of a sore throat.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b9984607",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not great",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for the past three days and a spreading rash.",
+      "history_of_present_illness": "Fever for three days, spreading rash, a bit of a sore throat. Patient reports walking has been painful lately due to poor circulation in legs.",
+      "past_medical_history": "Thyroid condition, poor circulation in legs, nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "",
+          "frequency": "every morning",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Infection; underlying poor circulation and nerve pain.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f3263e86",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Richard Evans",
+    "patient_age": "58",
+    "subjective": {
+      "chief_complaint": "Painful red rash on right leg",
+      "history_of_present_illness": "Richard Evans, a 58-year-old male from Houston, presents with a painful red rash on his right leg, which started two days ago. Initially, it was a small red patch, but it has since spread and feels warm to the touch. He reports having a fever of 101.5°F last night. He scratched his leg while gardening last week. He also reports feeling tired and experiencing tingling in his feet, especially at night, which has been occurring more frequently.",
+      "past_medical_history": "Hypertension, history of shingles",
+      "family_history": "Not mentioned",
+      "social_history": "Lives in Houston, gardening as a hobby",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Doxycycline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "101.5°F",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Red rash on right leg, warm to touch, tender"
+    },
+    "assessment": {
+      "diagnosis": "Bacterial skin infection, possibly cellulitis",
+      "risk_factors": [
+        "Recent leg scratch while gardening",
+        "History of shingles",
+        "Allergy to sulfa drugs"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Short course",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Discussed the use of gabapentin for nerve pain. Advised on the importance of monitoring symptoms and seeking medical attention if they worsen.",
+      "follow_up_instructions": "Follow up in 3 days to assess response to treatment. Return immediately if symptoms worsen or fever increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "ce8e1428",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "flare up",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, and insomnia.",
+      "history_of_present_illness": "Blood sugar levels have been high, especially in the mornings. Patient has been forgetting the second dose of current diabetes medication. Reports mood changes and insomnia. Uses fluticasone for allergies, but not consistently.",
+      "past_medical_history": "Diabetes, allergies, yeast infection.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "as needed",
+          "route": "nasal",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection noted."
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes; mood changes; insomnia; yeast infection; allergic rhinitis.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "duration": "",
+          "route": "nasal"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Consistent use of fluticasone for preventative allergy relief.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f6ff12f4",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not every day",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, and insomnia.",
+      "history_of_present_illness": "Patient reports high blood sugar, especially in the mornings, and has been forgetting the second dose of current diabetes medication. Patient uses fluticasone for allergies only when symptoms flare up, not daily. Patient also experiences mood changes and insomnia, and has a yeast infection.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "as needed",
+          "route": "nasal spray",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection noted."
+    },
+    "assessment": {
+      "diagnosis": "Uncontrolled diabetes; Allergies; Mood changes/Insomnia; Yeast infection.",
+      "risk_factors": [
+        "Medication non-compliance"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "duration": "",
+          "route": "nasal spray"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "single-dose",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently for preventative effect.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "8bb77617",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Ear infection and waking up with nerve pain at night.",
+      "history_of_present_illness": "Waking up with nerve pain at night.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Ear infection, Nerve pain.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "cefixime",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Gabapentin enacarbil may provide more even pain control throughout the day.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "3d9719a4",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, especially in the mornings, mood changes, and insomnia.",
+      "history_of_present_illness": "Patient reports blood sugar levels have been high, particularly in the mornings, and has been forgetting the second dose of current diabetes medication. Also reports mood changes and insomnia.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "fluticasone",
+          "dosage": "",
+          "frequency": "as needed",
+          "route": "nasal spray",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection observed."
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled Type 2 Diabetes; Allergies; Mood disorder/Insomnia; Yeast infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "duration": "",
+          "route": "nasal spray"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "",
+          "route": "oral tablet"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently, as it works better preventatively.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "bf711ce9",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "history_of_present_illness": "The patient reports that their blood sugar levels have been high, especially in the mornings. They have been forgetting the second dose of their current diabetes medication. The patient also mentioned mood changes and insomnia. They have a yeast infection and an ear infection. Additionally, they experience nerve pain, particularly at night.",
+      "past_medical_history": "Diabetes, allergies, nerve pain.",
+      "family_history": "Not mentioned",
+      "social_history": "Not mentioned",
+      "medications": [
+        {
+          "name": "Current diabetes medication",
+          "dosage": "Not specified",
+          "frequency": "Twice daily",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "nasal spray",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Not mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not mentioned"
+    },
+    "assessment": {
+      "diagnosis": "Diabetes with high blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "risk_factors": [
+        "Diabetes",
+        "Allergies"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "Not specified",
+          "frequency": "Once daily",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "Single dose",
+          "frequency": "Once",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Cefixime",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Advised to use fluticasone nasal spray consistently for better preventative effect. Explained the use of linagliptin, amoxapine, fluconazole, cefixime, and gabapentin enacarbil.",
+      "follow_up_instructions": "Follow up as needed for medication adjustments and symptom management."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "23678e6d",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "worsen",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Painful red rash on right leg, spreading and warm to the touch.",
+      "history_of_present_illness": "Rash started two days ago as a small red patch, now larger and tender. Patient had a fever of 101.5°F last night, feels tired, and has noticed increased tingling in feet, especially at night. Scratched leg last week while gardening.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "101.5°F",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Painful red rash on right leg, spreading and warm to the touch."
+    },
+    "assessment": {
+      "diagnosis": "",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "d7ae2d93",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "worsen",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Tingling and a rash.",
+      "history_of_present_illness": "Tingling (possibly neuropathy); rash, which looks like a bacterial skin infection, possibly cellulitis.",
+      "past_medical_history": "Hypertension.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "hydrochlorothiazide",
+          "dosage": "",
+          "frequency": "",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "doxycycline",
+          "dosage": "",
+          "frequency": "",
+          "route": "oral",
+          "duration": "recently prescribed"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Bacterial skin infection (possibly cellulitis)."
+    },
+    "assessment": {
+      "diagnosis": "Neuropathy (possible cause of tingling), Bacterial skin infection (possibly cellulitis).",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "gabapentin",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "levofloxacin",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": "Admission if infection doesn't respond to antibiotics or fever worsens."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "dbd5d903",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Laura Mitchell",
+    "patient_name": "James Carter",
+    "patient_age": "61",
+    "subjective": {
+      "chief_complaint": "Painful rash on lower right leg and feeling feverish since yesterday.",
+      "history_of_present_illness": "The patient noticed a rash on his lower right leg two days ago. It started small but has become red, swollen, and hot. He reports burning and tingling in his feet, especially at night, and feels generally tired and unwell. He had a fever of 100.8°F last night and chills in the early morning.",
+      "past_medical_history": "High blood pressure, type 2 diabetes, gallbladder removal 5 years ago.",
+      "family_history": "Not mentioned",
+      "social_history": "Retired electrician, quit smoking 15 years ago, drinks occasionally on weekends, lives in Phoenix.",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "25mg",
+          "frequency": "once daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Metformin",
+          "dosage": "1000mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "current"
+        },
+        {
+          "name": "Atorvastatin",
+          "dosage": "20mg",
+          "frequency": "at night",
+          "route": "oral",
+          "duration": "current"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "100.9°F",
+        "blood_pressure": "145/85",
+        "heart_rate": "88",
+        "respiratory_rate": "17",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Inflamed area with surrounding erythema and mild drainage on the lower right leg. Decreased sensation in both feet."
+    },
+    "assessment": {
+      "diagnosis": "Suspected bacterial skin infection with possible shingles or viral reactivation.",
+      "risk_factors": [
+        "High blood pressure",
+        "Type 2 diabetes",
+        "Previous skin infection",
+        "Age"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "500mg",
+          "frequency": "once daily",
+          "duration": "as prescribed",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin",
+          "dosage": "300mg",
+          "frequency": "at night",
+          "duration": "as tolerated",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "as prescribed",
+          "frequency": "as prescribed",
+          "duration": "as prescribed",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "as prescribed",
+          "frequency": "as prescribed",
+          "duration": "5 days",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CBC",
+        "Blood glucose",
+        "Wound culture"
+      ],
+      "patient_education": "Discussed the importance of monitoring for spreading redness or increased fever. Explained medication regimen and potential side effects.",
+      "follow_up_instructions": "Follow up in 48 hours. Return immediately if redness spreads or fever increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b236ec48",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, and insomnia.",
+      "history_of_present_illness": "Patient reports high blood sugar levels, especially in the mornings, and forgets the second dose of current diabetes medication. Also experiencing mood changes and insomnia. Uses fluticasone for allergies only when symptoms flare up.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "as needed",
+          "route": "nasal spray",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection observed."
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes; allergies; mood changes; insomnia; yeast infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "ongoing",
+          "route": "oral"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "duration": "ongoing",
+          "route": "nasal spray"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "ongoing",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "single dose",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently for better preventative effect.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "aa0e390b",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Waking up with pain at night.",
+      "history_of_present_illness": "Ear infection; waking up with nerve pain at night.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Ear infection; Nerve pain.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "cefixime",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "ac4d5b60",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg since this morning.",
+      "history_of_present_illness": "Patricia Johnson, a 67-year-old female from Boston, reports waking up at 7 AM with weakness and numbness in her left arm and leg. She also experiences a severe thunderclap headache on the right side of her head, blurry vision in her left eye, dizziness, unsteadiness, nausea, trouble speaking clearly, and confusion. She denies any previous similar symptoms.",
+      "past_medical_history": "High blood pressure, atrial fibrillation. Hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "not specified"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "not specified"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "not specified"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "not mentioned"
+      },
+      "physical_exam": "Neurological exam shows left-sided weakness, slurred speech, and left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "not specified",
+          "frequency": "not specified",
+          "duration": "not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Educated on the importance of calling 911 immediately if symptoms worsen. Discussed stroke rehabilitation and the need for monitoring.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "34f29c1c",
+    "visit_date": "2025-08-26",
+    "provider_name": "Unknown",
+    "patient_name": "Unknown",
+    "patient_age": "Not mentioned",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, and insomnia.",
+      "history_of_present_illness": "Patient reports high blood sugar, especially in the mornings, and forgetting the second dose of current diabetes medication. Patient also reports mood changes and insomnia. Uses fluticasone for allergies, but not consistently.",
+      "past_medical_history": "Diabetes, allergies, yeast infection.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "route": "nasal",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection observed."
+    },
+    "assessment": {
+      "diagnosis": "Elevated blood sugar, mood changes, insomnia, yeast infection, allergies.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "single-dose",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently for preventative effect.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "adc957c1",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking.",
+      "history_of_present_illness": "Patricia Johnson, a 67-year-old from Boston, noticed weakness and numbness in her left arm and leg upon waking at 7 AM. She has a severe thunderclap headache on the right side of her head, blurry vision in her left eye, dizziness, unsteadiness, nausea without vomiting, trouble speaking, and confusion. These symptoms are new and have never occurred before.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Left-sided weakness, slurred speech, left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Importance of calling 911 immediately if symptoms worsen.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "96a70320",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking clearly.",
+      "history_of_present_illness": "Patricia Johnson, a 67-year-old woman from Boston, woke up this morning around 7 AM with weakness and numbness in her left arm and leg. She also has a severe headache described as a thunderclap, mostly on the right side of her head, which started about an hour ago. She is experiencing trouble speaking clearly, blurry vision in her left eye, dizziness, unsteadiness, nausea without vomiting, and confusion with word-finding difficulties. She has never experienced similar symptoms before.",
+      "past_medical_history": "High blood pressure, atrial fibrillation, hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week, quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Left-sided weakness, slurred speech, left facial droop."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Importance of calling 911 immediately if symptoms worsen.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "85281e5d",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Michael",
+    "patient_name": "Patricia Johnson",
+    "patient_age": "67",
+    "subjective": {
+      "chief_complaint": "Weakness and numbness in left arm and leg, severe headache, trouble speaking clearly.",
+      "history_of_present_illness": "Patricia Johnson, a 67-year-old female from Boston, noticed weakness and numbness in her left arm and leg around 7 AM when trying to get out of bed. She also has a severe headache described as a thunderclap on the right side of her head, blurry vision in her left eye, dizziness, unsteadiness, nausea without vomiting, and difficulty speaking clearly. She feels confused and has trouble finding the right words. These symptoms are new and have not occurred before.",
+      "past_medical_history": "High blood pressure, atrial fibrillation. Hip replacement 3 years ago.",
+      "family_history": "Father had a stroke at age 70.",
+      "social_history": "Retired, volunteers at the library twice a week. Quit smoking 10 years ago, drinks 1 glass of wine with dinner.",
+      "medications": [
+        {
+          "name": "Warfarin",
+          "dosage": "5mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Metoprolol",
+          "dosage": "25mg",
+          "frequency": "twice daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Penicillin"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "98.8°F",
+        "blood_pressure": "180/110",
+        "heart_rate": "95",
+        "respiratory_rate": "18",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Left-sided weakness, slurred speech, left facial droop observed during neurological exam."
+    },
+    "assessment": {
+      "diagnosis": "Acute ischemic stroke affecting the right side of the brain.",
+      "risk_factors": [
+        "High blood pressure",
+        "Atrial fibrillation",
+        "Family history of stroke"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Aspirin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [
+        "CT scan of the head",
+        "MRI",
+        "Blood work including coagulation studies"
+      ],
+      "patient_education": "Importance of calling 911 immediately if symptoms worsen. Explanation of stroke rehabilitation process.",
+      "follow_up_instructions": "Immediate thrombolytic therapy if CT scan confirms it's safe. Hospital stay for monitoring and rehabilitation. Adjust blood thinners. Arrange for stroke rehabilitation."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "60b76734",
+    "visit_date": "2025-08-26",
+    "provider_name": "Unknown",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "",
+      "history_of_present_illness": "Waking up with nerve pain at night; ear infection.",
+      "past_medical_history": "Nerve pain.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": ""
+    },
+    "assessment": {
+      "diagnosis": "Ear infection; Nerve pain.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "cefixime",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        },
+        {
+          "name": "gabapentin enacarbil",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": ""
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b964b668",
+    "visit_date": "2025-08-26",
+    "provider_name": "Unknown",
+    "patient_name": "Unknown",
+    "patient_age": "Not mentioned",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, especially in the mornings.",
+      "history_of_present_illness": "Patient reports high blood sugar levels, particularly in the mornings, and has been forgetting the second dose of current diabetes medication. Also reports mood changes and insomnia. Uses fluticasone nasal spray for allergies only when symptoms flare up.",
+      "past_medical_history": "Diabetes, allergies, yeast infection.",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "when symptoms flare up",
+          "route": "nasal spray",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection noted."
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes, mood changes, insomnia, yeast infection, allergies.",
+      "risk_factors": [
+        "Non-adherence to diabetes medication"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently and preventatively for allergies.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "f801f8b2",
+    "visit_date": "2025-08-26",
+    "provider_name": "Unknown",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Blood sugar levels have been high, especially in the mornings.",
+      "history_of_present_illness": "High blood sugar, forgetting second dose of current diabetes medication, mood changes, and insomnia.",
+      "past_medical_history": "",
+      "family_history": "",
+      "social_history": "",
+      "medications": [
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily (patient uses PRN)",
+          "route": "nasal spray",
+          "duration": "current"
+        }
+      ],
+      "allergies": []
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "",
+        "blood_pressure": "",
+        "heart_rate": "",
+        "respiratory_rate": "",
+        "oxygen_saturation": ""
+      },
+      "physical_exam": "Yeast infection."
+    },
+    "assessment": {
+      "diagnosis": "Poorly controlled diabetes, allergies, mood changes, insomnia, yeast infection.",
+      "risk_factors": []
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "",
+          "frequency": "once-daily",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "",
+          "frequency": "daily",
+          "duration": "ongoing",
+          "route": "nasal spray"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "",
+          "frequency": "",
+          "duration": "",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "",
+          "frequency": "single-dose",
+          "duration": "single dose",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Use fluticasone consistently for preventative effect.",
+      "follow_up_instructions": ""
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "50843e01",
+    "visit_date": "2025-08-26",
+    "provider_name": "د. نورة",
+    "patient_name": "فاطمة أحمد",
+    "patient_age": "72",
+    "subjective": {
+      "chief_complaint": "سعال شديد وحمى وصعوبة في التنفس",
+      "history_of_present_illness": "بدأ السعال منذ أسبوع، الحمى وصعوبة التنفس منذ 5 أيام، السعال عميق مع بلغم أصفر كثيف، ألم في الصدر عند السعال، درجة الحرارة حوالي 103-104°F، تعب شديد، فقدان الشهية، تعرق ليلي.",
+      "past_medical_history": "التهاب رئوي قبل سنتين، داء السكري من النوع الثاني، ارتفاع ضغط الدم، أمراض القلب، عملية قلب مفتوح قبل 8 سنوات.",
+      "family_history": "الأم لديها مرض الانسداد الرئوي المزمن.",
+      "social_history": "متقاعدة، تعمل في الحديقة يومياً، لم تدخن أبداً.",
+      "medications": [
+        {
+          "name": "ميتفورمين",
+          "dosage": "500 ملغ",
+          "frequency": "مرتين يومياً",
+          "route": "عن طريق الفم",
+          "duration": "غير محدد"
+        },
+        {
+          "name": "أملوديبين",
+          "dosage": "5 ملغ",
+          "frequency": "مرة يومياً",
+          "route": "عن طريق الفم",
+          "duration": "غير محدد"
+        },
+        {
+          "name": "أسبرين",
+          "dosage": "81 ملغ",
+          "frequency": "مرة يومياً",
+          "route": "عن طريق الفم",
+          "duration": "غير محدد"
+        }
+      ],
+      "allergies": [
+        "البنسلين",
+        "السلفا"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "103.2°F",
+        "blood_pressure": "160/95",
+        "heart_rate": "105",
+        "respiratory_rate": "32",
+        "oxygen_saturation": "88%"
+      },
+      "physical_exam": "أصوات فرقعة في كلا الرئتين وانخفاض في أصوات التنفس."
+    },
+    "assessment": {
+      "diagnosis": "التهاب رئوي حاد، ربما بكتيري.",
+      "risk_factors": [
+        "داء السكري",
+        "ارتفاع ضغط الدم",
+        "أمراض القلب",
+        "تاريخ عائلي لمرض الانسداد الرئوي المزمن"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "مضادات حيوية",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "وريدياً"
+        }
+      ],
+      "procedures_or_tests": [
+        "أشعة سينية للصدر",
+        "فحص دم شامل",
+        "زراعة البلغم",
+        "فحص مقطعي"
+      ],
+      "patient_education": "الراحة مهمة، شرب الكثير من السوائل، علاج فيزيائي للتنفس.",
+      "follow_up_instructions": "البقاء في المستشفى لمدة 5-7 أيام، مراقبة الاستجابة للعلاج."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "737cdea0",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "history_of_present_illness": "The patient reports that their blood sugar levels have been high, especially in the mornings. They have been forgetting the second dose of their current diabetes medication. The patient also experiences mood changes and insomnia. They have a history of yeast infections and currently have an ear infection. The patient reports waking up with nerve pain at night.",
+      "past_medical_history": "Diabetes, allergies, nerve pain, yeast infections, ear infection.",
+      "family_history": "Not mentioned",
+      "social_history": "Not mentioned",
+      "medications": [
+        {
+          "name": "Current diabetes medication",
+          "dosage": "Not mentioned",
+          "frequency": "Twice daily",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "Not mentioned",
+          "frequency": "As needed",
+          "route": "nasal spray",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Not mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not mentioned"
+    },
+    "assessment": {
+      "diagnosis": "High blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "risk_factors": [
+        "Diabetes",
+        "Allergies"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "Not mentioned",
+          "frequency": "Once daily",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "Single dose",
+          "frequency": "Once",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Cefixime",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Advised to use fluticasone nasal spray consistently for better preventive effect. Informed about the use of amoxapine for mood changes and insomnia. Discussed the benefits of gabapentin enacarbil for nerve pain.",
+      "follow_up_instructions": "Prescriptions sent to pharmacy. Follow up if symptoms persist or worsen."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "55f26db3",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Richard Evans",
+    "patient_age": "58",
+    "subjective": {
+      "chief_complaint": "Painful red rash on right leg",
+      "history_of_present_illness": "Richard Evans, a 58-year-old male from Houston, presents with a painful red rash on his right leg that started two days ago. Initially a small red patch, it has now spread and feels warm to the touch. He experienced a fever last night with a temperature of 101.5°F. He scratched his leg last week while gardening. He also reports feeling tired and has noticed tingling in his feet, especially at night, which has been occurring more frequently.",
+      "past_medical_history": "Hypertension, shingles a few years ago, occasional cold sores",
+      "family_history": "Not mentioned",
+      "social_history": "Lives in Houston, recent gardening activity",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Doxycycline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "101.5°F",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Red rash on right leg, warm to touch, tender, spreading"
+    },
+    "assessment": {
+      "diagnosis": "Bacterial skin infection, possibly cellulitis",
+      "risk_factors": [
+        "Recent leg scratch while gardening",
+        "History of shingles",
+        "Occasional cold sores"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Short course",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Discussed the possibility of bacterial skin infection and the need for antibiotics. Explained the use of valacyclovir as a precaution for viral infection. Informed about prednisone for reducing inflammation. Advised to monitor symptoms and return if they worsen.",
+      "follow_up_instructions": "Follow up in 3 days to assess response to treatment. Return immediately if symptoms worsen or fever increases."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "5073849d",
+    "visit_date": "2025-08-26",
+    "provider_name": "د. نورة",
+    "patient_name": "فاطمة أحمد",
+    "patient_age": "72",
+    "subjective": {
+      "chief_complaint": "سعال شديد وحمى وصعوبة في التنفس",
+      "history_of_present_illness": "بدأ السعال منذ أسبوع، والحمى وصعوبة التنفس منذ 5 أيام. السعال عميق مع بلغم أصفر كثيف وألم في الصدر عند السعال. درجة الحرارة حوالي 103-104°F منذ 4 أيام. تعب شديد، فقدان الشهية، تعرق ليلي.",
+      "past_medical_history": "التهاب رئوي قبل سنتين، داء السكري من النوع الثاني، ارتفاع ضغط الدم، أمراض القلب، عملية قلب مفتوح قبل 8 سنوات.",
+      "family_history": "الأم لديها مرض الانسداد الرئوي المزمن.",
+      "social_history": "متقاعدة، تعمل في الحديقة يومياً، لم تدخن أبداً.",
+      "medications": [
+        {
+          "name": "ميتفورمين",
+          "dosage": "500 ملغ",
+          "frequency": "مرتين يومياً",
+          "route": "فموي",
+          "duration": "غير محدد"
+        },
+        {
+          "name": "أملوديبين",
+          "dosage": "5 ملغ",
+          "frequency": "مرة يومياً",
+          "route": "فموي",
+          "duration": "غير محدد"
+        },
+        {
+          "name": "أسبرين",
+          "dosage": "81 ملغ",
+          "frequency": "مرة يومياً",
+          "route": "فموي",
+          "duration": "غير محدد"
+        }
+      ],
+      "allergies": [
+        "البنسلين",
+        "السلفا"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "103.2°F",
+        "blood_pressure": "160/95",
+        "heart_rate": "105",
+        "respiratory_rate": "32",
+        "oxygen_saturation": "88%"
+      },
+      "physical_exam": "أصوات فرقعة في كلا الرئتين وانخفاض في أصوات التنفس."
+    },
+    "assessment": {
+      "diagnosis": "التهاب رئوي حاد، ربما بكتيري",
+      "risk_factors": [
+        "داء السكري",
+        "ارتفاع ضغط الدم",
+        "أمراض القلب",
+        "تاريخ عائلي لأمراض الرئة"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "مضادات حيوية",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "وريدي"
+        },
+        {
+          "name": "الأكسجين",
+          "dosage": "غير محدد",
+          "frequency": "غير محدد",
+          "duration": "غير محدد",
+          "route": "استنشاق"
+        }
+      ],
+      "procedures_or_tests": [
+        "أشعة سينية للصدر",
+        "فحص دم شامل",
+        "زراعة البلغم",
+        "فحص مقطعي"
+      ],
+      "patient_education": "الراحة وشرب الكثير من السوائل، علاج فيزيائي للتنفس.",
+      "follow_up_instructions": "البقاء في المستشفى لمدة 5-7 أيام، مراقبة الاستجابة للعلاج."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "eda3d385",
+    "visit_date": "2025-08-26",
+    "provider_name": "د. غير محدد",
+    "patient_name": "غير محدد",
+    "patient_age": "غير محدد",
+    "subjective": {
+      "chief_complaint": "حمى لمدة ثلاثة أيام وطفح جلدي ينتشر.",
+      "history_of_present_illness": "المريض يعاني من حمى لمدة ثلاثة أيام وطفح جلدي ينتشر. يعاني أيضًا من التهاب طفيف في الحلق دون سعال. ذكر المريض أنه ذهب للتنزه في عطلة نهاية الأسبوع الماضية.",
+      "past_medical_history": "المريض يتناول ليفوثيروكسين بانتظام على معدة فارغة كل صباح. يعاني من ضعف الدورة الدموية في الساقين وألم عصبي.",
+      "family_history": "غير مذكور",
+      "social_history": "غير مذكور",
+      "medications": [
+        {
+          "name": "ليفوثيروكسين",
+          "dosage": "غير مذكور",
+          "frequency": "كل صباح",
+          "route": "عن طريق الفم",
+          "duration": "غير مذكور"
+        }
+      ],
+      "allergies": [
+        "غير مذكور"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "غير مذكور",
+        "blood_pressure": "غير مذكور",
+        "heart_rate": "غير مذكور",
+        "respiratory_rate": "غير مذكور",
+        "oxygen_saturation": "غير مذكور"
+      },
+      "physical_exam": "غير مذكور"
+    },
+    "assessment": {
+      "diagnosis": "حمى وطفح جلدي محتمل بسبب عدوى بكتيرية أو مكون منقولة بالقراد.",
+      "risk_factors": [
+        "التنزه في الهواء الطلق"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "سيفترياكسون",
+          "dosage": "غير مذكور",
+          "frequency": "غير مذكور",
+          "duration": "غير مذكور",
+          "route": "غير مذكور"
+        },
+        {
+          "name": "بنتوكسيفيلين",
+          "dosage": "غير مذكور",
+          "frequency": "غير مذكور",
+          "duration": "غير مذكور",
+          "route": "غير مذكور"
+        },
+        {
+          "name": "جابابنتين إيناكاربيل",
+          "dosage": "غير مذكور",
+          "frequency": "غير مذكور",
+          "duration": "غير مذكور",
+          "route": "غير مذكور"
+        },
+        {
+          "name": "دوكسيسيكلين",
+          "dosage": "غير مذكور",
+          "frequency": "غير مذكور",
+          "duration": "غير مذكور",
+          "route": "غير مذكور"
+        },
+        {
+          "name": "فالاسيكلوفير",
+          "dosage": "غير مذكور",
+          "frequency": "غير مذكور",
+          "duration": "غير مذكور",
+          "route": "غير مذكور"
+        }
+      ],
+      "procedures_or_tests": [
+        "غير مذكور"
+      ],
+      "patient_education": "تم توضيح الفرق بين جابابنتين وجابابنتين إيناكاربيل. تم توجيه المريض حول أهمية متابعة الأدوية الموصوفة.",
+      "follow_up_instructions": "متابعة مع الطبيب إذا لم تتحسن الأعراض أو إذا ظهرت أعراض جديدة."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "c6547943",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Unknown",
+    "patient_age": "Unknown",
+    "subjective": {
+      "chief_complaint": "Fever for the past three days and a spreading rash.",
+      "history_of_present_illness": "The patient reports having a fever for the past three days and a rash that is spreading. They also mention a bit of a sore throat but no cough. The patient went hiking last weekend, which could be relevant to the rash.",
+      "past_medical_history": "The patient is on levothyroxine for thyroid issues and has poor circulation in the legs.",
+      "family_history": "Not mentioned",
+      "social_history": "Went hiking last weekend.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "Not mentioned",
+          "frequency": "Every morning",
+          "route": "oral",
+          "duration": "Regularly"
+        }
+      ],
+      "allergies": [
+        "Not mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not mentioned"
+    },
+    "assessment": {
+      "diagnosis": "Possible severe infection with rash, potential tick-borne component, poor circulation in legs, nerve pain, and cold sores.",
+      "risk_factors": [
+        "Recent hiking",
+        "Stress related to cold sores"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Doxycycline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Discussed the use of prescribed medications and their purposes. Advised on the importance of taking levothyroxine on an empty stomach. Explained the difference between gabapentin and gabapentin enacarbil.",
+      "follow_up_instructions": "Prescriptions sent to pharmacy. Follow up if symptoms persist or worsen."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "8f17610a",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not mentioned",
+    "patient_age": "Not mentioned",
+    "subjective": {
+      "chief_complaint": "Fever for the past three days and a spreading rash.",
+      "history_of_present_illness": "The patient reports having a fever for the past three days and a rash that is spreading. They also mention having a bit of a sore throat but no cough. The patient went hiking last weekend, which may be relevant to the rash.",
+      "past_medical_history": "The patient has been prescribed levothyroxine for thyroid issues and is taking it regularly every morning on an empty stomach.",
+      "family_history": "Not mentioned",
+      "social_history": "The patient went hiking last weekend. They usually get cold sores when stressed.",
+      "medications": [
+        {
+          "name": "Levothyroxine",
+          "dosage": "Not mentioned",
+          "frequency": "Every morning",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Not mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "Not mentioned",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Not mentioned"
+    },
+    "assessment": {
+      "diagnosis": "Fever and spreading rash, possibly tick-borne illness.",
+      "risk_factors": [
+        "Recent hiking",
+        "Stress-related cold sores"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Ceftriaxone",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Pentoxifylline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Doxycycline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "Not mentioned"
+        }
+      ],
+      "procedures_or_tests": [
+        "Not mentioned"
+      ],
+      "patient_education": "Discussed the use and differences of gabapentin enacarbil compared to regular gabapentin. Advised on the importance of taking levothyroxine on an empty stomach.",
+      "follow_up_instructions": "Prescriptions sent to pharmacy. Monitor symptoms and return if condition worsens."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "b26e68b8",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Not mentioned",
+    "patient_name": "Not mentioned",
+    "patient_age": "Not mentioned",
+    "subjective": {
+      "chief_complaint": "High blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "history_of_present_illness": "The patient reports high blood sugar levels, particularly in the mornings. They have been forgetting the second dose of their current diabetes medication. The patient also experiences mood changes and insomnia, and has never taken amoxapine before. Additionally, they have a yeast infection and an ear infection. The patient experiences nerve pain, particularly at night.",
+      "past_medical_history": "Diabetes, allergies.",
+      "family_history": "Not mentioned",
+      "social_history": "Not mentioned",
+      "medications": [
+        {
+          "name": "Current diabetes medication",
+          "dosage": "Not specified",
+          "frequency": "Twice daily",
+          "route": "oral",
+          "duration": "Not specified"
+        },
+        {
+          "name": "Fluticasone",
+          "dosage": "Not specified",
+          "frequency": "As needed",
+          "route": "nasal spray",
+          "duration": "Not specified"
+        }
+      ],
+      "allergies": [
+        "Not mentioned"
+      ]
+    },
+    "objective": {
+      "vital_signs": {},
+      "physical_exam": "Not mentioned"
+    },
+    "assessment": {
+      "diagnosis": "Diabetes with high blood sugar levels, mood changes, insomnia, yeast infection, ear infection, nerve pain.",
+      "risk_factors": [
+        "Diabetes",
+        "Allergies"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Linagliptin",
+          "dosage": "Not specified",
+          "frequency": "Once daily",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Amoxapine",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Fluconazole",
+          "dosage": "Single dose",
+          "frequency": "Once",
+          "duration": "Single dose",
+          "route": "oral"
+        },
+        {
+          "name": "Cefixime",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        },
+        {
+          "name": "Gabapentin enacarbil",
+          "dosage": "Not specified",
+          "frequency": "Not specified",
+          "duration": "Not specified",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Advised to use fluticasone nasal spray consistently for better preventative effect. Educated about the use of linagliptin, amoxapine, fluconazole, cefixime, and gabapentin enacarbil.",
+      "follow_up_instructions": "Follow up if symptoms persist or worsen. Monitor blood sugar levels regularly."
+    }
+  }
+}
+
+==================================================
+SOAP NOTE
+==================================================
+{
+  "soap_note": {
+    "patient_id": "ce468407",
+    "visit_date": "2025-08-26",
+    "provider_name": "Dr. Sarah",
+    "patient_name": "Richard Evans",
+    "patient_age": "58",
+    "subjective": {
+      "chief_complaint": "Painful red rash on right leg, started a couple of days ago, spreading and warm to touch.",
+      "history_of_present_illness": "Richard Evans, a 58-year-old male from Houston, presents with a painful red rash on his right leg. The rash started as a small red patch two days ago and has since spread, becoming larger and tender. He reports a fever of 101.5°F last night. He scratched his leg while gardening last week. He also experiences fatigue and tingling in his feet, especially at night, which has been occurring more frequently.",
+      "past_medical_history": "History of shingles a few years ago. Occasionally gets cold sores.",
+      "family_history": "Not mentioned",
+      "social_history": "Lives in Houston. Recent gardening activity.",
+      "medications": [
+        {
+          "name": "Hydrochlorothiazide",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        },
+        {
+          "name": "Doxycycline",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "route": "oral",
+          "duration": "Not mentioned"
+        }
+      ],
+      "allergies": [
+        "Sulfa drugs"
+      ]
+    },
+    "objective": {
+      "vital_signs": {
+        "temperature": "101.5°F",
+        "blood_pressure": "Not mentioned",
+        "heart_rate": "Not mentioned",
+        "respiratory_rate": "Not mentioned",
+        "oxygen_saturation": "Not mentioned"
+      },
+      "physical_exam": "Red rash on right leg, spreading, warm to touch, tender."
+    },
+    "assessment": {
+      "diagnosis": "Bacterial skin infection, possibly cellulitis.",
+      "risk_factors": [
+        "Recent leg scratch while gardening",
+        "History of shingles",
+        "Occasional cold sores"
+      ]
+    },
+    "plan": {
+      "medications_prescribed": [
+        {
+          "name": "Levofloxacin",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Valacyclovir",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Not mentioned",
+          "route": "oral"
+        },
+        {
+          "name": "Prednisone",
+          "dosage": "Not mentioned",
+          "frequency": "Not mentioned",
+          "duration": "Short course",
+          "route": "oral"
+        }
+      ],
+      "procedures_or_tests": [],
+      "patient_education": "Discussed the possibility of bacterial skin infection and the need for antibiotics. Explained the use of valacyclovir as a precaution for viral origin. Informed about prednisone for inflammation. Advised to monitor symptoms and return if they worsen.",
+      "follow_up_instructions": "Follow up in 3 days to assess response to treatment. Return immediately if symptoms worsen or fever increases."
+    }
+  }
+}

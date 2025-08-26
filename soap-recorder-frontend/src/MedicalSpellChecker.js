@@ -22,6 +22,11 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   // Track numeric trigger; initialize from current prop to avoid auto-run on remounts
   const lastProcessedVersionRef = useRef(checkVersion);
   const [lastCheckedKey, setLastCheckedKey] = useState(null);
+
+  // Drug confusion auto-scan state (separate from spell-check)
+  const [confusionMatches, setConfusionMatches] = useState([]);
+  const confusionTimerRef = useRef(null);
+  const confusionAbortRef = useRef(null);
   
   // Dynamic backend URL
   const BACKEND_URL =
@@ -80,14 +85,15 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const [uniqueTermCount, setUniqueTermCount] = useState(0);
   const [totalOccurrences, setTotalOccurrences] = useState(0);
 
-  // Explicit spell-check only when invoked (no auto/debounce)
-  const checkMedicalTerms = useCallback(async (textToCheck) => {
+  // Combined medical analysis: spell-check + drug confusion scan
+  const runMedicalAnalysis = useCallback(async (textToCheck) => {
     if (!enabled) return;
 
     const normalized = typeof textToCheck === 'string' ? textToCheck : String(textToCheck || '');
     const trimmed = normalized.trim();
     if (!trimmed) {
       setMedicalTerms([]);
+      setConfusionMatches([]);
       setUniqueTermCount(0);
       setTotalOccurrences(0);
       return;
@@ -95,10 +101,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
     const cacheKey = trimmed.toLowerCase();
 
-    // Always allow re-check on explicit button press; serve from cache fast if available
-    // (No early return here so every click triggers a resolve from cache or API)
-
-    // Serve from cache
+    // Serve from cache if available
     if (termCache.has(cacheKey)) {
       const cachedResult = termCache.get(cacheKey);
       setMedicalTerms(cachedResult.results || cachedResult);
@@ -111,41 +114,67 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
     setIsChecking(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/check-medical-terms`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: normalized }),
-      });
+      // Run both spell-check and drug confusion scan in parallel
+      const [spellResponse, confusionResponse] = await Promise.all([
+        fetch(`${BACKEND_URL}/check-medical-terms`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: normalized }),
+        }),
+        fetch(`${BACKEND_URL}/drug-confusion-scan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: normalized }),
+        })
+      ]);
 
-      if (response.ok) {
-        const data = await response.json();
-        const results = data.results || [];
-        const uniqueCount = data.unique_count || 0;
-        const totalOccurs = data.total_occurrences || results.length;
+      let spellResults = [];
+      let confusionResults = [];
 
+      if (spellResponse.ok) {
+        const spellData = await spellResponse.json();
+        spellResults = spellData.results || [];
+        setUniqueTermCount(spellData.unique_count || 0);
+        setTotalOccurrences(spellData.total_occurrences || spellResults.length);
+        
+        // Cache spell-check results
         setTermCache(prev => {
           const newCache = new Map(prev);
-          newCache.set(cacheKey, data);
+          newCache.set(cacheKey, spellData);
           if (newCache.size > 100) {
             const firstKey = newCache.keys().next().value;
             newCache.delete(firstKey);
           }
           return newCache;
         });
-
         setCacheStats(prev => ({ ...prev, misses: prev.misses + 1 }));
-        setMedicalTerms(results);
-        setUniqueTermCount(uniqueCount);
-        setTotalOccurrences(totalOccurs);
-        setLastCheckedKey(cacheKey);
       }
+
+      if (confusionResponse.ok) {
+        const confusionData = await confusionResponse.json();
+        const matches = Array.isArray(confusionData.matches) ? confusionData.matches : [];
+        confusionResults = matches
+          .filter(m => typeof m.start === 'number' && typeof m.end === 'number' && m.end > m.start)
+          .map(m => ({
+            term: String(m.term || ''),
+            start: m.start,
+            end: m.end,
+            alternatives: Array.isArray(m.alternatives) ? m.alternatives : [],
+            category: 'drug_confusion',
+            source: 'drug_confusion'
+          }));
+      }
+
+      setMedicalTerms(spellResults);
+      setConfusionMatches(confusionResults);
+      setLastCheckedKey(cacheKey);
+
     } catch (error) {
-      console.error('Error checking medical terms:', error);
+      console.error('Error in medical analysis:', error);
     } finally {
       setIsChecking(false);
     }
-  }, [enabled, BACKEND_URL, termCache, lastCheckedKey, medicalTerms]);
-
+  }, [enabled, BACKEND_URL, termCache, lastCheckedKey]);
 
   // Explicit trigger: run when parent toggles checkNow to true (works even across remounts)
   useEffect(() => {
@@ -160,7 +189,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
         clearTimeout(checkTimeoutRef.current);
         checkTimeoutRef.current = null;
       }
-      checkMedicalTerms(text);
+      runMedicalAnalysis(text);
       return;
     }
 
@@ -168,7 +197,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     if (!checkNow && lastProcessedCheckNowRef.current) {
       lastProcessedCheckNowRef.current = false;
     }
-  }, [checkNow, enabled, text, checkMedicalTerms]);
+  }, [checkNow, enabled, text, runMedicalAnalysis]);
 
   // Numeric trigger: every increment must run a check in every instance (never skipped)
   useEffect(() => {
@@ -182,9 +211,9 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
         clearTimeout(checkTimeoutRef.current);
         checkTimeoutRef.current = null;
       }
-      checkMedicalTerms(text);
+      runMedicalAnalysis(text);
     }
-  }, [checkVersion, enabled, text, checkMedicalTerms]);
+  }, [checkVersion, enabled, text, runMedicalAnalysis]);
 
   // Handle term click
   const handleTermClick = async (term, event) => {
@@ -204,7 +233,14 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     setShowingAlternatives(false); // Reset alternatives state for new term
     
     // Combine spell-check suggestions with database suggestions
-    let allSuggestions = term.suggestions || [];
+    let allSuggestions = [];
+    
+    if (term.source === 'drug_confusion' && Array.isArray(term.alternatives)) {
+      allSuggestions = term.alternatives.map(s => ({ value: s, source: 'drug_confusion' }));
+    } else {
+      const base = Array.isArray(term.suggestions) ? term.suggestions : [];
+      allSuggestions = base.map(s => ({ value: s, source: 'spellcheck' }));
+    }
     
     // Fetch database suggestions
     try {
@@ -217,18 +253,18 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
           typeName: result.typeName,
           source: 'database'
         }));
-        // Combine: spell-check first, then database
+        // Combine: preserve existing suggestions + database
         allSuggestions = [
-          ...allSuggestions.map(s => ({ value: s, source: 'spellcheck' })),
+          ...allSuggestions,
           ...formattedDbSuggestions
         ];
       } else {
-        // Fallback: only spell-check suggestions
-        allSuggestions = allSuggestions.map(s => ({ value: s, source: 'spellcheck' }));
+        // Keep existing suggestions if DB call failed
+        allSuggestions = [...allSuggestions];
       }
     } catch (error) {
       console.error('Error fetching database suggestions:', error);
-      allSuggestions = allSuggestions.map(s => ({ value: s, source: 'spellcheck' }));
+      // Keep existing suggestions on error
     }
     
     setSuggestions(allSuggestions);
@@ -257,19 +293,19 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
         onTextChange(newText);
       }
 
-      // Locally update highlights:
-      // - Mark the fixed term as "correct" (blue underline) OR remove it
-      // - Shift positions for all terms after the replaced span
+      // Locally update highlights: mark the fixed term as "corrected" (green)
       const oldLen = end - start;
       const newLen = replacementText.length;
       const delta = newLen - oldLen;
 
       const newTerms = [];
+      const newConfusionMatches = [];
+
+      // Update medical terms
       for (let i = 0; i < medicalTerms.length; i++) {
         const t = medicalTerms[i];
-        // Skip the originally selected term; add corrected version
         if (t.start === selectedTerm.start && t.end === selectedTerm.end && t.term === selectedTerm.term) {
-          // Option A: mark as correct (blue underline) to reflect correction visually
+          // Mark as corrected (green)
           newTerms.push({
             ...t,
             term: replacementText,
@@ -279,7 +315,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
             isCorrect: true,
             needs_correction: false,
             needsCorrection: false,
-            source: 'llm_corrected'
+            source: 'user_corrected'
           });
           continue;
         }
@@ -299,18 +335,51 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
           });
           continue;
         }
+      }
 
-        // Overlapping terms (rare): drop them to avoid misalignment; they'll be recalculated on next manual check
-        // Alternatively, we could attempt smarter merging, but keep it simple and safe here.
+      // Update confusion matches
+      for (let i = 0; i < confusionMatches.length; i++) {
+        const c = confusionMatches[i];
+        if (c.start === selectedTerm.start && c.end === selectedTerm.end && c.term === selectedTerm.term) {
+          // Mark as corrected (green) - add to medical terms instead
+          newTerms.push({
+            term: replacementText,
+            start: start,
+            end: start + newLen,
+            is_correct: true,
+            isCorrect: true,
+            needs_correction: false,
+            needsCorrection: false,
+            source: 'user_corrected',
+            category: 'corrected'
+          });
+          continue;
+        }
+
+        // Terms entirely before the replaced span remain the same
+        if (c.end <= start) {
+          newConfusionMatches.push({ ...c });
+          continue;
+        }
+
+        // Terms entirely after the replaced span: shift by delta
+        if (c.start >= end) {
+          newConfusionMatches.push({
+            ...c,
+            start: c.start + delta,
+            end: c.end + delta
+          });
+          continue;
+        }
       }
 
       setMedicalTerms(newTerms);
+      setConfusionMatches(newConfusionMatches);
 
-      // Close UI and reset state; do NOT clear all highlights
+      // Close UI and reset state
       setShowSuggestions(false);
       setSelectedTerm(null);
       setShowingAlternatives(false);
-      // Keep lastCheckedKey; next manual button press can re-validate full text if needed
     } else {
       // Fallback if no selected term (shouldn't happen)
       if (typeof suggestion === 'object') {
@@ -318,6 +387,63 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
       } else if (onTextChange) {
         onTextChange(suggestion);
       }
+      setShowSuggestions(false);
+      setSelectedTerm(null);
+      setShowingAlternatives(false);
+    }
+  };
+
+  // Handle ignore action - keep original word but mark as reviewed (green)
+  const handleIgnoreTerm = () => {
+    if (selectedTerm) {
+      const { start, end, term } = selectedTerm;
+
+      const newTerms = [];
+      const newConfusionMatches = [];
+
+      // Update medical terms
+      for (let i = 0; i < medicalTerms.length; i++) {
+        const t = medicalTerms[i];
+        if (t.start === selectedTerm.start && t.end === selectedTerm.end && t.term === selectedTerm.term) {
+          // Mark as ignored/reviewed (green) but keep original term
+          newTerms.push({
+            ...t,
+            is_correct: true,
+            isCorrect: true,
+            needs_correction: false,
+            needsCorrection: false,
+            source: 'user_corrected'
+          });
+          continue;
+        }
+        newTerms.push({ ...t });
+      }
+
+      // Update confusion matches
+      for (let i = 0; i < confusionMatches.length; i++) {
+        const c = confusionMatches[i];
+        if (c.start === selectedTerm.start && c.end === selectedTerm.end && c.term === selectedTerm.term) {
+          // Mark as ignored/reviewed (green) - add to medical terms instead
+          newTerms.push({
+            term: term,
+            start: start,
+            end: end,
+            is_correct: true,
+            isCorrect: true,
+            needs_correction: false,
+            needsCorrection: false,
+            source: 'user_corrected',
+            category: 'corrected'
+          });
+          continue;
+        }
+        newConfusionMatches.push({ ...c });
+      }
+
+      setMedicalTerms(newTerms);
+      setConfusionMatches(newConfusionMatches);
+
+      // Close UI and reset state
       setShowSuggestions(false);
       setSelectedTerm(null);
       setShowingAlternatives(false);
@@ -367,6 +493,20 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     const needsCorrection = term.needs_correction ?? term.needsCorrection ?? false;
     const source = (term.source || '').toString().toLowerCase();
 
+    // Special handling for user-corrected terms (green)
+    if (source === 'user_corrected') {
+      const category = term.category || 'general';
+      const categoryClass = `medical-category-${category.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+      return `medical-term-corrected ${categoryClass}`;
+    }
+
+    // Special handling for drug confusion matches (yellow)
+    if (source === 'drug_confusion') {
+      const category = term.category || 'general';
+      const categoryClass = `medical-category-${category.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+      return `medical-term-confusion ${categoryClass}`;
+    }
+
     // Treat any "needs_correction" term as incorrect (red underline)
     // Otherwise, consider correct only if explicitly validated
     const validatedSources = new Set([
@@ -391,13 +531,22 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   // Get term title/tooltip based on category
   const getTermTitle = (term) => {
     const category = term.category || 'medical term';
+    const source = (term.source || '').toString().toLowerCase();
+    
+    if (source === 'user_corrected') {
+      return `Corrected ${category.replace(/_/g, ' ')}`;
+    }
+    if (source === 'drug_confusion') {
+      return `Click for alternatives to this ${category.replace(/_/g, ' ')}`;
+    }
+    
     const action = term.isCorrect ? 'Click to confirm this' : 'Click for spelling suggestions for this';
     return `${action} ${category.replace(/_/g, ' ')}`;
   };
 
   // Render text with highlighted medical terms
   const renderHighlightedText = () => {
-    if (!enabled || medicalTerms.length === 0) {
+    if (!enabled || (medicalTerms.length === 0 && confusionMatches.length === 0)) {
       return <div className="spell-check-text">{text}</div>;
     }
 
@@ -407,15 +556,41 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     let lastIndex = 0;
     const elements = [];
 
-    // Sort medical terms by position and remove duplicates
-    const sortedTerms = [...medicalTerms]
-      .sort((a, b) => a.start - b.start)
-      .filter((term, index, array) => {
-        // Remove duplicates based on position and term
-        return index === 0 || 
-               term.start !== array[index - 1].start || 
-               term.term !== array[index - 1].term;
+    // Build combined list: spell-check terms + drug confusion matches
+    // Priority: drug confusion matches (yellow) override spell-check results (blue/red)
+    const confusionTermsMap = new Map();
+    confusionMatches.forEach(m => {
+      const key = `${m.start}-${m.end}-${m.term}`;
+      confusionTermsMap.set(key, {
+        term: m.term,
+        start: m.start,
+        end: m.end,
+        // Ensure drug confusion matches are always yellow
+        is_correct: false,
+        isCorrect: false,
+        needs_correction: false,
+        needsCorrection: false,
+        category: m.category || 'drug_confusion',
+        source: 'drug_confusion',
+        suggestions: m.alternatives || [],
+        alternatives: m.alternatives || []
       });
+    });
+
+    // Filter out spell-check terms that overlap with confusion matches
+    const filteredMedicalTerms = medicalTerms.filter(t => {
+      const key = `${t.start}-${t.end}-${t.term}`;
+      return !confusionTermsMap.has(key);
+    });
+
+    // Combine filtered spell-check terms with confusion matches
+    const combinedTerms = [
+      ...filteredMedicalTerms,
+      ...Array.from(confusionTermsMap.values())
+    ];
+
+    // Sort by position
+    const sortedTerms = combinedTerms.sort((a, b) => a.start - b.start);
 
     sortedTerms.forEach((term, index) => {
       // Add text before the term
@@ -460,15 +635,16 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
   // Render legend
   const renderLegend = () => {
-    if (!showLegend || medicalTerms.length === 0) return null;
+    if (!showLegend || (medicalTerms.length === 0 && confusionMatches.length === 0)) return null;
 
     // Get unique categories from current terms
-    const categories = [...new Set(medicalTerms.map(term => term.category || 'general'))];
+    const allTerms = [...medicalTerms, ...confusionMatches];
+    const categories = [...new Set(allTerms.map(term => term.category || 'general'))];
     
     return (
       <div className="medical-legend">
         <div className="legend-header">
-          <span>Medical Term Legend</span>
+          <span>Medical Analysis Legend</span>
           <button 
             className="legend-close"
             onClick={() => setShowLegend(false)}
@@ -487,6 +663,14 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
             <div className="legend-item">
               <span className="legend-color medical-term-incorrect"></span>
               <span>Spelling Errors (Red)</span>
+            </div>
+            <div className="legend-item">
+              <span className="legend-color medical-term-confusion"></span>
+              <span>Drug Confusion Matches (Yellow)</span>
+            </div>
+            <div className="legend-item">
+              <span className="legend-color medical-term-corrected"></span>
+              <span>User Corrected (Green)</span>
             </div>
           </div>
           
@@ -543,14 +727,14 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     <div className="medical-spell-checker" ref={textAreaRef}>
       {isChecking && (
         <div className="spell-check-indicator">
-          Checking spelling...
+          Analyzing medical terms...
         </div>
       )}
       
       {renderLegend()}
       
       <div className="spell-check-content">
-        {medicalTerms.length > 0 && (
+        {(medicalTerms.length > 0 || confusionMatches.length > 0) && (
           <div className="spell-checker-controls">
             <button 
               className="legend-toggle"
@@ -564,7 +748,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
               {showLegend ? 'Hide' : 'Show'} Legend
             </button>
             <span className="term-count">
-              {uniqueTermCount > 0 ? uniqueTermCount : medicalTerms.length} medical term{(uniqueTermCount > 0 ? uniqueTermCount : medicalTerms.length) !== 1 ? 's' : ''} found
+              {(uniqueTermCount > 0 ? uniqueTermCount : (medicalTerms.length + confusionMatches.length))} medical term{((uniqueTermCount > 0 ? uniqueTermCount : (medicalTerms.length + confusionMatches.length)) !== 1) ? 's' : ''} found
               {totalOccurrences > uniqueTermCount && uniqueTermCount > 0 && (
                 <span className="occurrence-count"> ({totalOccurrences} occurrences)</span>
               )}
@@ -589,7 +773,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
           }}
         >
           <div className="suggestions-header">
-            {selectedTerm?.isCorrect && !showingAlternatives ? 'Confirm Medical Term' : 'Spelling Suggestions'}
+            {selectedTerm?.isCorrect && !showingAlternatives ? 'Confirm Medical Term' : 'Medical Suggestions'}
           </div>
           <div className="suggestions-list">
             {selectedTerm?.isCorrect && !showingAlternatives ? (
@@ -679,12 +863,37 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
                     }
                   </>
                 )}
-                
-                {/* Fallback message when no suggestions found */}
-                {suggestions.length === 0 && (
-                  <div className="suggestion-item">
-                    No suggestions available
-                  </div>
+
+                {/* Drug alternatives from confusion scan */}
+                {suggestions.filter(s => typeof s === 'object' && s.source === 'drug_confusion').length > 0 && (
+                  <>
+                    <div className="suggestion-category-header">Drug Alternatives</div>
+                    {suggestions
+                      .filter(s => typeof s === 'object' && s.source === 'drug_confusion')
+                      .map((suggestion, index) => (
+                        <div
+                          key={`confusion-${index}`}
+                          className="suggestion-item drug-confusion-suggestion"
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                        >
+                          {suggestion.value}
+                        </div>
+                      ))
+                    }
+                  </>
+                )}
+
+                {/* Ignore button - always show for any highlighted term */}
+                {selectedTerm && (
+                  <>
+                    <div className="suggestion-category-header">Actions</div>
+                    <div
+                      className="suggestion-item ignore-suggestion"
+                      onClick={handleIgnoreTerm}
+                    >
+                      Ignore (keep original)
+                    </div>
+                  </>
                 )}
               </>
             )}

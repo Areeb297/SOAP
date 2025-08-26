@@ -823,9 +823,9 @@ export default function SOAPRecorder() {
                   <button
                     onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
                     className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
-                    title="Run spell check for transcript"
+                    title="Run medical analysis for transcript"
                   >
-                    Check Transcript Spelling
+                    Medical Analyzer
                   </button>
                 </div>
                 <SpellCheckedTextArea
@@ -872,9 +872,9 @@ export default function SOAPRecorder() {
               <button
                 onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
                 className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
-                title="Run spell check for transcript"
+                title="Run medical analysis for transcript"
               >
-                Check Transcript Spelling
+                Medical Analyzer
               </button>
             </div>
             <SpellCheckedTextArea
@@ -923,9 +923,9 @@ export default function SOAPRecorder() {
                     setCheckSoapNow(v => !v);
                   }}
                   className="px-3 py-1 text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded-md"
-                  title="Run spell check for SOAP note"
+                  title="Run medical analysis for SOAP note"
                 >
-                  Check SOAP Spelling
+                  Medical Analyzer
                 </button>
               </div>
               {/* Show metadata if present - now editable */}
