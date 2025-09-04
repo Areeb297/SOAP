@@ -1264,7 +1264,7 @@ def drug_confusion_scan():
             cw = r.get('confused_with')
             if isinstance(cw, str):
                 # Split by commas/semicolons/newlines
-                parts = [p.strip() for p in re.split(r'[;,\\n]+', cw) if p.strip()]
+                parts = [p.strip() for p in re.split(r'[;,\n]+', cw) if p.strip()]
                 alts = parts
             elif isinstance(cw, list):
                 alts = [str(x).strip() for x in cw if str(x).strip()]
