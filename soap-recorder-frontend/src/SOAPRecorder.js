@@ -16,7 +16,7 @@ const BACKEND_URL =
   process.env.REACT_APP_BACKEND_URL ||
   (window.location.hostname === 'localhost'
     ? 'http://localhost:5001'
-    : 'https://soap-598q.onrender.com');
+    : 'http://145.79.13.137:5001');
 
 export default function SOAPRecorder() {
   const [isRecording, setIsRecording] = useState(false);
