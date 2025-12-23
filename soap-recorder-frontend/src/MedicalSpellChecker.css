@@ -86,6 +86,32 @@
   background-color: rgba(220, 38, 38, 0.2);
 }
 
+.medical-term-confusion {
+  color: #f59e0b;
+  text-decoration: underline;
+  cursor: pointer;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.medical-term-confusion:hover {
+  background-color: rgba(245, 158, 11, 0.2);
+}
+
+.medical-term-corrected {
+  color: #10b981;
+  text-decoration: underline;
+  cursor: pointer;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+.medical-term-corrected:hover {
+  background-color: rgba(16, 185, 129, 0.2);
+}
+
 .suggestions-dropdown {
   position: absolute;
   background: white;
@@ -419,6 +445,14 @@
   background-color: #dc2626;
 }
 
+.legend-color.medical-term-confusion {
+  background-color: #f59e0b;
+}
+
+.legend-color.medical-term-corrected {
+  background-color: #10b981;
+}
+
 .legend-color.medical-category-medication {
   background-color: #10b981;
 }
@@ -576,4 +610,34 @@
 
 .suggestions-list::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+/* Drug confusion highlighting and suggestions */
+.medical-category-drug_confusion {
+  border-left: 3px solid #f97316 !important; /* orange accent for confusion matches */
+}
+
+.drug-confusion-suggestion {
+  border-left: 3px solid #f97316;
+}
+
+.drug-confusion-suggestion:hover {
+  background-color: #fff7ed; /* light orange hover */
+}
+
+/* Ignore suggestion styling */
+.ignore-suggestion {
+  border-left: 3px solid #6b7280;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.ignore-suggestion:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+/* Legend color for drug confusion category */
+.legend-color.medical-category-drug_confusion {
+  background-color: #f97316;
 }

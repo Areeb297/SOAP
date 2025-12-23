@@ -26,6 +26,11 @@ export default function SOAPRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [soapNote, setSoapNote] = useState(null);
+  // Explicit spell-check triggers
+  const [checkTranscriptNow, setCheckTranscriptNow] = useState(false);
+  const [checkSoapNow, setCheckSoapNow] = useState(false);
+  const [checkTranscriptVersion, setCheckTranscriptVersion] = useState(0);
+  const [checkSoapVersion, setCheckSoapVersion] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedTranscript, setEditedTranscript] = useState('');
   const [language, setLanguage] = useState('en'); // 'en' or 'ar' 
@@ -124,10 +129,9 @@ export default function SOAPRecorder() {
       setEditedSOAPNote(note);
       setUserAgreement(false);
       
-      // Apply spell checking to SOAP note automatically
-      if (note) {
-        // Spell checking is now handled automatically by SpellCheckedSOAPField components
-      }
+      // Do NOT auto-check here. User can press "Check SOAP Spelling" button explicitly.
+      // If you want a single auto-check after generation, uncomment:
+      // setTimeout(() => setCheckSoapNow(v => !v), 0);
     } catch (error) {
       console.error('Error generating SOAP note:', error);
       alert('Failed to generate SOAP note. Please check if the backend server is running.');
@@ -136,51 +140,31 @@ export default function SOAPRecorder() {
     }
   };
 
-  // Helper: Remove unmentioned fields/sections (same logic as backend)
+  // Helper: Preserve everything mentioned; only strip truly empty values
   function cleanSOAPNote(note) {
     if (!note || typeof note !== 'object') return note;
-    const isUnmentioned = (val) => {
-      if (!val) return true;
-      if (typeof val === 'string') {
-        const valLower = val.trim().toLowerCase();
-        const phrases = [
-          'not mentioned', 'not discussed', 'not addressed',
-          'no known', 'no current', 'pending clinical examination',
-          'vital signs not available', 'no medications prescribed currently',
-          'no known allergies', 'no current medications', 'not available currently',
-          'not specified', 'not available', 'none', 'n/a', 'na',
-          'لم يذكر', 'لم يتم التطرق', 'لا يتناول أدوية حالياً',
-          'لا يوجد تاريخ مرضي مزمن', 'بانتظار الفحص السريري',
-          'العلامات الحيوية غير متوفرة حالياً', 'لم يتم وصف أدوية حالياً',
-          'لم يتم التطرق لهذه النقاط أثناء اللقاء', 'غير متوفرة حالياً',
-          'غير محدد', 'غير متوفر', 'لا يوجد', 'غير متاح', 'غير معروف',
-          'غير مذكور', 'غير محدد في المحادثة', 'لم يتم ذكره',
-          'غير متوفر حالياً', 'غير محدد في المحادثة', 'غير متوفر في المحادثة'
-        ];
-        return phrases.some(p => valLower.includes(p));
-      }
-      if (Array.isArray(val)) {
-        // Remove empty/unmentioned items
-        const filtered = val.filter(item => !isUnmentioned(item));
-        return filtered.length === 0;
-      }
-      if (typeof val === 'object') {
-        // Recursively clean
-        const sub = cleanSOAPNote(val);
-        return !sub || Object.keys(sub).length === 0;
-      }
-      return false;
-    };
     const cleaned = {};
     for (const [k, v] of Object.entries(note)) {
-      if (v == null) continue;
-      if (Array.isArray(v)) {
-        const filtered = v.filter(item => !isUnmentioned(item));
-        if (filtered.length > 0) cleaned[k] = filtered;
-      } else if (typeof v === 'object' && v !== null) {
+      if (v === null || v === undefined) continue;
+      if (typeof v === 'string' || typeof v === 'number') {
+        const s = String(v);
+        if (s.trim().length > 0) cleaned[k] = s;
+      } else if (Array.isArray(v)) {
+        // Keep arrays; drop only null/empty-string items
+        const filtered = v.filter(item => {
+          if (item === null || item === undefined) return false;
+          if (typeof item === 'string') return item.trim().length > 0;
+          if (typeof item === 'object') {
+            const sub = cleanSOAPNote(item);
+            return sub && Object.keys(sub).length > 0;
+          }
+          return true;
+        });
+        cleaned[k] = filtered;
+      } else if (typeof v === 'object') {
         const sub = cleanSOAPNote(v);
-        if (sub && Object.keys(sub).length > 0) cleaned[k] = sub;
-      } else if (!isUnmentioned(v)) {
+        cleaned[k] = sub;
+      } else {
         cleaned[k] = v;
       }
     }
@@ -220,8 +204,23 @@ export default function SOAPRecorder() {
                 return (
                   <div key={idx} className="space-y-2 bg-white rounded-lg p-3 shadow-sm border border-gray-200 flex flex-col items-center">
                     {nameEntry && (
-                      <div className="text-base font-bold text-blue-900 mb-2 text-center">
-                        {nameEntry[1]}
+                      <div className="text-base font-bold text-blue-900 mb-2 text-center w-full max-w-md">
+                        {/* Spell-check ONLY the medication name */}
+                        <SpellCheckedSOAPField
+                          value={String(nameEntry[1])}
+                          onChange={(newValue) => {
+                            const updated = value.map((item, i) =>
+                              i === idx ? { ...item, [nameEntry[0]]: newValue } : item
+                            );
+                            onEdit(sectionKey, key, updated);
+                          }}
+                          isEditing={false}
+                          onEditModeChange={() => {}}
+                          language={language}
+                          className="w-full"
+                          checkNow={checkSoapNow}
+                          checkVersion={checkSoapVersion}
+                        />
                       </div>
                     )}
                     <div className="w-full max-w-md mx-auto">
@@ -230,7 +229,10 @@ export default function SOAPRecorder() {
                           <span className="text-xs font-bold text-gray-700 w-32 text-right pr-2">
                             {subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                           </span>
-                          <span className="text-gray-700 w-56 text-left pl-2">{String(subValue)}</span>
+                          <div className="text-gray-700 w-56 text-left pl-2">
+                            {/* DO NOT spell-check medication details (dosage, duration, frequency, route) */}
+                            <span className="text-gray-800">{String(subValue)}</span>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -384,6 +386,8 @@ export default function SOAPRecorder() {
                         language={language}
                         placeholder={`Enter ${key.replace(/_/g, ' ')}`}
                         className="w-full max-w-md"
+                        checkNow={checkSoapNow}
+                        checkVersion={checkSoapVersion}
                       />
                     ) : (
                       // Only use SpellCheckedSOAPField for string values, not objects or arrays
@@ -395,6 +399,8 @@ export default function SOAPRecorder() {
                           onEditModeChange={(isFieldEditing, metadata) => handleFieldEditModeChange(key, isFieldEditing, metadata)}
                           language={language}
                           className="w-full max-w-md"
+                          checkNow={checkSoapNow}
+                          checkVersion={checkSoapVersion}
                         />
                       ) : (
                         // For objects and arrays, use regular rendering
@@ -814,6 +820,15 @@ export default function SOAPRecorder() {
             <div className="flex flex-col items-center">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Type or Paste Transcript</h2>
               <div className="w-full mb-4">
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
+                    className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
+                    title="Run medical analysis for transcript"
+                  >
+                    Medical Analyzer
+                  </button>
+                </div>
                 <SpellCheckedTextArea
                   value={editedTranscript}
                   onChange={(newValue) => {
@@ -824,6 +839,8 @@ export default function SOAPRecorder() {
                   language={language}
                   enableSpellCheck={true}
                   rows={10}
+                  checkNow={checkTranscriptNow}
+                  checkVersion={checkTranscriptVersion}
                 />
               </div>
               <div className="flex gap-4">
@@ -852,6 +869,15 @@ export default function SOAPRecorder() {
               <h2 className="text-xl font-semibold text-gray-800 text-center">Transcript</h2>
             </div>
             
+            <div className="flex justify-end mb-2">
+              <button
+                onClick={() => { setCheckTranscriptVersion(v => v + 1); setCheckTranscriptNow(v => !v); }}
+                className="px-3 py-1 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-md"
+                title="Run medical analysis for transcript"
+              >
+                Medical Analyzer
+              </button>
+            </div>
             <SpellCheckedTextArea
               value={editedTranscript}
               onChange={(newValue) => setEditedTranscript(newValue)}
@@ -859,6 +885,8 @@ export default function SOAPRecorder() {
               language={language}
               enableSpellCheck={true}
               rows={8}
+              checkNow={checkTranscriptNow}
+              checkVersion={checkTranscriptVersion}
             />
             
             <button
@@ -886,6 +914,21 @@ export default function SOAPRecorder() {
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="relative mb-6">
               <h2 className="text-2xl font-bold text-gray-800 text-center">SOAP Note</h2>
+              <div className="absolute right-0 -top-10 flex gap-2">
+                <button
+                  onClick={() => {
+                    // Exit edit mode to allow highlights/suggestions to render
+                    setIsEditingSOAP(false);
+                    // Explicitly trigger spell check (edge-triggered in MedicalSpellChecker)
+                    setCheckSoapVersion(v => v + 1);
+                    setCheckSoapNow(v => !v);
+                  }}
+                  className="px-3 py-1 text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded-md"
+                  title="Run medical analysis for SOAP note"
+                >
+                  Medical Analyzer
+                </button>
+              </div>
               {/* Show metadata if present - now editable */}
               {displaySOAPNote.patient_id && (
                 <div className="mb-4 p-4 bg-gray-50 rounded-lg">
@@ -954,6 +997,8 @@ export default function SOAPRecorder() {
               {!soapNote.raw_response && (
                 <button
                   onClick={() => {
+                    // Ensure spell-check is off while editing; prevent auto-runs on remount
+                    setCheckSoapNow(false);
                     if (isEditingSOAP) {
                       saveSOAPEdits();
                     } else {

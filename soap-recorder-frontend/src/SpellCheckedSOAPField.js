@@ -7,7 +7,9 @@ const SpellCheckedSOAPField = ({
   isEditing = false,
   onEditModeChange,
   language = 'en',
-  className = ''
+  className = '',
+  checkNow = false, // explicit trigger from parent (SOAPRecorder)
+  checkVersion = 0   // numeric trigger to force a check every click
 }) => {
   const [localValue, setLocalValue] = useState(value || '');
   const [isLocalEditing, setIsLocalEditing] = useState(isEditing);
@@ -21,6 +23,7 @@ const SpellCheckedSOAPField = ({
     setIsLocalEditing(isEditing);
   }, [isEditing]);
 
+
   const handleTextChange = (newText) => {
     setLocalValue(newText);
     if (onChange) {
@@ -28,26 +31,15 @@ const SpellCheckedSOAPField = ({
     }
   };
 
-  const handleSuggestionSelect = (newText, position) => {
-    // When a suggestion is selected, enter edit mode and update text
+  const handleSuggestionSelect = (newText /* , position */) => {
+    // Live update without forcing edit mode or a full re-check.
     setLocalValue(newText);
     if (onChange) {
       onChange(newText);
     }
-    setIsLocalEditing(true);
-    
-    // Notify parent component about edit mode change - pass metadata indicating this was a suggestion click
-    if (onEditModeChange) {
-      onEditModeChange(true, { triggeredBySuggestion: true });
-    }
-    
-    // Focus and set cursor position after text is updated
-    setTimeout(() => {
-      if (textAreaRef.current) {
-        textAreaRef.current.focus();
-        textAreaRef.current.setSelectionRange(position.end, position.end);
-      }
-    }, 0);
+    // Do NOT enter edit mode; keep current UI state
+    // Do NOT focus or move cursor; MedicalSpellChecker will locally restyle the corrected token
+    // Do NOT trigger onEditModeChange; this is an inline correction
   };
 
   const handleBlur = () => {
@@ -82,6 +74,8 @@ const SpellCheckedSOAPField = ({
         onSuggestionSelect={handleSuggestionSelect}
         enabled={true}
         language={language}
+        checkNow={checkNow}
+        checkVersion={checkVersion}
       />
     </div>
   );

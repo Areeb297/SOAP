@@ -1,0 +1,188 @@
+{
+  "medicines": [],
+  "cache": {
+    "left arm": {
+      "term": "left arm",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "right side": {
+      "term": "right side",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "vision": {
+      "term": "vision",
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "confusion": {
+      "term": "confusion",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "blood pressure": {
+      "term": "blood pressure",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "atrial fibrillation": {
+      "term": "atrial fibrillation",
+      "is_correct": true,
+      "suggestions": [
+        "trial fibrillation"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "blood thinners": {
+      "term": "blood thinners",
+      "is_correct": true,
+      "suggestions": [
+        "blood thinner"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "warfarin": {
+      "term": "Warfarin",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "hip replacement": {
+      "term": "hip replacement",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "5mg": {
+      "term": "5mg",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "10mg": {
+      "term": "10mg",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "metoprolol": {
+      "term": "Metoprolol",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "25mg": {
+      "term": "25mg",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "heart rate": {
+      "term": "heart rate",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "temperature": {
+      "term": "temperature",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "respiratory rate": {
+      "term": "respiratory rate",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "left-sided weakness": {
+      "term": "left-sided weakness",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "slurred speech": {
+      "term": "slurred speech",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "left facial droop": {
+      "term": "left facial droop",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "acute ischemic stroke": {
+      "term": "acute ischemic stroke",
+      "is_correct": true,
+      "suggestions": [
+        "acute ischaemic stroke"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "thrombolytic therapy": {
+      "term": "thrombolytic therapy",
+      "is_correct": true,
+      "suggestions": [
+        "thrombotic therapy"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "blood work": {
+      "term": "blood work",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "coagulation studies": {
+      "term": "coagulation studies",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "paroxysmal atrial fibrillation": {
+      "term": "Paroxysmal atrial fibrillation",
+      "is_correct": true,
+      "suggestions": [
+        "Paroxysmal trial fibrillation"
+      ],
+      "confidence": 0.8,
+      "source": "textblob"
+    },
+    "stroke": {
+      "term": "stroke",
+      "is_correct": true,
+      "suggestions": [],
+      "confidence": 0.8,
+      "source": "llm_identified"
+    },
+    "pain": {
+      "term": "pain",
+      "is_correct": 
