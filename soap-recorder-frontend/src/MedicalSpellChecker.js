@@ -33,7 +33,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     process.env.REACT_APP_BACKEND_URL ||
     (window.location.hostname === 'localhost'
       ? 'http://localhost:5001'
-      : 'https://soap-598q.onrender.com');
+      : 'http://145.79.13.137:5001');
 
   // Fetch NLP status only when legend is opened (cached globally to avoid repeated requests)
   useEffect(() => {
