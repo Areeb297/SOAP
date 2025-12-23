@@ -1,7 +1,7 @@
 // Vercel Serverless Function - Proxy for /medical-nlp-status endpoint
 const BACKEND_URL = process.env.BACKEND_URL || 'http://145.79.13.137:5001';
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -37,3 +37,4 @@ export default async function handler(req, res) {
   }
 }
 
+module.exports = handler;

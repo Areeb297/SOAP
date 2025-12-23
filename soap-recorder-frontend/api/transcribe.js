@@ -1,13 +1,7 @@
 // Vercel Serverless Function - Proxy for /transcribe endpoint
 const BACKEND_URL = process.env.BACKEND_URL || 'http://145.79.13.137:5001';
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable body parsing to handle FormData
-  },
-};
-
-export default async function handler(req, res) {
+async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -52,3 +46,9 @@ export default async function handler(req, res) {
   }
 }
 
+module.exports = handler;
+module.exports.config = {
+  api: {
+    bodyParser: false, // Disable body parsing to handle FormData
+  },
+};
