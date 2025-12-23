@@ -1,6 +1,17 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './MedicalSpellChecker.css';
 
+// API URL - Use Vercel proxy in production, direct backend in development
+const getApiUrl = (endpoint) => {
+  // In production (Vercel), use the /api proxy routes
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return `/api/${endpoint}`;
+  }
+  // In development, call backend directly
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
+  return `${BACKEND_URL}/${endpoint}`;
+};
+
 const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect }) => {
   const [medicalTerms, setMedicalTerms] = useState([]);
   const [selectedTerm, setSelectedTerm] = useState(null);
@@ -18,19 +29,12 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   const textAreaRef = useRef(null);
   const suggestionsRef = useRef(null);
   const checkTimeoutRef = useRef(null);
-  
-  // Dynamic backend URL
-  const BACKEND_URL =
-    process.env.REACT_APP_BACKEND_URL ||
-    (window.location.hostname === 'localhost'
-      ? 'http://localhost:5001'
-      : 'https://soap-598q.onrender.com');
 
   // Fetch NLP status on component mount
   useEffect(() => {
     const fetchNlpStatus = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/medical-nlp-status`);
+        const response = await fetch(getApiUrl('medical-nlp-status'));
         if (response.ok) {
           const status = await response.json();
           setNlpStatus(status);
@@ -41,7 +45,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     };
     
     fetchNlpStatus();
-  }, [BACKEND_URL]);
+  }, []);
 
   // State for unique term counts
   const [uniqueTermCount, setUniqueTermCount] = useState(0);
@@ -83,7 +87,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
     setIsChecking(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/check-medical-terms`, {
+      const response = await fetch(getApiUrl('check-medical-terms'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +125,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     } finally {
       setIsChecking(false);
     }
-  }, [enabled, BACKEND_URL, termCache]);
+  }, [enabled, termCache]);
 
   // Debounced text checking
   useEffect(() => {
@@ -165,7 +169,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     // Fetch database suggestions
     try {
       console.log(`Fetching database suggestions for term: "${term.term}"`);
-      const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(term.term)}`);
+      const response = await fetch(getApiUrl(`suggest?word=${encodeURIComponent(term.term)}`));
       console.log(`Database response status: ${response.status}`);
       
       if (response.ok) {
@@ -240,7 +244,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
     if (selectedTerm && confirmed) {
       // Add the term to the dynamic medicine list
       try {
-        await fetch(`${BACKEND_URL}/add-medicine`, {
+        await fetch(getApiUrl('add-medicine'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -522,7 +526,7 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
                       
                       try {
                         console.log(`Fetching alternatives for term: "${selectedTerm.term}"`);
-                        const response = await fetch(`${BACKEND_URL}/suggest?word=${encodeURIComponent(selectedTerm.term)}`);
+                        const response = await fetch(getApiUrl(`suggest?word=${encodeURIComponent(selectedTerm.term)}`));
                         console.log(`Alternative suggestions response status: ${response.status}`);
                         
                         if (response.ok) {

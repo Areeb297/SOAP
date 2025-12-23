@@ -5,29 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="SOAP Note Voice Recorder - AI-powered medical documentation" />
-    <!-- TODO: Replace with proper Tailwind installation for production -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Suppress common development warnings
-      if (window.location.hostname === 'localhost') {
-        const originalConsoleWarn = console.warn;
-        const originalConsoleError = console.error;
-        
-        console.warn = function(...args) {
-          if (args[0] && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
-            return;
-          }
-          originalConsoleWarn.apply(console, args);
-        };
-        
-        console.error = function(...args) {
-          if (args[0] && args[0].message && args[0].message.includes('custom element with name') && args[0].message.includes('has already been defined')) {
-            return;
-          }
-          originalConsoleError.apply(console, args);
-        };
-      }
-    </script>
     <title>SOAP Note Voice Recorder</title>
   </head>
   <body>

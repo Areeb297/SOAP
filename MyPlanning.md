@@ -556,3 +556,59 @@ ESLint cleanup has been successfully completed:
 ---
 
 **All planned improvements have been successfully implemented!** 🎉
+
+---
+
+## 📅 Current Session: Tuesday Dec 23, 2025
+
+## New Task: Fix Mixed Content Error with Vercel Proxy Routes
+
+### Goal
+Resolve the Mixed Content error that occurs when the Vercel-deployed frontend (HTTPS) tries to call the HTTP backend, by implementing Vercel API proxy routes.
+
+### Problem Identified
+- **Error**: `Mixed Content: The page at 'https://soap-frontend-rose.vercel.app/' was loaded over HTTPS, but requested an insecure resource 'http://145.79.13.137:5001/transcribe'. This request has been blocked.`
+- **Root Cause**: Browser blocks HTTP requests from HTTPS pages (security policy)
+- **Secondary Issue**: Tailwind CSS CDN warning in production
+
+### Solution: Vercel API Proxy Routes
+Create serverless API routes that proxy requests to the backend:
+- Browser makes HTTPS requests to Vercel API routes
+- Vercel API routes (server-side) make HTTP requests to backend
+- Server-to-server HTTP requests are allowed
+
+### Implementation Steps
+- [x] Create `/api/transcribe.js` - Proxy for audio transcription
+- [x] Create `/api/generate-soap.js` - Proxy for SOAP note generation  
+- [x] Create `/api/check-medical-terms.js` - Proxy for medical spell checking
+- [x] Create `/api/suggest.js` - Proxy for database suggestions
+- [x] Create `/api/add-medicine.js` - Proxy for adding medicines
+- [x] Create `/api/medical-nlp-status.js` - Proxy for NLP status
+- [x] Create `vercel.json` - Vercel configuration
+- [x] Update `SOAPRecorder.js` - Use `getApiUrl()` for dynamic URLs
+- [x] Update `MedicalSpellChecker.js` - Use `getApiUrl()` for dynamic URLs
+- [x] Install Tailwind CSS properly via PostCSS
+- [x] Remove Tailwind CDN from `index.html` and `App.css`
+- [x] Create `tailwind.config.js` and `postcss.config.js`
+- [ ] Deploy and test on Vercel
+
+### Files Created
+1. `soap-recorder-frontend/api/transcribe.js`
+2. `soap-recorder-frontend/api/generate-soap.js`
+3. `soap-recorder-frontend/api/check-medical-terms.js`
+4. `soap-recorder-frontend/api/suggest.js`
+5. `soap-recorder-frontend/api/add-medicine.js`
+6. `soap-recorder-frontend/api/medical-nlp-status.js`
+7. `soap-recorder-frontend/vercel.json`
+8. `soap-recorder-frontend/tailwind.config.js`
+9. `soap-recorder-frontend/postcss.config.js`
+
+### Files Modified
+1. `soap-recorder-frontend/src/SOAPRecorder.js` - Updated API URL handling
+2. `soap-recorder-frontend/src/MedicalSpellChecker.js` - Updated API URL handling
+3. `soap-recorder-frontend/public/index.html` - Removed Tailwind CDN
+4. `soap-recorder-frontend/src/App.css` - Added Tailwind directives
+5. `soap-recorder-frontend/package.json` - Added Tailwind dependencies
+
+### Task Status: 🟡 IN PROGRESS
+Waiting for deployment and testing.

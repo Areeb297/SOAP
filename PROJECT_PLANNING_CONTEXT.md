@@ -176,7 +176,7 @@ SOAP/
 ### Environment Configuration
 ```
 Production Settings:
-├── Backend URL: https://soap-598q.onrender.com
+├── Backend URL: http://145.79.13.137:5001
 ├── Database: Supabase PostgreSQL
 ├── API Keys: OpenAI GPT-4o access
 ├── CORS: Configured for frontend domain

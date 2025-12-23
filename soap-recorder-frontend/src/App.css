@@ -1,10 +1,12 @@
+/* Tailwind CSS - Proper installation */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* App.css */
 .App {
   text-align: center;
 }
-
-/* Import Tailwind CSS - you can also use CDN in index.html */
-@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
 
 /* Import medical spell checker styles */
 @import './MedicalSpellChecker.css';

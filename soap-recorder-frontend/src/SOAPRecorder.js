@@ -11,12 +11,16 @@ export const loadAmiriFont = async () => {
   return false;
 };
 
-// Dynamic backend URL selection
-const BACKEND_URL =
-  process.env.REACT_APP_BACKEND_URL ||
-  (window.location.hostname === 'localhost'
-    ? 'http://localhost:5001'
-    : 'https://soap-598q.onrender.com');
+// API URL - Use Vercel proxy in production, direct backend in development
+const getApiUrl = (endpoint) => {
+  // In production (Vercel), use the /api proxy routes
+  if (window.location.hostname !== 'localhost') {
+    return `/api/${endpoint}`;
+  }
+  // In development, call backend directly
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
+  return `${BACKEND_URL}/${endpoint}`;
+};
 
 export default function SOAPRecorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -79,8 +83,8 @@ export default function SOAPRecorder() {
     formData.append('language', language);
 
     try {
-      // Send to backend for transcription
-      const response = await fetch(`${BACKEND_URL}/transcribe`, {
+      // Send to backend for transcription (via Vercel proxy in production)
+      const response = await fetch(getApiUrl('transcribe'), {
         method: 'POST',
         body: formData,
       });
@@ -101,7 +105,7 @@ export default function SOAPRecorder() {
   const generateSOAPNote = async () => {
     setIsProcessing(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/generate-soap`, {
+      const response = await fetch(getApiUrl('generate-soap'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
