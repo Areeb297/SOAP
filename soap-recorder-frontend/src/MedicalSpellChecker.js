@@ -36,7 +36,6 @@ const MedicalSpellChecker = ({
   
   // Drug confusion matches state
   const [confusionMatches, setConfusionMatches] = useState([]);
-  const [lastCheckedKey, setLastCheckedKey] = useState('');
   const textAreaRef = useRef(null);
   const suggestionsRef = useRef(null);
   const checkTimeoutRef = useRef(null);
@@ -62,7 +61,7 @@ const MedicalSpellChecker = ({
     };
 
     fetchNlpStatus();
-  }, []);
+  }, [showLegend]);
 
   // State for unique term counts
   const [uniqueTermCount, setUniqueTermCount] = useState(0);
@@ -91,7 +90,6 @@ const MedicalSpellChecker = ({
       setUniqueTermCount(cachedResult.unique_count || 0);
       setTotalOccurrences(cachedResult.total_occurrences || (cachedResult.results || cachedResult).length);
       setCacheStats(prev => ({ ...prev, hits: prev.hits + 1 }));
-      setLastCheckedKey(cacheKey);
       return;
     }
 
@@ -144,7 +142,6 @@ const MedicalSpellChecker = ({
 
       setMedicalTerms(spellResults);
       setConfusionMatches(confusionResults);
-      setLastCheckedKey(cacheKey);
 
     } catch (error) {
       console.error('Error in medical analysis:', error);
