@@ -12,7 +12,14 @@ const getApiUrl = (endpoint) => {
   return `${BACKEND_URL}/${endpoint}`;
 };
 
-const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionSelect }) => {
+const MedicalSpellChecker = ({ 
+  text, 
+  onTextChange, 
+  enabled = true, 
+  onSuggestionSelect,
+  checkNow,
+  checkVersion
+}) => {
   const [medicalTerms, setMedicalTerms] = useState([]);
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
@@ -26,9 +33,17 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
   // Client-side caching
   const [termCache, setTermCache] = useState(new Map());
   const [cacheStats, setCacheStats] = useState({ hits: 0, misses: 0 });
+  
+  // Drug confusion matches state
+  const [confusionMatches, setConfusionMatches] = useState([]);
+  const [lastCheckedKey, setLastCheckedKey] = useState('');
   const textAreaRef = useRef(null);
   const suggestionsRef = useRef(null);
   const checkTimeoutRef = useRef(null);
+  
+  // Refs for tracking explicit check triggers
+  const lastProcessedCheckNowRef = useRef(false);
+  const lastProcessedVersionRef = useRef(0);
 
   // Fetch NLP status only when legend is opened (cached globally to avoid repeated requests)
   useEffect(() => {
@@ -82,6 +97,9 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
 
     setIsChecking(true);
     try {
+      let spellResults = [];
+      let confusionResults = [];
+
       const response = await fetch(getApiUrl('check-medical-terms'), {
         method: 'POST',
         headers: {
@@ -90,11 +108,26 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
         body: JSON.stringify({ text: textToCheck }),
       });
 
-      if (spellResponse.ok) {
-        const spellData = await spellResponse.json();
+      if (response.ok) {
+        const spellData = await response.json();
         spellResults = spellData.results || [];
         setUniqueTermCount(spellData.unique_count || 0);
         setTotalOccurrences(spellData.total_occurrences || spellResults.length);
+        
+        // Extract confusion matches if included in response
+        if (spellData.confusion_matches && Array.isArray(spellData.confusion_matches)) {
+          const matches = spellData.confusion_matches;
+          confusionResults = matches
+            .filter(m => typeof m.start === 'number' && typeof m.end === 'number' && m.end > m.start)
+            .map(m => ({
+              term: String(m.term || ''),
+              start: m.start,
+              end: m.end,
+              alternatives: Array.isArray(m.alternatives) ? m.alternatives : [],
+              category: 'drug_confusion',
+              source: 'drug_confusion'
+            }));
+        }
         
         // Cache spell-check results
         setTermCache(prev => {
@@ -107,21 +140,6 @@ const MedicalSpellChecker = ({ text, onTextChange, enabled = true, onSuggestionS
           return newCache;
         });
         setCacheStats(prev => ({ ...prev, misses: prev.misses + 1 }));
-      }
-
-      if (confusionResponse.ok) {
-        const confusionData = await confusionResponse.json();
-        const matches = Array.isArray(confusionData.matches) ? confusionData.matches : [];
-        confusionResults = matches
-          .filter(m => typeof m.start === 'number' && typeof m.end === 'number' && m.end > m.start)
-          .map(m => ({
-            term: String(m.term || ''),
-            start: m.start,
-            end: m.end,
-            alternatives: Array.isArray(m.alternatives) ? m.alternatives : [],
-            category: 'drug_confusion',
-            source: 'drug_confusion'
-          }));
       }
 
       setMedicalTerms(spellResults);
